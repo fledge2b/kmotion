@@ -1,9 +1,8 @@
 = WARNING =
 
-MY BEST ADVICE - IF ANY OF THE FOLLOWING SEEMS CONFUSING OR YOU ARE NOT SURE  - DON'T DO IT !!!! - YOU MAY SERIOUSLY B0rK YOUR SYSTEM. 
-THIS HOWTO HAS NOT BEEN THOROUGHLY TESTED AND HAS AT LEAST TWO SCARY RM'S WITH WILDCARDS :)
+*PLEASE DO NOT ATTEMPT THIS IF YOU ARE NOT COMFORTABLE WITH COMMAND LINE TOOLS. IT IS POSSIBLE TO SERIOUSLY B0rK YOUR SYSTEM. PLEASE BE CAREFUL*
 
-YOU HAVE BEEN WARNED !!
+----
 
 = Introduction =
 
@@ -16,11 +15,11 @@ Python 2.5.1
 
 ----
 
-= Server setup notes =
+= Optional server setup =
 
 Install a stock Gutsy server with the following additional packages
 
-sudo apt-get install motion, apache2, python, libapache2-mod-php5, ntp, screen
+_sudo apt-get install motion, apache2, python, libapache2-mod-php5, ntp, screen_
 
 Setup server for auto update by adding the following script to /etc/cron.daily
 call it auto-update.sh & make it executable
@@ -31,47 +30,47 @@ _aptitude -y update && aptitude -y safe-upgrade && aptitude -y dist-upgrade && a
 
 ----
 
-= Kmotion daemon notes =
+= Kmotion daemon (back end) setup =
 
-This will be a KDE app, its config is in the standard KDE dirs, although KDE is not installed you need to pretend it is :)
+This will be a KDE app, its config are in the standard KDE dirs, although KDE is not installed you need to pretend it is :)
 
-mkdir -p ~/.kde/share/apps/kmotion
+_mkdir -p ~/.kde/share/apps/kmotion_
 
-cd ~/.kde/share/apps/kmotion
+_cd ~/.kde/share/apps/kmotion_
 
-unzip daemons.tar.gz
+_unzip daemons.tar.gz_
 
-The daemons start motion & do all sorts of housekeeping. The deamons need to be started at bootup. Edit /etc/rc.local and add the line
+The daemons start motion & do all sorts of housekeeping. The daemons need to be started at bootup. Edit /etc/rc.local and add the line
 
 _su dave -c /home/<user name>/.kde/share/apps/kmotion/kmotion_start.py &_
 
-cd /var/lib
+_cd /var/lib_
 
-sudo chgrp www-data motion
+_sudo chgrp www-data motion_
 
 ----
 
-= Kmotion Apache notes =
+= Kmotion Apache (front end) setup =
 
-sudo -i
+_sudo -i_
 
-cd /var/www
+_cd /var/www_
 
-mkdir /var/www.bak
+_mkdir /var/www.bak_
 
-mv ** ../www.bak/
+_mv {{{*}}} ../www.bak/_
 
-unzip apache1.tar.gz
+_unzip apache1.tar.gz_
 
-cd /etc/apache2
+_cd /etc/apache2_
 
-mkdir /etc/apache2.bak
+_mkdir /etc/apache2.bak_
 
-mv ** ../apache2.bak/
+_mv {{{*}}} ../apache2.bak/_
 
-unzip apache2.tar.gz
+_unzip apache2.tar.gz_
 
-/etc/init.d/apache2 restart
+_/etc/init.d/apache2 restart_
 
 ----
 
@@ -79,23 +78,23 @@ unzip apache2.tar.gz
 
 Config comes in two parts, the easy bit first - the Apache loggin :)
 
-sudo -i
+_sudo -i_
 
-cd /var/www
+_cd /var/www_
 
-htpasswd -c .htpasswd <user name>
+_htpasswd -c .htpasswd <user name>_
 
 Then enter your web interface loggin password twice. If you do not want a loggin dialogue remove .htaccess & .htpasswd & restart Apache
 
-/etc/init.d/apache2 restart
+_/etc/init.d/apache2 restart_
 
 Now difficult bit.
 
-exit
+_exit_ ... ie drop out of root back to a normal user
 
-cd ~/.kde/share/apps/kmotion
+_cd ~/.kde/share/apps/kmotion_
 
-vi kmotion.rc
+_vi kmotion.rc_
 
 This file configures everything, go have a look ... hopefully its pretty self explanitory
 
@@ -112,18 +111,18 @@ You can put anything in these sections that you can in motions config file with 
 
 = Finally =
 
-Reboot the system , pray, and tell me where it broke ;)
+Reboot the system, point preferable Firefox to 'localhost' or the IP of your server ... and .... and tell me when it breaks by raising an 'issue' ;)
 
 ----
 
 = Problems =
 
-If you hit problems check
+  * If you hit problems check
 
-sudo tail - f/var/log/messages
+    _sudo tail - f/var/log/messages_
 
-If you are experimenting with kmotion.rc you need to re-init kmotion to re-read the config.
+  * If you are experimenting with kmotion.rc you need to re-init kmotion to re-read the config. Use the following tool
 
-~/.kde/share/apps/kmotion/daemon_manual.py
+     _~/.kde/share/apps/kmotion/daemon_manual.py_
 
-option '1' starts the daemons, '2' stops the daemons, '3' will reload the config & '4' quits & kills the daemons. Or you could just re-boot the system :)
+     option '1' starts the daemons, '2' stops the daemons, '3' will reload the config & '4' quits & kills the daemons. Or you could just re-boot the system :)
