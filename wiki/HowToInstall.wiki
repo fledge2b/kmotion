@@ -38,6 +38,7 @@ _su dave -c /home/dave/.kde/share/apps/kmotion/kmotion_start.py &_
 ----
 
 cd /var/lib
+
 chgrp www-data motion
 
 = Kmotion Apache notes =
