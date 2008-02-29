@@ -1,3 +1,10 @@
+= WARNING =
+
+MY BEST ADVICE - IF ANY OF THE FOLLOWING SEEMS CONFUSING OR YOU ARE NOT SURE  - DON'T DO IT !!!! - YOU MAY SERIOUSLY B0rK YOUR SYSTEM. 
+THIS HOWTO HAS NOT BEEN THOROUGHLY TESTED AND HAS AT LEAST TWO SCARY RM'S WITH WILDCARDS :)
+
+YOU HAVE BEEN WARNED !!
+
 = Introduction =
 
 The web viewer has been developed & runs on a stock kubuntu Gutsy 7.10
@@ -45,16 +52,17 @@ chgrp www-data motion
 
 cd /var/www
 
+<CAREFULL!!>rm -rf *
+
 unzip apache1.tar.gz
 
 cd /etc/apache2
 
+<CAREFULL!!>rm -rf *
+
 unzip apache2.tar.gz
 
-cp apache2.conf.new apache2.conf
-
-cp default.new sites-avaliable/default
-
+/etc/init.d/apache restart
 
 = Kmotion config notes =
 
