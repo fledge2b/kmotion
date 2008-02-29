@@ -21,9 +21,9 @@ _#!/bin/bash_
 _aptitude -y update > /dev/null && aptitude -y safe-upgrade > /dev/null && aptitude -y dist-upgrade > /dev/null && aptitude -y autoclean > /dev/null_
 ----
 
-= Kmotion setup notes =
+= Kmotion daemon notes =
 
-This will be a KDE app, its config is in the standard KDE dirs, so although KDE is not installed you need to pretend it is :)
+This will be a KDE app, its config is in the standard KDE dirs, although KDE is not installed you need to pretend it is :)
 
 mkdir -p ~/.kde/share/apps/kmotion
 
@@ -31,65 +31,57 @@ cd ~/.kde/share/apps/kmotion
 
 unzip daemons.tar.gz
 
-To start the daemons at bootup ...
+The daemons start motion & do all sorts of housekeeping, to start the deamons at bootup edit /etc/rc.local and add the line
 
-crontab -e
+----
+su dave -c /home/dave/.kde/share/apps/kmotion/kmotion_start.py &
+----
 
-and add the line
+cd /var/lib
+chgrp www-data motion
 
-@reboot /home/<account>/.kde/share/apps/kmotion/kmotion_start.py &
-could this be ~/.kde ?????????????????????????????????????????????????????
+= Kmotion Apache notes =
 
+cd /var/www
 
+unzip apache1.tar.gz
 
+cd /etc/apache2
 
+unzip apache2.tar.gz
 
+cp apache2.conf.new apache2.conf
 
-
-
-
-
-
-
-
-
-
-
+cp default.new sites-avaliable/default
 
 
+= Kmotion config notes =
 
+Config comes in two parts, the easy bit first - the Apache loggin :)
 
-setup video capture card modules, in my case with three cards
+cd /var/www
 
-/etc/modprobe/options ... & add ...options bttv card=77,77,77
+htpasswd -c .htpasswd <user name>
 
+Then enter your password twice. If you do not want a loggin dialogue remove .htaccess & .htpasswd & restart Apache
 
+Now difficult bit.
 
+cd ~/.kde/share/apps/kmotion
 
+vi kmotion.rc
 
+This file configures everything, go have a look ... hopefully its pretty self explanitory
 
+file_system & cull_trigpc trigger auto deleteion of the oldest files when the disk becomes more that cull_trigpc full
 
+feed_common is motion.conf
+feed1 - 16 are motion.conf threads
 
+You can put anything in these sections that you can in motions config file with the addition of 'name:' the name of the web view for that feed & 'live:' if the feed is live. motion.conf & its threads are auto generated from this file.
 
+*NOTE* feeds must be 'live: yes' from feed1 upwards until a 'live: no' no gaps are allowed
 
+= Finally =
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Reboot the system , pray, and tell me where it broke ;)
