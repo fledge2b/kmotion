@@ -111,7 +111,7 @@ You can put anything in these sections that you can in motions config file with 
 
 = Finally =
 
-Reboot the system, point preferable Firefox to 'localhost' or the IP of your server ... and .... and tell me when it breaks by raising an 'issue' ;)
+Reboot the system, point preferably Firefox to 'localhost' or the IP of your server ... and .... and .... tell me if it breaks - or works ;) ... raise an 'issue' dude.
 
 ----
 
