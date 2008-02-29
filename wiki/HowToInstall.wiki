@@ -1,0 +1,95 @@
+= Introduction =
+
+The web viewer has been developed & runs on a stock kubuntu Gutsy 7.10
+
+motion 3.2.3
+PHP    5.2.3
+Apache 2.2.4
+Python 2.5.1
+
+= Server setup notes =
+
+install a stock Gutsy server
+
+apt-get install motion, apache2, python, libapache2-mod-php5, ntp, screen
+
+Setup server for auto update, add the following to /etc/cron.daily
+call it auto-update.sh & make it executable
+----
+_#!/bin/bash_
+
+_aptitude -y update > /dev/null && aptitude -y safe-upgrade > /dev/null && aptitude -y dist-upgrade > /dev/null && aptitude -y autoclean > /dev/null_
+----
+
+= Kmotion setup notes =
+
+This will be a KDE app, its config is in the standard KDE dirs, so although KDE is not installed you need to pretend it is :)
+
+mkdir -p ~/.kde/share/apps/kmotion
+
+cd ~/.kde/share/apps/kmotion
+
+unzip daemons.tar.gz
+
+To start the daemons at bootup ...
+
+crontab -e
+
+and add the line
+
+@reboot /home/<account>/.kde/share/apps/kmotion/kmotion_start.py &
+could this be ~/.kde ?????????????????????????????????????????????????????
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+setup video capture card modules, in my case with three cards
+
+/etc/modprobe/options ... & add ...options bttv card=77,77,77
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
