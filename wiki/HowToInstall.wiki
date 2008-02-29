@@ -34,7 +34,7 @@ unzip daemons.tar.gz
 The daemons start motion & do all sorts of housekeeping, to start the deamons at bootup edit /etc/rc.local and add the line
 
 ----
-su dave -c /home/dave/.kde/share/apps/kmotion/kmotion_start.py &
+_su dave -c /home/dave/.kde/share/apps/kmotion/kmotion_start.py &_
 ----
 
 cd /var/lib
