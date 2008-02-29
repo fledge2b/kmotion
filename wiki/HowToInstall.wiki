@@ -128,3 +128,9 @@ Reboot the system, point preferably Firefox to 'localhost' or the IP of your ser
      option '1' starts the daemons, '2' stops the daemons, '3' will reload the config & '4' quits & kills the daemons. Or you could just re-boot the system :)
 
   * Inside daemons.tar.gz is a 'knowit' file. _sudo apt-get install knowit_. It is a complete outline of the internal kmotion API
+
+----
+
+= Thanks =
+
+With many thanks to my good friend Keith - a test guinea pig with an unerring ability to spot bugs I would have preffered not to have seen - cheers mate ;) 
