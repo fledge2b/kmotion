@@ -14,18 +14,21 @@ PHP    5.2.3
 Apache 2.2.4
 Python 2.5.1
 
+----
+
 = Server setup notes =
 
-install a stock Gutsy server
+Install a stock Gutsy server with the following additional packages
 
-apt-get install motion, apache2, python, libapache2-mod-php5, ntp, screen
+sudo apt-get install motion, apache2, python, libapache2-mod-php5, ntp, screen
 
-Setup server for auto update, add the following to /etc/cron.daily
+Setup server for auto update by adding the following script to /etc/cron.daily
 call it auto-update.sh & make it executable
-----
+
 _#!/bin/bash_
 
-_aptitude -y update > /dev/null && aptitude -y safe-upgrade > /dev/null && aptitude -y dist-upgrade > /dev/null && aptitude -y autoclean > /dev/null_
+_aptitude -y update && aptitude -y safe-upgrade && aptitude -y dist-upgrade && aptitude -y autoclean_
+
 ----
 
 = Kmotion daemon notes =
@@ -38,43 +41,57 @@ cd ~/.kde/share/apps/kmotion
 
 unzip daemons.tar.gz
 
-The daemons start motion & do all sorts of housekeeping, to start the deamons at bootup edit /etc/rc.local and add the line
+The daemons start motion & do all sorts of housekeeping. The deamons need to be started at bootup. Edit /etc/rc.local and add the line
 
-----
-_su dave -c /home/dave/.kde/share/apps/kmotion/kmotion_start.py &_
-----
+_su dave -c /home/<user name>/.kde/share/apps/kmotion/kmotion_start.py &_
 
 cd /var/lib
 
-chgrp www-data motion
+sudo chgrp www-data motion
+
+----
 
 = Kmotion Apache notes =
 
+sudo -i
+
 cd /var/www
 
-<CAREFULL!!>rm -rf *
+mkdir /var/www.bak
+
+mv ** ../www.bak/
 
 unzip apache1.tar.gz
 
 cd /etc/apache2
 
-<CAREFULL!!>rm -rf *
+mkdir /etc/apache2.bak
+
+mv ** ../apache2.bak/
 
 unzip apache2.tar.gz
 
-/etc/init.d/apache restart
+/etc/init.d/apache2 restart
+
+----
 
 = Kmotion config notes =
 
 Config comes in two parts, the easy bit first - the Apache loggin :)
 
+sudo -i
+
 cd /var/www
 
 htpasswd -c .htpasswd <user name>
 
-Then enter your password twice. If you do not want a loggin dialogue remove .htaccess & .htpasswd & restart Apache
+Then enter your web interface loggin password twice. If you do not want a loggin dialogue remove .htaccess & .htpasswd & restart Apache
+
+/etc/init.d/apache2 restart
 
 Now difficult bit.
+
+exit
 
 cd ~/.kde/share/apps/kmotion
 
@@ -89,8 +106,24 @@ feed1 - 16 are motion.conf threads
 
 You can put anything in these sections that you can in motions config file with the addition of 'name:' the name of the web view for that feed & 'live:' if the feed is live. motion.conf & its threads are auto generated from this file.
 
-*NOTE* feeds must be 'live: yes' from feed1 upwards until a 'live: no' no gaps are allowed
+*NOTE* feeds MUST be 'live: yes' from feed1 upwards until a 'live: no' no gaps of 'no' the n 'yes' are allowed
+
+----
 
 = Finally =
 
 Reboot the system , pray, and tell me where it broke ;)
+
+----
+
+= Problems =
+
+If you hit problems check
+
+sudo tail - f/var/log/messages
+
+If you are experimenting with kmotion.rc you need to re-init kmotion to re-read the config.
+
+~/.kde/share/apps/kmotion/daemon_manual.py
+
+option '1' starts the daemons, '2' stops the daemons, '3' will reload the config & '4' quits & kills the daemons. Or you could just re-boot the system :)
