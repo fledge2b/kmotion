@@ -5,7 +5,7 @@
 
 = WARNING =
 
-*PLEASE DO NOT ATTEMPT THIS IF YOU ARE NOT COMFORTABLE WITH COMMAND LINE TOOLS. IT IS POSSIBLE TO SERIOUSLY B0RK YOUR SYSTEM. PLEASE BE CAREFUL & REPORT ANY HOWTO ERRORS*
+*PLEASE DO NOT ATTEMPT THIS IF YOU ARE NOT COMFORTABLE WITH COMMAND LINE TOOLS. IT IS POSSIBLE TO SERIOUSLY B0RK YOUR SYSTEM. PLEASE BE CAREFUL & REPORT ANY HOWTO ERRORS.*
 
 ----
 
@@ -63,7 +63,7 @@ add <user name> to www-data group
 
 = Kmotion Apache (front end) setup =
 
-*NOTE the tarballs apache1.tar.gz & apache2.tar.gz BOTH relate to the apache2 server. apache1.tar.gz contains the apache2 web pages, apache2.tar.gz contains the apache2 config ! In the next version I will change the names to avoid confusion*
+*NOTE the tarballs apache1.tar.gz & apache2.tar.gz BOTH relate to the apache2 server. apache1.tar.gz contains the apache2 web pages, apache2.tar.gz contains the apache2 config ! In the next version I will change the names to avoid confusion.*
 
 _sudo -i_
 
