@@ -1,4 +1,4 @@
-#summary Howto install the Web front end of kmotion
+#summary How to install the Web front end of kmotion
 #labels Phase-Deploy
 
 ----
