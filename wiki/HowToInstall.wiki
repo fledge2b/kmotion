@@ -1,5 +1,8 @@
+#summary Howto install the Web front end of kmotion
 #labels Phase-Deploy
-#Howto install the Web front end of kmotion
+
+----
+
 = WARNING =
 
 *PLEASE DO NOT ATTEMPT THIS IF YOU ARE NOT COMFORTABLE WITH COMMAND LINE TOOLS. IT IS POSSIBLE TO SERIOUSLY B0RK YOUR SYSTEM. PLEASE BE CAREFUL & REPORT ANY HOWTO ERRORS*
