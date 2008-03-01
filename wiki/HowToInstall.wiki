@@ -51,7 +51,13 @@ _su dave -c /home/<user name>/.kde/share/apps/kmotion/kmotion_start.py &_
 
 _cd /var/lib_
 
+_sudo chmod 770 www-data_
+
 _sudo chgrp www-data motion_
+
+_sudo vi /etc/group_
+
+add <user name> to www-data group
 
 ----
 
