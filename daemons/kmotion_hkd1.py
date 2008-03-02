@@ -29,6 +29,7 @@ class Kmotion_Hkd1:
     
     def __init__(self):
         self.kmotion_dbase = ''
+        self.kmotion_daemons = ''
         self.motion_config = ''
         self.file_system = ''
         self.cull_trigpc = 0
@@ -85,7 +86,7 @@ class Kmotion_Hkd1:
             ''' Check kmotion_hkd2.py is still running ... if not restart it ... '''
             if os.system('/bin/ps ax | /bin/grep [k]motion_hkd2.py$'):
                self.logger.log('kmotion_hkd2.py not running - starting kmotion_hkd2.py', 'CRIT')
-               os.system(self.kmotion_dbase + '/kmotion_hkd2.py &')
+               os.system(self.kmotion_daemons + '/kmotion_hkd2.py &')
 
     def read_config(self):
         """ Read config file from '~/.kde/share/apps/kmotion/kmotion.rc' """
@@ -100,6 +101,7 @@ class Kmotion_Hkd1:
             
         try:   
             self.kmotion_dbase = parser.get('misc', 'kmotion_dbase')
+            self.kmotion_daemons = parser.get('misc', 'kmotion_daemons')
             self.motion_config = parser.get('misc', 'motion_config')
             self.file_system = parser.get('misc', 'file_system')
             self.cull_trigpc = int(parser.get('misc', 'cull_trigpc'))
