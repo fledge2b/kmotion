@@ -89,8 +89,8 @@ class Kmotion_Hkd1:
 
     def read_config(self):
         """ Read config file from '~/.kde/share/apps/kmotion/kmotion.rc' """
-        parser = ConfigParser.SafeConfigParser()
-        parsed = parser.read('%s/kmotion.rc' % (self.kmotion_config))
+        parser = ConfigParser.SafeConfigParser()  
+        parsed = parser.read('/var/lib/kmotion/kmotion_config/kmotion.rc')
         
         if parsed[0][-10:] != 'kmotion.rc':
             emsg = 'Can\'t open config file %s - Killing motion & all daemon processes' % parsed[0][-10:]

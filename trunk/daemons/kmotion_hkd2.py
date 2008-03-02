@@ -28,8 +28,9 @@ with snapshot information. Finally responds to a SIGHUP by re-reading kmotion.rc
 
 class Hkd2_Feed:
     
-    def __init__(self, feed, snapshot_interval):
+    def __init__(self, feed, kmotion_dbase, snapshot_interval):
         self.feed = feed
+        self.kmotion_dbase = ''
         self.snapshot_current = '000000'
         self.snapshot_interval = snapshot_interval
         self.prev_date = '000000'
@@ -37,8 +38,8 @@ class Hkd2_Feed:
     def run(self):
         """ process the snapshots """
         date = time.strftime('%Y%m%d')
-        tmp_dir = '/var/lib/motion/%s/%02i/tmp/' % (date, self.feed + 1)
-        video_dir = '/var/lib/motion/%s/%02i/video/' % (date, self.feed + 1)
+        tmp_dir = '%s/%s/%02i/tmp/' % (self.kmotion_dbase, date, self.feed + 1) 
+        video_dir = '%s/%s/%02i/video/' % (self.kmotion_dbase, date, self.feed + 1)
         
         # force a journal write on a new day
         if self.prev_date != date:  
@@ -83,7 +84,7 @@ class Hkd2_Feed:
     def update_journal(self, date, feed, seconds, pause):
         """ update the snapshot journal """
         # add to journal of snapshots in the form #<snapshot start seconds>$<snapshot pause in seconds>
-        journal = open('%s/%s/%02i/journal_snap' % ('/var/lib/motion', date, (feed + 1)), 'a') 
+        journal = open('%s/%s/%02i/journal_snap' % (kmotion_dbase, date, (feed + 1)), 'a')
         journal.write('#%s$%s' % (seconds, pause))
         journal.close()
             
@@ -91,7 +92,7 @@ class Hkd2_Feed:
     def create_dirs(self, date, video_dir, tmp_dir):
         """ create directories as needed """
         # if key dirs do not exist, create them ...
-        if not(os.path.isdir('/var/lib/motion' + '/' + date)): os.makedirs('/var/lib/motion' + '/' + date)
+        if not(os.path.isdir('%s/%s' % (self.kmotion_dbase, date))): os.makedirs('%s/%s' % (self.kmotion_dbase, date))
         if not(os.path.isdir(tmp_dir)): os.makedirs(tmp_dir)
         if not(os.path.isdir(video_dir)): os.makedirs(video_dir)
     
@@ -117,7 +118,7 @@ class Kmotion_Hkd2:
     def read_config(self):
         """ read the config file, return a list of snapshot_intervals where the lists length represents the number of feeds """
         parser = ConfigParser.SafeConfigParser()
-        parsed = parser.read(os.path.expanduser('~/.kde/share/apps/kmotion/kmotion.rc'))
+        parsed = parser.read(os.path.expanduser('/var/lib/kmotion/kmotion_config/kmotion.rc'))
         
         if parsed[0][-10:] != 'kmotion.rc':
             emsg = 'Can\'t open config file %s - killing motion & all daemon processes' % (parsed[0][-10:])
@@ -127,6 +128,7 @@ class Kmotion_Hkd2:
                 
         snapshot_list = []
         try:    
+            kmotion_dbase = parser.get('misc', 'kmotion_dbase')
             for i in xrange(16):
                 if parser.get('feed%s' % (str(i + 1)), 'live') == "yes" : 
                     snapshot_interval = int(parser.get('feed%s' % (str(i + 1)), 'snapshot_interval'))
@@ -135,16 +137,16 @@ class Kmotion_Hkd2:
                     raise
         except:
             pass
-        return snapshot_list
+        return kmotion_dbase, snapshot_list
     
     def start_daemon(self):
         """" Start the house keeping 2 daemon """
         logger.log('Daemon starting ...', 'CRIT')
         while (True):
-            snapshot_list = self.read_config()
+            kmotion_dbase, snapshot_list = self.read_config()
             instance = []
             for i in xrange(len(snapshot_list)):
-                instance.append(Hkd2_Feed(i, snapshot_list[i]))
+                instance.append(Hkd2_Feed(i, kmotion_dbase, snapshot_list[i]))
             
             self.sighup_ok = True
             while (self.sighup_ok):
