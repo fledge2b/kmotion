@@ -30,17 +30,16 @@ def start_daemons():
     """ Start kmotion_hkd1, kmotion_hkd2 & motion daemons """
     genconfigs.gen_configs()  # generate motion.conf, motion.?.conf & feed.rc from kmotion.rc
     parser = ConfigParser.SafeConfigParser()
-    
     try:
-        parser.read(os.path.expanduser('~/.kde/share/apps/kmotion/kmotion.rc'))
-        lib_dir =  parser.get('misc', 'kmotion_lib_dir')
+        parser.read('/var/lib/kmotion/kmotion_config/kmotion.rc')
+        kmotion_daemons =  parser.get('misc', 'kmotion_daemons')
     except:
         logger.log('Corrupt config error : %s - Killing motion & all daemon processes' % sys.exc_info()[1], 'CRIT')
         kill_daemons()
         sys.exit()
         
     # Only need to start kmotion_hkd1, it starts the rest
-    if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'): os.system(lib_dir + '/kmotion_hkd1.py &> /dev/null')
+    if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'): os.system(kmotion_daemons + '/kmotion_hkd1.py &> /dev/null')
     else: logger.log('start_daemons() - daemons already running - none started', 'DEBUG')
     
 def kill_daemons():

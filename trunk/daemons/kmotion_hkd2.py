@@ -30,7 +30,7 @@ class Hkd2_Feed:
     
     def __init__(self, feed, kmotion_dbase, snapshot_interval):
         self.feed = feed
-        self.kmotion_dbase = ''
+        self.kmotion_dbase = kmotion_dbase
         self.snapshot_current = '000000'
         self.snapshot_interval = snapshot_interval
         self.prev_date = '000000'
@@ -84,7 +84,7 @@ class Hkd2_Feed:
     def update_journal(self, date, feed, seconds, pause):
         """ update the snapshot journal """
         # add to journal of snapshots in the form #<snapshot start seconds>$<snapshot pause in seconds>
-        journal = open('%s/%s/%02i/journal_snap' % (kmotion_dbase, date, (feed + 1)), 'a')
+        journal = open('%s/%s/%02i/journal_snap' % (self.kmotion_dbase, date, (feed + 1)), 'a')
         journal.write('#%s$%s' % (seconds, pause))
         journal.close()
             
@@ -92,6 +92,8 @@ class Hkd2_Feed:
     def create_dirs(self, date, video_dir, tmp_dir):
         """ create directories as needed """
         # if key dirs do not exist, create them ...
+    xxxxxxprint ('%s/%s' % (self.kmotion_dbase, date))
+    xxxxx does this create dirs work ?
         if not(os.path.isdir('%s/%s' % (self.kmotion_dbase, date))): os.makedirs('%s/%s' % (self.kmotion_dbase, date))
         if not(os.path.isdir(tmp_dir)): os.makedirs(tmp_dir)
         if not(os.path.isdir(video_dir)): os.makedirs(video_dir)

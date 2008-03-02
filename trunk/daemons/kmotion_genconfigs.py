@@ -56,13 +56,13 @@ class Kmotion_Genconfigs:
         self.parser = ConfigParser.SafeConfigParser()
         self.kmotion_config = ''
         self.apache2_config = ''
-        self.kmotion.dbase = ''
+        self.kmotion_dbase = ''
             
     def gen_configs(self):
         """ generate all kmotions config files from kmotion.rc """
         try:
             self.parser.read('/var/lib/kmotion/kmotion_config/kmotion.rc')
-            self.kmotion_config = self.parser.get('misc', 'kmotion_confg')
+            self.kmotion_config = self.parser.get('misc', 'kmotion_config')
             self.apache2_config = self.parser.get('misc', 'apache2_config')
             self.kmotion_dbase = self.parser.get('misc', 'kmotion_dbase')
         except:

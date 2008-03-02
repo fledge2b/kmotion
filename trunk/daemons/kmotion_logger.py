@@ -50,7 +50,6 @@ class Logger:
         # this is a workaround ...
         if self.case[priority] <= self.case[self.min_priority]: 
             syslog.openlog(self.ident , syslog.LOG_PID) 
-            syslog.setlogmask(syslog.LOG_UPTO(self.case[self.min_priority]))
             syslog.syslog(msg)
             syslog.closelog()
         
