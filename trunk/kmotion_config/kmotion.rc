@@ -1,7 +1,7 @@
 [misc]
 kmotion_config: /var/lib/kmotion/kmotion_config
-motion_config: /var/lib/kmotion/motion_config
 kmotion_dbase: var/lib/kmotion/kmotion_dbase
+motion_config: /var/lib/kmotion/motion_config
 apache2_conf: /var/lib/kmotion/apache2
 file_system: /dev/sda1
 cull_trigpc: 90
