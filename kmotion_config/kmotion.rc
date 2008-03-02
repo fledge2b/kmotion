@@ -1,7 +1,7 @@
 [misc]
 kmotion_daemons: /var/lib/kmotion/daemons
 kmotion_config: /var/lib/kmotion/kmotion_config
-kmotion_dbase: var/lib/kmotion/kmotion_dbase
+kmotion_dbase: /var/lib/kmotion/kmotion_dbase
 motion_config: /var/lib/kmotion/motion_config
 apache2_config: /var/lib/kmotion/apache2_config
 file_system: /dev/sda1

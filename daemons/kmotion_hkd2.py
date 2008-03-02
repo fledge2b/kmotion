@@ -44,7 +44,9 @@ class Hkd2_Feed:
         # force a journal write on a new day
         if self.prev_date != date:  
             self.snapshot_current = time.strftime('%H%M%S')
-            self.create_dirs(date, video_dir, tmp_dir)
+            # make dir including intermediate-level directories
+            if not(os.path.isdir(tmp_dir)): os.makedirs(tmp_dir)
+            if not(os.path.isdir(video_dir)): os.makedirs(video_dir)
             self.update_journal(date, self.feed, self.snapshot_current, self.snapshot_interval)
             self.prev_date = date
     
@@ -88,17 +90,7 @@ class Hkd2_Feed:
         journal.write('#%s$%s' % (seconds, pause))
         journal.close()
             
-        
-    def create_dirs(self, date, video_dir, tmp_dir):
-        """ create directories as needed """
-        # if key dirs do not exist, create them ...
-    xxxxxxprint ('%s/%s' % (self.kmotion_dbase, date))
-    xxxxx does this create dirs work ?
-        if not(os.path.isdir('%s/%s' % (self.kmotion_dbase, date))): os.makedirs('%s/%s' % (self.kmotion_dbase, date))
-        if not(os.path.isdir(tmp_dir)): os.makedirs(tmp_dir)
-        if not(os.path.isdir(video_dir)): os.makedirs(video_dir)
-    
-    
+            
     def inc_time(self, time, inc_secs):
         """ increment a time string of format HHMMSS with inc_secs seconds, returns a time string of the format HHMMSS """
         hh = int(time[:2])
