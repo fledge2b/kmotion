@@ -28,7 +28,8 @@ Finally responds to a SIGHUP by re-reading kmotion.rc.
 class Kmotion_Hkd1:
     
     def __init__(self):
-        self.lib_dir = ''
+        self.kmotion_dbase = ''
+        self.motion_config = ''
         self.file_system = ''
         self.cull_trigpc = 0
         self.logger = kmotion_logger.Logger('kmotion_hdk1', 'WARNING')
@@ -40,8 +41,8 @@ class Kmotion_Hkd1:
         self.logger.log('Daemon starting ...', 'DEBUG')
         
         # ensure .../events dir exists & is empty
-        shutil.rmtree('/var/lib/motion' + '/events', True)
-        os.makedirs('/var/lib/motion' + '/events')
+        shutil.rmtree('%s/events' % (self.kmotion_dbase), True)
+        os.makedirs('%s/events' % (self.kmotion_dbase))
         
         while(True):   
             # Check the free disk space ...
@@ -64,7 +65,7 @@ class Kmotion_Hkd1:
                             daemon_whip.kill_daemons()
                             sys.exit()
                         self.logger.log('Disk space lower limit reached - deleteing %s/%s' %  ('/var/lib/motion', dir[0]), 'DEBUG')
-                        shutil.rmtree('%s/%s' % ('/var/lib/motion', dir[0]))  # Delete oldest dir first
+                        shutil.rmtree('%s/%s' % (self.kmotion_dbase, dir[0]))  # Delete oldest dir first
             if not(found): 
                 self.logger.log('Could not identify filesystem %s - Killing motion & all daemon processes' % (self.file_system), 'CRIT')
                 daemon_whip.kill_daemons()
@@ -78,18 +79,18 @@ class Kmotion_Hkd1:
             ''' Check motion is still running ... if not restart it ... '''
             if os.system('/bin/ps ax | /bin/grep [m]otion\ -c'):
                self.logger.log('motion not running - starting motion', 'CRIT')
-               os.system('motion -c ~/.kde/share/apps/kmotion/motion.conf &')
+               os.system('motion -c ~/%s &' % (self.motion_config))
                 
     def chk_kmotion_hkd2(self):
             ''' Check kmotion_hkd2.py is still running ... if not restart it ... '''
             if os.system('/bin/ps ax | /bin/grep [k]motion_hkd2.py$'):
                self.logger.log('kmotion_hkd2.py not running - starting kmotion_hkd2.py', 'CRIT')
-               os.system(self.lib_dir + '/kmotion_hkd2.py &')
+               os.system(self.kmotion_dbase + '/kmotion_hkd2.py &')
 
     def read_config(self):
         """ Read config file from '~/.kde/share/apps/kmotion/kmotion.rc' """
         parser = ConfigParser.SafeConfigParser()
-        parsed = parser.read(os.path.expanduser('~/.kde/share/apps/kmotion/kmotion.rc'))
+        parsed = parser.read('%s/kmotion.rc' % (self.kmotion_config))
         
         if parsed[0][-10:] != 'kmotion.rc':
             emsg = 'Can\'t open config file %s - Killing motion & all daemon processes' % parsed[0][-10:]
@@ -98,7 +99,8 @@ class Kmotion_Hkd1:
             sys.exit()
             
         try:   
-            self.lib_dir = parser.get('misc', 'kmotion_lib_dir')
+            self.kmotion_dbase = parser.get('misc', 'kmotion_dbase')
+            self.motion_config = parser.get('misc', 'motion_config')
             self.file_system = parser.get('misc', 'file_system')
             self.cull_trigpc = int(parser.get('misc', 'cull_trigpc'))
         except:

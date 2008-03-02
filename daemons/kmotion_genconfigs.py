@@ -54,16 +54,17 @@ class Kmotion_Genconfigs:
         self.banned_options = ['snapshot_interval', 'jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save', 'live', 'name']
         self.logger = kmotion_logger.Logger('kmotion_genconfigs', 'WARNING')
         self.parser = ConfigParser.SafeConfigParser()
-        self.motion_conf_dir = ''
-        self.feed_conf_dir = ''
-            
+        self.kmotion_config = ''
+        self.apache2_config = ''
+        self.kmotion.dbase = ''
             
     def gen_configs(self):
         """ generate all kmotions config files from kmotion.rc """
         try:
             self.parser.read('/var/lib/kmotion/kmotion_config/kmotion.rc')
-            self.motion_conf_dir = self.parser.get('misc', 'motion_conf_dir')
-            self.feed_conf_dir = self.parser.get('misc', 'feed_conf_dir')
+            self.kmotion_config = self.parser.get('misc', 'kmotion_confg')
+            self.apache2_config = self.parser.get('misc', 'apache2_config')
+            self.kmotion_dbase = self.parser.get('misc', 'kmotion_dbase')
         except:
             self.logger.log('Corrupt config error : %s - Killing motion & all daemon processes' % sys.exc_info()[1], 'CRIT')
             daemon_whip.kill_daemons()
@@ -92,7 +93,7 @@ class Kmotion_Genconfigs:
     
     def motion_conf(self, feeds):
         """ generate the main motion motion.conf file """
-        motion_conf = open('%s/motion.conf' % (self.motion_conf_dir), 'w') 
+        motion_conf = open('%s/motion.conf' % (self.kmotion_config), 'w') 
         motion_conf.write(self.config_header_blog)
         motion_conf.write(self.config_user_blog)
         
@@ -104,17 +105,17 @@ class Kmotion_Genconfigs:
                 
         motion_conf.write(self.config_compulsory_blog)
         motion_conf.write('snapshot_interval 1\n')
-        motion_conf.write('target_dir /var/lib/motion\n')
+        motion_conf.write('target_dir %s\n' % (self.kmotion_dbase))
     
         motion_conf.write(self.config_threads_blog)
         for i in range(1, feeds + 1):
-            motion_conf.write('thread %s/motion.%d.conf\n' % (self.motion_conf_dir, i))
+            motion_conf.write('thread %s/motion.%d.conf\n' % (self.kmotion_config, i))
         motion_conf.close()
                 
     
     def motion_n_conf(self, feed):
         """ generate the multiple thread motion.?.conf files """
-        motion_conf = open('%s/motion.%d.conf' % (self.motion_conf_dir, feed), 'w')
+        motion_conf = open('%s/motion.%d.conf' % (self.kmotion_config, feed), 'w')
         motion_conf.write(self.config_header_blog)
         motion_conf.write(self.config_user_blog)
         
@@ -127,15 +128,15 @@ class Kmotion_Genconfigs:
         motion_conf.write(self.config_compulsory_blog)
         motion_conf.write('jpeg_filename %%Y%%m%%d/%0.2d/video/%%H%%M%%S/%%q\n' % (feed))
         motion_conf.write('snapshot_filename %%Y%%m%%d/%0.2d/tmp/%%H%%M%%S\n' % (feed))
-        motion_conf.write('on_event_start /usr/bin/touch /var/lib/motion/events/%d\n' % (feed))
-        motion_conf.write('on_event_end /bin/rm /var/lib/motion/events/%d\n' % (feed))
-        motion_conf.write('on_picture_save echo > /var/lib/motion/%%Y%%m%%d/%0.2d/last_jpeg' % (feed))
+        motion_conf.write('on_event_start /usr/bin/touch %s/events/%d\n' % (self.kmotion_dbase, feed))
+        motion_conf.write('on_event_end /bin/rm %s/events/%d\n' % (self.kmotion_dbase, feed))
+        motion_conf.write('on_picture_save echo > %s/%%Y%%m%%d/%0.2d/last_jpeg' % (self.kmotion_dbase, feed))
         motion_conf.close()
     
     
     def motion_n_blank(self, feed):
         """ generate the multiple thread motion.?.conf blank files """
-        motion_conf = open('%s/motion.%d.conf' % (self.motion_conf_dir, feed), 'w')
+        motion_conf = open('%s/motion.%d.conf' % (self.kmotion_config, feed), 'w')
         motion_conf.write(self.config_header_blog)
         motion_conf.write(self.config_user_blog)
         motion_conf.write(self.config_compulsory_blog)
@@ -144,7 +145,7 @@ class Kmotion_Genconfigs:
     
     def feed_rc(self, feeds):
         """ generate the feed.rc file needed for apaches kmotion PHP scripts """
-        feed_rc = open('%s/feed.rc' % (self.feed_conf_dir), 'w')
+        feed_rc = open('%s/feed.rc' % (self.apache2_config), 'w')
         feed_rc.write('%s\n' % (feeds))
         
         for feed in range(1, feeds + 1):

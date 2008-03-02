@@ -1,7 +1,8 @@
 [misc]
-motion_conf_dir: /var/lib/motion/kmotion_config/kmotion.rc
-#kmotion_lib_dir:  /home/dave/.kde/share/apps/kmotion
-#feed_conf_dir: /var/lib/motion
+kmotion_config: /var/lib/kmotion/kmotion_config
+motion_config: /var/lib/kmotion/motion_config
+kmotion_dbase: var/lib/kmotion/kmotion_dbase
+apache2_conf: /var/lib/kmotion/apache2
 file_system: /dev/sda1
 cull_trigpc: 90
 
