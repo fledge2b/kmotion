@@ -82,14 +82,12 @@ class Hkd2_Feed:
                 os.remove(tmp_dir + jpeg_name + '.jpg')
                 jpeg_list = jpeg_list[1:] 
             
-            
     def update_journal(self, date, feed, seconds, pause):
         """ update the snapshot journal """
         # add to journal of snapshots in the form #<snapshot start seconds>$<snapshot pause in seconds>
         journal = open('%s/%s/%02i/journal_snap' % (self.kmotion_dbase, date, (feed + 1)), 'a')
         journal.write('#%s$%s' % (seconds, pause))
         journal.close()
-            
             
     def inc_time(self, time, inc_secs):
         """ increment a time string of format HHMMSS with inc_secs seconds, returns a time string of the format HHMMSS """
