@@ -18,6 +18,10 @@
 
 import syslog
 
+"""
+Workaround for the buggy syslog module - should not be necessary
+"""
+
 class Logger:
 
     def __init__(self, ident, min_priority):

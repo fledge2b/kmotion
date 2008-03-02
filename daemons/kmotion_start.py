@@ -18,5 +18,9 @@
 
 import daemon_whip
 
+"""
+Start the daemons on bootup, cannot just call daemon_whip directly because of circular dependencies
+"""
+
 daemon_whip.start_daemons()
 

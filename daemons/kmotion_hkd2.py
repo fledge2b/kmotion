@@ -20,6 +20,12 @@ import os, sys, time, signal, shutil, ConfigParser, kmotion_logger, daemon_whip
 
 logger = kmotion_logger.Logger('kmotion_hkd2', 'WARNING')
 
+"""
+Copys or moves files from /var/lib/kmotion/kmotion_dbase/<date>/<feed>/tmp to ../video
+as defined in kmotion.rc. Updates /var/lib/kmotion/kmotion_dbase/<date>/<feed>/journal_snap
+with snapshot information. Finally responds to a SIGHUP by re-reading kmotion.rc.
+"""
+
 class Hkd2_Feed:
     
     def __init__(self, feed, snapshot_interval):
