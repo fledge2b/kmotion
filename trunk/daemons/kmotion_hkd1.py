@@ -19,6 +19,12 @@
 import os, sys, time, signal, shutil,  ConfigParser, daemon_whip
 import kmotion_logger, kmotion_genconfigs
 
+"""
+Checks the % of free disk space & if too low deletes oldest video dirs first. Also
+checks that 'motion' & 'kmotion_hkd2.py' are running, restarting them if they are not. 
+Finally responds to a SIGHUP by re-reading kmotion.rc.
+"""
+
 class Kmotion_Hkd1:
     
     def __init__(self):

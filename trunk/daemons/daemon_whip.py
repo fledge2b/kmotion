@@ -19,6 +19,10 @@
 import os, sys, time, ConfigParser, kmotion_genconfigs
 import kmotion_logger
 
+"""
+Controls kmotion daemons & reports on their ststus
+"""
+
 logger = kmotion_logger.Logger('daemon_whip', 'WARNING')
 genconfigs = kmotion_genconfigs.Kmotion_Genconfigs()
  
