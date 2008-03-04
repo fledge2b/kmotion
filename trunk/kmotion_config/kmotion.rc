@@ -1,9 +1,7 @@
 [misc]
-kmotion_daemons: /var/lib/kmotion/daemons
-kmotion_config: /var/lib/kmotion/kmotion_config
-kmotion_dbase: /var/lib/kmotion/kmotion_dbase
-motion_config: /var/lib/kmotion/motion_config
-apache2_config: /var/lib/kmotion/apache2_config
+motion_conf_dir: /home/dave/.kde/share/apps/kmotion
+kmotion_lib_dir:  /home/dave/.kde/share/apps/kmotion
+feed_conf_dir: /var/lib/motion
 file_system: /dev/sda1
 cull_trigpc: 90
 
@@ -24,10 +22,10 @@ height: 240
 
 [feed1]
 live: yes
-name: Outside
+name: mycomp266
 videodevice: /dev/video0
 input: 0
-snapshot_interval: 30
+snapshot_interval: 300
 brightness: 0
 contrast: 0
 saturation: 0
@@ -37,11 +35,11 @@ threshold: 4500
 noise_level: 64
 
 [feed2]
-live: yes
-name: Comp room
-videodevice: /dev/video1
-input: 0
-snapshot_interval: 30
+live: no
+name:
+videodevice: /dev/video2
+input: 8
+snapshot_interval: 300
 brightness: 0
 contrast: 0
 saturation: 0
@@ -50,11 +48,11 @@ auto_brightness: off
 threshold: 4500
 
 [feed3]
-live: yes
-name: Shed
-videodevice: /dev/video2
-input: 0
-snapshot_interval: 10
+live: no
+name:
+videodevice: /dev/video3
+input: 8
+snapshot_interval: 300
 brightness: 0
 contrast: 0
 saturation: 0
