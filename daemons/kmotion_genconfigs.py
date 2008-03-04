@@ -109,13 +109,13 @@ class Kmotion_Genconfigs:
     
         motion_conf.write(self.config_threads_blog)
         for i in range(1, feeds + 1):
-            motion_conf.write('thread %s/motion.%d.conf\n' % (self.kmotion_config, i))
+            motion_conf.write('thread %s/motion%d.conf\n' % (self.kmotion_config, i))
         motion_conf.close()
                 
     
     def motion_n_conf(self, feed):
         """ generate the multiple thread motion.?.conf files """
-        motion_conf = open('%s/motion.%d.conf' % (self.kmotion_config, feed), 'w')
+        motion_conf = open('%s/motion%d.conf' % (self.kmotion_config, feed), 'w')
         motion_conf.write(self.config_header_blog)
         motion_conf.write(self.config_user_blog)
         

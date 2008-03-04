@@ -27,8 +27,9 @@ logger = kmotion_logger.Logger('daemon_whip', 'WARNING')
 genconfigs = kmotion_genconfigs.Kmotion_Genconfigs()
  
 def start_daemons():
-    """ Start kmotion_hkd1, kmotion_hkd2 & motion daemons """
+    """ Start kmotion_hkd1, kmotion_hkd2 & motion daemons """ 
     genconfigs.gen_configs()  # generate motion.conf, motion.?.conf & feed.rc from kmotion.rc
+ 
     parser = ConfigParser.SafeConfigParser()
     try:
         parser.read('/var/lib/kmotion/kmotion_config/kmotion.rc')
