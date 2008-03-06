@@ -40,6 +40,10 @@ class Logger:
         self.ident = ident
         self.min_priority = min_priority       
     
+    def set_prority(self,  min_priority):
+        """ Change the min logging priority """
+        self.min_priority = min_priority  
+    
     def log(self, msg, priority):
         """ Log an message with priority 'priority' """
         # 'priority' is the actual level of the event, it must be one of ...

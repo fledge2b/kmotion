@@ -80,7 +80,7 @@ class Kmotion_Hkd1:
             ''' Check motion is still running ... if not restart it ... '''
             if os.system('/bin/ps ax | /bin/grep [m]otion\ -c'):
                self.logger.log('motion not running - starting motion', 'CRIT')
-               os.system('motion -c ~/%s &' % (self.motion_config))
+               os.system('motion -c %s &' % (self.motion_config))
                 
     def chk_kmotion_hkd2(self):
             ''' Check kmotion_hkd2.py is still running ... if not restart it ... '''
@@ -91,14 +91,8 @@ class Kmotion_Hkd1:
     def read_config(self):
         """ Read config file from '~/.kde/share/apps/kmotion/kmotion.rc' """
         parser = ConfigParser.SafeConfigParser()  
-        parsed = parser.read('/var/lib/kmotion/kmotion_config/kmotion.rc')
+        parsed = parser.read('./daemon.rc')
         
-        if parsed[0][-10:] != 'kmotion.rc':
-            emsg = 'Can\'t open config file %s - Killing motion & all daemon processes' % parsed[0][-10:]
-            self.logger.log(emsg,  'CRIT')
-            daemon_whip.kill_daemons()
-            sys.exit()
-            
         try:   
             self.kmotion_dbase = parser.get('misc', 'kmotion_dbase')
             self.kmotion_daemons = parser.get('misc', 'kmotion_daemons')
