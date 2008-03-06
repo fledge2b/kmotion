@@ -110,23 +110,14 @@ class Kmotion_Hkd2:
     def read_config(self):
         """ read the config file, return a list of snapshot_intervals where the lists length represents the number of feeds """
         parser = ConfigParser.SafeConfigParser()
-        parsed = parser.read(os.path.expanduser('/var/lib/kmotion/kmotion_config/kmotion.rc'))
+        parsed = parser.read('./daemon.rc')
         
-        if parsed[0][-10:] != 'kmotion.rc':
-            emsg = 'Can\'t open config file %s - killing motion & all daemon processes' % (parsed[0][-10:])
-            self.logger.log(emsg, 'CRIT')
-            daemon_whip.kill_daemons()
-            sys.exit()
-                
         snapshot_list = []
         try:    
             kmotion_dbase = parser.get('misc', 'kmotion_dbase')
             for i in xrange(16):
-                if parser.get('feed%s' % (str(i + 1)), 'live') == "yes" : 
                     snapshot_interval = int(parser.get('feed%s' % (str(i + 1)), 'snapshot_interval'))
                     snapshot_list.append(snapshot_interval)
-                else: 
-                    raise
         except:
             pass
         return kmotion_dbase, snapshot_list
