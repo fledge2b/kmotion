@@ -59,7 +59,7 @@ class daemons_start:
         elif os.path.isfile(usr): 
             motion_config = usr
         else:
-            self.logger.log('Could not find motion_configuration file in <arguments>, ./motion.conf, /etc/motion/motion.conf, ~/.motion/motion.conf or /usr/local/etc/motion.conf', 'CRIT')
+            self.logger.log('Could not find config file in <arg>, ./motion.conf, /etc/motion/motion.conf, ~/.motion/motion.conf or /usr/local/etc/motion.conf - exiting', 'CRIT')
             sys.exit()
         self.logger.log('Found config file %s' % (motion_config), 'NOTICE')
         return motion_config
@@ -92,12 +92,18 @@ class daemons_start:
         f.write(self.blog)
         f.write('snapshot_interval 1')
         f.close()
+        if len(threads):  # kmotion needs motion.conf to use threads
+            self.logger.log('motion.conf not configured with threads - exiting', 'CRIT')
+            sys.exit()
+            
         return threads, snapshot_interval
         
         
     def parse_motionx_config(self, threads, snapshot_interval):
         blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save']
+        feed = 0
         for thread in threads:
+            feed = feed + 1
             f = open(thread, 'r')
             lines = f.readlines()
             f.close()
@@ -108,13 +114,16 @@ class daemons_start:
                     self.logger.log('Overriding %s line: %s' % (thread, line), 'CRIT')
                 elif line_split[0] == 'snapshot_interval' and len(line_split) == 2:
                     snapshot_interval = int(line_split[1])
-                elif line_split[0] == 'thread'and len(line_split) == 2:
-                    threads.append(line_split[1])
-                    f.write('thread motion%s.conf' % (len(threads))) 
                 else:
                     f.write(line)
-            
-            
+                    
+        f.write('jpeg_filename %%Y%%m%%d/%0.2d/video/%%H%%M%%S/%%q\n' % (feed))
+        f.write('snapshot_filename %%Y%%m%%d/%0.2d/tmp/%%H%%M%%S\n' % (feed))
+        f.write('on_event_start /usr/bin/touch %s/events/%d\n' % (self.kmotion_dbase, feed))
+        f.write('on_event_end /bin/rm %s/events/%d\n' % (self.kmotion_dbase, feed))
+        f.write('on_picture_save echo > %s/%%Y%%m%%d/%0.2d/last_jpeg' % (self.kmotion_dbase, feed))
+        f.write(self.blog)
+        f.close()
         
         
         
