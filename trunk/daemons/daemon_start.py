@@ -25,9 +25,17 @@ Start the daemons on bootup, cannot just call daemon_whip directly because of ci
         
 class daemons_start:
     
-    def __init__(self):
+    def __init__(self): 
+        self.blog = """
+#######################################################################################
+# kmotion compulsory options ...
+#######################################################################################
+\n"""
         self.motion_config_dir, log_level = self.read_config()
         self.logger = kmotion_logger.Logger('daemons_start', log_level)
+        
+        motion_config = find_motion_conf()
+        threads, snapshot_interval = self.parse_motion_config(motion_config)
         
     
     def find_motion_conf(self):
@@ -55,13 +63,58 @@ class daemons_start:
             sys.exit()
         self.logger.log('Found config file %s' % (motion_config), 'NOTICE')
         return motion_config
+                
+                
+    def parse_motion_config(self, motion_config):
+        """
+        parse motion.conf, check for blacklist options, global snapshot_intervals and threads. returns
+        a list of thread files & any snapshot_intervals
+        """
+        blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save']
+        snapshot_interval = 0
+        threads = []  # list of motion.conf thread file names
+        f = open(motion_config, 'r')
+        lines = f.readlines()
+        f.close()
+        
+        f = open('%s/motion.conf' % self.motion_config_dir, 'w')
+        for line in lines:
+            line_split = line.split()
+            if line_split[0] in blacklist:
+                self.logger.log('Overriding motion.conf line: %s' % (line), 'CRIT')
+            elif line_split[0] == 'snapshot_interval' and len(line_split) == 2:
+                snapshot_interval = int(line_split[1])
+            elif line_split[0] == 'thread'and len(line_split) == 2:
+                threads.append(line_split[1])
+                f.write('thread motion%s.conf' % (len(threads))) 
+            else:
+                f.write(line)
+        f.write(self.blog)
+        f.write('snapshot_interval 1')
+        f.close()
+        return threads, snapshot_interval
         
         
-    def parse_motion_config(self):
-        f = open(self.motion_config, 'r')
-        
-        
-        
+    def parse_motionx_config(self, threads, snapshot_interval):
+        blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save']
+        for thread in threads:
+            f = open(thread, 'r')
+            lines = f.readlines()
+            f.close()
+                
+            for line in lines:
+                line_split = line.split()
+                if line_split[0] in blacklist:
+                    self.logger.log('Overriding %s line: %s' % (thread, line), 'CRIT')
+                elif line_split[0] == 'snapshot_interval' and len(line_split) == 2:
+                    snapshot_interval = int(line_split[1])
+                elif line_split[0] == 'thread'and len(line_split) == 2:
+                    threads.append(line_split[1])
+                    f.write('thread motion%s.conf' % (len(threads))) 
+                else:
+                    f.write(line)
+            
+            
         
         
         
