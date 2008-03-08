@@ -1265,7 +1265,10 @@
 
 	// Date selection dropdown
 	$date_dirs = Array();
-	$dir = dir("/var/lib/motion");
+	$rc = file("./php.rc");
+	
+	$path = rtrim($rc[0]);
+	$dir = dir($path);
 	while (false !== ($entry = $dir->read())) 
 	{
 		if (substr($entry, 0, 2) == "20")
@@ -1301,7 +1304,7 @@
 	}
 
 	$feed_dirs = Array();
-	$dir = dir("/var/lib/motion/".$date_dir);
+	$dir = dir($path."/".$date_dir);
 	while (false !== ($entry = $dir->read())) 
 	{
 		if ($entry != "." and $entry != "..")
@@ -1312,7 +1315,7 @@
 	$dir->close();
 	sort($feed_dirs, SORT_NUMERIC);
 
-	$rc = file("/var/lib/motion/feed.rc");
+	$rc = file("./php.rc");
 	printf("<select id=\"feed\" name=\"feed\" onChange=\"feed_changed()\" style=\"width:160px\">\n");
 	for ($i=0; $i < sizeof($feed_dirs); $i++)
 	{	

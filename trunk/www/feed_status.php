@@ -17,8 +17,11 @@ The returned data is in a form that facilitates rapid Javascript string splittin
 -->
 <?php
 
+	$rc = file("./php.rc");
+	$path = rtrim($rc[0]);
+
 	$events = array();  // The events array ...
-	$dir = dir("/var/lib/motion/events/");  // Scan the events dir and add events to $events
+	$dir = dir($path."/events/");  // Scan the events dir and add events to $events
 	while (false !== ($entry = $dir->read())) 
 	{
 		if ($entry !== "." and $entry !== "..") $events[] = $entry;
@@ -27,8 +30,8 @@ The returned data is in a form that facilitates rapid Javascript string splittin
 
 	sort($events, SORT_NUMERIC);
 
-	$rc = file("/var/lib/motion/feed.rc");  // Read 1st line from feed.rc ... the number of feeds
-	$feeds = rtrim($rc[0]);
+	$rc = file("./php.rc");  // Read 1st line from feed.rc ... the number of feeds
+	$feeds = count($rc) - 1;
 
 	for ($i=1; $i < 17; $i++)
 	{
@@ -39,12 +42,16 @@ The returned data is in a form that facilitates rapid Javascript string splittin
 			// script is re-writing $jpeg_holder. Avoids occasional white frames on video.
 			for ($j=0; $j<3; $j++)
 			{
-				$jpeg_holder = sprintf("/var/lib/motion/%s/%02d/last_jpeg", date("Ymd"), $i);
+				$jpeg_holder = sprintf($path."/%s/%02d/last_jpeg", date("Ymd"), $i);
 				//$jpeg_holder = sprintf("/var/lib/motion/%s/%02d/last_jpeg", date("Ymd"), 1);  // usefull for simulating multiple feeds
 				if (file_exists($jpeg_holder))  // Abort of file does not exist
 				{
 					$jpeg_name = trim(file_get_contents($jpeg_holder));
-					$jpeg_name = substr($jpeg_name, 8);  // Strip off '/var/lib' to match Apache config
+					# using '/images' as a key breakup the path & re-construct to match apache alias
+					$jpeg_name = explode('/images', $jpeg_name);
+					$jpeg_name = $jpeg_name[1];
+					$jpeg_name = '/images'.$jpeg_name;
+
 					if($jpeg_name !== "") break;
 					usleep(10);
 				}

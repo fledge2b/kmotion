@@ -19,8 +19,11 @@ to drastically reduce the data size and increase responsiveness.
 <hash>ec<number of jpegs in 'mid' seq> ...
 -->
 <?php
-	$archive_dir = "/var/lib/motion/".$_GET['archive_dir'];
-	//$archive_dir = "/var/lib/motion/20080208/02/";
+	$rc = file("./php.rc");
+	$path = rtrim($rc[0]);
+
+	$archive_dir = $path."/".$_GET['archive_dir'];
+	#$archive_dir = "/var/lib/kmotion/images/20080308/01/";
 
 	$data = array();
 
