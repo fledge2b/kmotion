@@ -17,22 +17,29 @@
 # start daemons !
 
 import os, sys, ConfigParser
-import daemon_whip, kmotion_logger
+import kmotion_logger
 
 """
 Start the daemons on bootup, cannot just call daemon_whip directly because of circular dependencies
 """
         
-class Daemon_Start:
+class Parse_Motion:
     
     def __init__(self):  
-        self.blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save']
-        self.read_config()
-        self.logger = kmotion_logger.Logger('daemon_start', self.log_level)
+        self.blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save', 'target_dir']
         
+        
+    def parse(self):
+        """
+        locate & parse motion.conf & its thread files. generate feed.rc and modify daemon.rc as appropreate
+        """
+        self.read_daemon_rc()
+        self.logger = kmotion_logger.Logger('daemon_start', self.log_level)
         motion_config = self.find_motion_conf()
-        threads, snapshot_interval = self.parse_motion_config(motion_config)
-        self.parse_motionx_config(threads, snapshot_interval)
+        threads, snapshot_interval = self.parse_motion_conf(motion_config)
+        names_list, snapshot_list = self.parse_motionx_conf(threads, snapshot_interval)
+        self.write_feed_rc(names_list)
+        self.write_daemon_rc(snapshot_list)
         
     
     def find_motion_conf(self):
@@ -62,7 +69,7 @@ class Daemon_Start:
         return motion_config
                 
                 
-    def parse_motion_config(self, motion_config):
+    def parse_motion_conf(self, motion_config):
         """
         parse motion.conf, check for blacklist options, global snapshot_intervals and threads. returns
         a list of thread files & any snapshot_intervals
@@ -73,7 +80,7 @@ class Daemon_Start:
         lines = f.readlines()
         f.close()
         
-        f = open('%s/motion.conf' % self.tmp_dir, 'w')
+        f = open('%s/motion.conf' % self.misc_config_dir, 'w')
         for line in lines:
             line_split = line.split()
             if not len(line_split):  # if [], blank line, skip it
@@ -88,10 +95,11 @@ class Daemon_Start:
                 continue
             elif line_split[0] == 'thread'and len(line_split) == 2:
                 threads.append(line_split[1])
-                f.write('thread %s/motion%s.conf\n' % (self.tmp_dir,  len(threads)))
+                f.write('thread %s/motion%s.conf\n' % (self.misc_config_dir,  len(threads)))
                 continue
             f.write(line)
-        f.write('snapshot_interval 1')
+        f.write('\nsnapshot_interval 1\n')
+        f.write('target_dir %s' % (self.images_dir))
         f.close()
         
         if not len(threads):  # kmotion needs motion.conf to use threads
@@ -100,85 +108,97 @@ class Daemon_Start:
         return threads, snapshot_interval
         
         
-    def parse_motionx_config(self, threads, snapshot_interval):
-        blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save']
-        feed = 0
+    def parse_motionx_conf(self, threads, snapshot_interval):
+        """
+        parse all threads pointed to in motion.conf, check for blacklist options, snapshot_intervals, and the #ktext
+        operator. returns a #ktext names & snapshot_intervals
+        """
+        thread_count = 0
+        names_list = []       # list of feed names from motionx.conf's
+        snapshot_list = []  # list of snapshot values from motiox.conf's. If none specified use snapshot value defined in motion.conf
+        
         for thread in threads:
-            feed = feed + 1
-            
+            snapshot = snapshot_interval
+            ktext = ''
+            thread_count = thread_count + 1
             f = open(thread, 'r')
             lines = f.readlines()
             f.close()
-                
+                    
+            f = open('%s/motion%d.conf' % (self.misc_config_dir, thread_count), 'w')
             for line in lines:
                 line_split = line.split()
                 if not len(line_split):  # if [], blank line, skip it
                     continue
+                elif line_split[0] == '#ktext' and len(line_split) >= 2:  # keyword for kmotion text
+                    ktext = line[7:-1]
+                    continue
                 elif line_split[0][:1] == '#':  # if #, comment, skip it
                     continue
                 elif line_split[0] in self.blacklist:
-                    self.logger.log('Overriding motion%d.conf line: %s' % (feed, line), 'CRIT')
+                    self.logger.log('Overriding motion%d.conf line: %s' % (thread_count, line), 'CRIT')
                     continue
                 elif line_split[0] == 'snapshot_interval' and len(line_split) == 2:
-                    snapshot_interval = int(line_split[1])
-                    continue
-                elif line_split[0] == 'thread'and len(line_split) == 2:
-                    threads.append(line_split[1])
-                    f.write('thread %s/motion%s.conf\n' % (self.tmp_dir,  len(threads)))
+                    snapshot = int(line_split[1]) 
                     continue
                 f.write(line)
-            f.write('snapshot_interval 1')
+            f.write('jpeg_filename %%Y%%m%%d/%0.2d/video/%%H%%M%%S/%%q\n' % (thread_count))
+            f.write('snapshot_filename %%Y%%m%%d/%0.2d/tmp/%%H%%M%%S\n' % (thread_count))
+            f.write('on_event_start /usr/bin/touch %s/events/%d\n' % (self.images_dir, thread_count))
+            f.write('on_event_end /bin/rm %s/events/%d\n' % (self.images_dir, thread_count))
+            f.write('on_picture_save echo > %s/%%Y%%m%%d/%0.2d/last_jpeg' % (self.images_dir, thread_count))
             f.close()
             
-                
-                
-                
-                
-                
-                
-                
-                
-                if line_split[0] in blacklist:
-                    self.logger.log('Overriding %s line: %s' % (thread, line), 'CRIT')
-                elif line_split[0] == 'snapshot_interval' and len(line_split) == 2:
-                    snapshot_interval = int(line_split[1])
-                else:
-                    f.write(line)
-                    
-##        f.write('jpeg_filename %%Y%%m%%d/%0.2d/video/%%H%%M%%S/%%q\n' % (feed))
-##        f.write('snapshot_filename %%Y%%m%%d/%0.2d/tmp/%%H%%M%%S\n' % (feed))
-##        f.write('on_event_start /usr/bin/touch %s/events/%d\n' % (self.kmotion_dbase, feed))
-##        f.write('on_event_end /bin/rm %s/events/%d\n' % (self.kmotion_dbase, feed))
-##        f.write('on_picture_save echo > %s/%%Y%%m%%d/%0.2d/last_jpeg' % (self.kmotion_dbase, feed))
-##        f.write(self.blog)
-##        f.close()
-##        
+            snapshot_list.append(snapshot)
+            if ktext == '':
+                names_list.append('Default Text')
+                self.logger.log('No #ktext specified in motion%d.conf - \'Default Text\' used' % (thread_count), 'CRIT')
+            else:
+                names_list.append(ktext)
+        return names_list, snapshot_list
+            
+            
+    def write_feed_rc(self, names_list):
+        """
+        update feed.rc
+        """
+        f = open('%s/feed.rc' % (self.misc_config_dir), 'w')
+        f.write('%s\n' % (str(len(names_list))))
+        for name in names_list:
+            f.write('%s\n' % (name))
+        f.close
+
+
+    def write_daemon_rc(self, snapshot_list):
+        """
+        write config to ./daemon.rc
+        """
+        parser = ConfigParser.SafeConfigParser()
+        parser.read('./daemon.rc')
+        snaps = len(snapshot_list)
+        parser.set('feed_count', 'count',  str(snaps))
+        for snap in range(snaps):
+            parser.set('feed_intervals', 'snapshot_interval%d' % (snap + 1), str(snapshot_list[snap]))
+        parser.write(open('./daemon.rc', 'w'))  # when parser writes the file WHAT A HORRIBLE MESS - YUK !
         
         
-        
-        
-        
-    
-    def read_config(self):
+    def read_daemon_rc(self):
         """ 
         read config from ./daemon.rc 
         """
         parser = ConfigParser.SafeConfigParser()
-        parsed = parser.read('./daemon.rc')
-        try:   
-            self.tmp_dir = parser.get('misc', 'tmp_dir')
-            self.log_level = parser.get('misc', 'log_level')
-        except:
-            self.logger.log('Corrupt self.motion_config error : %s - Killing motion & all daemon processes' % sys.exc_info()[1], 'CRIT')
-            daemon_whip.kill_daemons()
-            sys.exit()
-            
+        parser.read('./daemon.rc')
+        self.images_dir = parser.get('dirs', 'images_dir')
+        self.misc_config_dir = parser.get('dirs', 'misc_config_dir')
+        self.log_level = parser.get('debug', 'log_level')
+        
             
       
      
     
 
         
-Hkd2 = Daemon_Start()
+parse = Parse_Motion()
+parse.parse()
     
 

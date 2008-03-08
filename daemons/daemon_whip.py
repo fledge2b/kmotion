@@ -16,31 +16,26 @@
 
 # kmotion control daemons
 
-import os, sys, time, ConfigParser, kmotion_genconfigs
-import kmotion_logger
+import os, sys, time, ConfigParser
+import kmotion_logger, parse_motion
 
 """
 Controls kmotion daemons & reports on their ststus
 """
 
 logger = kmotion_logger.Logger('daemon_whip', 'WARNING')
-genconfigs = kmotion_genconfigs.Kmotion_Genconfigs()
  
 def start_daemons():
     """ Start kmotion_hkd1, kmotion_hkd2 & motion daemons """ 
-    genconfigs.gen_configs()  # generate motion.conf, motion.?.conf & feed.rc from kmotion.rc
- 
+    parse_motion = parse_motion.Parse_Motion()  
+    parse_motion.parse()  # locate & parse motion.conf & its thread files. generate feed.rc and modify daemon.rc as appropreate
+    
     parser = ConfigParser.SafeConfigParser()
-    try:
-        parser.read('/var/lib/kmotion/kmotion_config/kmotion.rc')
-        kmotion_daemons =  parser.get('misc', 'kmotion_daemons')
-    except:
-        logger.log('Corrupt config error : %s - Killing motion & all daemon processes' % sys.exc_info()[1], 'CRIT')
-        kill_daemons()
-        sys.exit()
+    parser.read('./kmotion.rc')
+    daemons_dir =  parser.get('dirs', 'daemons_dir')
         
     # Only need to start kmotion_hkd1, it starts the rest
-    if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'): os.system(kmotion_daemons + '/kmotion_hkd1.py &> /dev/null')
+    if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'): os.system(daemons_dir + '/kmotion_hkd1.py &> /dev/null')
     else: logger.log('start_daemons() - daemons already running - none started', 'DEBUG')
     
 def kill_daemons():
@@ -63,7 +58,8 @@ def daemons_running():
 def config_reload():
     """ Force daemons to reload configs """
     # Only need to SIGHUP kmotion_hkd1, it SIGHUPs kmotion_hkd2
-    genconfigs.gen_configs()
+    parse_motion = parse_motion.Parse_Motion()  
+    parse_motion.parse() 
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd1.py\'') 
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd2.py\'')
     os.system('killall -s SIGHUP motion 2> /dev/null')

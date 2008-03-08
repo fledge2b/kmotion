@@ -17,7 +17,7 @@
 # kmotion house keeping daemon 1
 
 import os, sys, time, signal, shutil,  ConfigParser, daemon_whip
-import kmotion_logger, kmotion_genconfigs
+import kmotion_logger, parse_motion
 
 """
 Checks the % of free disk space & if too low deletes oldest video dirs first. Also
@@ -28,22 +28,24 @@ Finally responds to a SIGHUP by re-reading kmotion.rc.
 class Kmotion_Hkd1:
     
     def __init__(self):
-        self.kmotion_dbase = ''
-        self.kmotion_daemons = ''
-        self.motion_config = ''
+        self.images_dir = ''
+        self.daemons_dir = ''
+        self.misc_config_dir = ''
         self.file_system = ''
         self.cull_trigpc = 0
-        self.logger = kmotion_logger.Logger('kmotion_hdk1', 'WARNING')
         signal.signal(signal.SIGHUP, self.signal_hup)
         self.read_config()
+        self.logger = kmotion_logger.Logger('kmotion_hdk1', self.log_level)
         
     def start_daemon(self):    
-        """" Start the house keeping 1 daemon """
+        """"
+        Start the house keeping 1 daemon 
+        """
         self.logger.log('Daemon starting ...', 'DEBUG')
         
         # ensure .../events dir exists & is empty
-        shutil.rmtree('%s/events' % (self.kmotion_dbase), True)
-        os.makedirs('%s/events' % (self.kmotion_dbase))
+        shutil.rmtree('%s/events' % (self.images_dir), True)
+        os.makedirs('%s/events' % (self.images_dir))
         
         while(True):   
             # Check the free disk space ...
@@ -66,7 +68,7 @@ class Kmotion_Hkd1:
                             daemon_whip.kill_daemons()
                             sys.exit()
                         self.logger.log('Disk space lower limit reached - deleteing %s/%s' %  ('/var/lib/motion', dir[0]), 'DEBUG')
-                        shutil.rmtree('%s/%s' % (self.kmotion_dbase, dir[0]))  # Delete oldest dir first
+                        shutil.rmtree('%s/%s' % (self.images_dir, dir[0]))  # Delete oldest dir first
             if not(found): 
                 self.logger.log('Could not identify filesystem %s - Killing motion & all daemon processes' % (self.file_system), 'CRIT')
                 daemon_whip.kill_daemons()
@@ -76,38 +78,47 @@ class Kmotion_Hkd1:
             self.chk_kmotion_hkd2()
             time.sleep(5 * 60)
         
+        
     def chk_motion(self):
-            ''' Check motion is still running ... if not restart it ... '''
+            """
+            Check motion is still running ... if not restart it ... 
+            """
             if os.system('/bin/ps ax | /bin/grep [m]otion\ -c'):
                self.logger.log('motion not running - starting motion', 'CRIT')
-               os.system('motion -c %s &' % (self.motion_config))
+               os.system('motion -c %s/motion.conf &' % (self.misc_config_dir))
+                
                 
     def chk_kmotion_hkd2(self):
-            ''' Check kmotion_hkd2.py is still running ... if not restart it ... '''
+            """
+            Check kmotion_hkd2.py is still running ... if not restart it ... 
+            """
             if os.system('/bin/ps ax | /bin/grep [k]motion_hkd2.py$'):
                self.logger.log('kmotion_hkd2.py not running - starting kmotion_hkd2.py', 'CRIT')
-               os.system(self.kmotion_daemons + '/kmotion_hkd2.py &')
+               os.system(self.daemons_dir + '/kmotion_hkd2.py &')
+
 
     def read_config(self):
-        """ Read config file from '~/.kde/share/apps/kmotion/kmotion.rc' """
+        """ 
+        Read config file from ./kmotion.rc 
+        """
         parser = ConfigParser.SafeConfigParser()  
         parsed = parser.read('./daemon.rc')
         
-        try:   
-            self.kmotion_dbase = parser.get('misc', 'kmotion_dbase')
-            self.kmotion_daemons = parser.get('misc', 'kmotion_daemons')
-            self.motion_config = parser.get('misc', 'motion_config')
-            self.file_system = parser.get('misc', 'file_system')
-            self.cull_trigpc = int(parser.get('misc', 'cull_trigpc'))
-        except:
-            self.logger.log('Corrupt config error : %s - Killing motion & all daemon processes' % sys.exc_info()[1], 'CRIT')
-            daemon_whip.kill_daemons()
-            sys.exit()
+        self.images_dir = parser.get('dirs', 'images_dir')
+        self.daemons_dir = parser.get('dirs', 'daemons_dir')
+        self.misc_config_dir = parser.get('dirs', 'misc_config_dir')
+        self.file_system = parser.get('cull', 'file_system')
+        self.cull_trigpc = int(parser.get('cull', 'cull_trigpc'))
+        self.log_level = parser.get('debug', 'log_level')
+        
         
     def signal_hup(self, signum, frame):
-            """ Re-read the config file on SIGHUP """
+            """
+            Re-read the config file on SIGHUP 
+            """
             self.logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
             self.read_config()
+            
             
 if __name__ == '__main__':
     Hkd1 = Kmotion_Hkd1()
