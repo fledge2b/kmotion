@@ -18,28 +18,34 @@
 
 import os, sys, time, signal, shutil, ConfigParser, kmotion_logger, daemon_whip
 
-logger = kmotion_logger.Logger('kmotion_hkd2', 'WARNING')
+parser = ConfigParser.SafeConfigParser()
+parsed = parser.read('./daemon.rc')
+log_level = parser.get('debug', 'log_level')
+logger = kmotion_logger.Logger('kmotion_hkd2', log_level)
 
 """
-Copys or moves files from /var/lib/kmotion/kmotion_dbase/<date>/<feed>/tmp to ../video
-as defined in kmotion.rc. Updates /var/lib/kmotion/kmotion_dbase/<date>/<feed>/journal_snap
+Copys or moves files from /var/lib/kmotion/images_dir/<date>/<feed>/tmp to ../video
+as defined in kmotion.rc. Updates /var/lib/kmotion/images_dir/<date>/<feed>/journal_snap
 with snapshot information. Finally responds to a SIGHUP by re-reading kmotion.rc.
 """
 
 class Hkd2_Feed:
     
-    def __init__(self, feed, kmotion_dbase, snapshot_interval):
+    def __init__(self, feed, images_dir, snapshot_interval):
         self.feed = feed
-        self.kmotion_dbase = kmotion_dbase
+        self.images_dir = images_dir
         self.snapshot_current = '000000'
         self.snapshot_interval = snapshot_interval
         self.prev_date = '000000'
         
+        
     def run(self):
-        """ process the snapshots """
+        """ 
+        process the snapshots 
+        """
         date = time.strftime('%Y%m%d')
-        tmp_dir = '%s/%s/%02i/tmp/' % (self.kmotion_dbase, date, self.feed + 1) 
-        video_dir = '%s/%s/%02i/video/' % (self.kmotion_dbase, date, self.feed + 1)
+        tmp_dir = '%s/%s/%02i/tmp/' % (self.images_dir, date, self.feed + 1) 
+        video_dir = '%s/%s/%02i/video/' % (self.images_dir, date, self.feed + 1)
         
         # force a journal write on a new day
         if self.prev_date != date:  
@@ -82,15 +88,21 @@ class Hkd2_Feed:
                 os.remove(tmp_dir + jpeg_name + '.jpg')
                 jpeg_list = jpeg_list[1:] 
             
+            
     def update_journal(self, date, feed, seconds, pause):
-        """ update the snapshot journal """
+        """ 
+        update the snapshot journal
+        """
         # add to journal of snapshots in the form #<snapshot start seconds>$<snapshot pause in seconds>
-        journal = open('%s/%s/%02i/journal_snap' % (self.kmotion_dbase, date, (feed + 1)), 'a')
+        journal = open('%s/%s/%02i/journal_snap' % (self.images_dir, date, (feed + 1)), 'a')
         journal.write('#%s$%s' % (seconds, pause))
         journal.close()
             
+            
     def inc_time(self, time, inc_secs):
-        """ increment a time string of format HHMMSS with inc_secs seconds, returns a time string of the format HHMMSS """
+        """ 
+        increment a time string of format HHMMSS with inc_secs seconds, returns a time string of the format HHMMSS 
+        """
         hh = int(time[:2])
         mm = int(time[2:4])
         ss = int(time[4:])
@@ -107,29 +119,32 @@ class Kmotion_Hkd2:
         signal.signal(signal.SIGHUP, self.signal_hup)
         self.sighup_ok = True
         
+        
     def read_config(self):
-        """ read the config file, return a list of snapshot_intervals where the lists length represents the number of feeds """
+        """
+        read the config file, return a list of snapshot_intervals where the lists length represents the number of feeds 
+        """
         parser = ConfigParser.SafeConfigParser()
         parsed = parser.read('./daemon.rc')
         
         snapshot_list = []
-        try:    
-            kmotion_dbase = parser.get('misc', 'kmotion_dbase')
-            for i in xrange(16):
-                    snapshot_interval = int(parser.get('feed%s' % (str(i + 1)), 'snapshot_interval'))
-                    snapshot_list.append(snapshot_interval)
-        except:
-            pass
-        return kmotion_dbase, snapshot_list
+        images_dir = parser.get('dirs', 'images_dir')
+        feed_count = int(parser.get('feed_count', 'count'))
+        for i in range(feed_count):
+            snapshot_list.append(int(parser.get('feed_intervals', 'snapshot_interval%d' % (feed_count + 1))))
+        return images_dir, snapshot_list
+    
     
     def start_daemon(self):
-        """" Start the house keeping 2 daemon """
+        """" 
+        Start the house keeping 2 daemon 
+        """
         logger.log('Daemon starting ...', 'CRIT')
         while (True):
-            kmotion_dbase, snapshot_list = self.read_config()
+            images_dir, snapshot_list = self.read_config()
             instance = []
             for i in xrange(len(snapshot_list)):
-                instance.append(Hkd2_Feed(i, kmotion_dbase, snapshot_list[i]))
+                instance.append(Hkd2_Feed(i, images_dir, snapshot_list[i]))
             
             self.sighup_ok = True
             while (self.sighup_ok):
@@ -138,7 +153,9 @@ class Kmotion_Hkd2:
                 time.sleep(2)
         
     def signal_hup(self, signum, frame):
-            """ set change self.sighup_ok on SIGHUP """
+            """ 
+            set change self.sighup_ok on SIGHUP 
+            """
             logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
             self.sighup_ok = False
             
