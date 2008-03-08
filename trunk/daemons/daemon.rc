@@ -1,11 +1,13 @@
 [misc]
-stand_alone_mode: true
+standalone_mode: true
 log_level: DEBUG
-kmotion_daemons_dir: /var/lib/kmotion/daemons
-kmotion_config_dir: /var/lib/kmotion/kmotion_config
-kmotion_dbase_dir: /var/lib/kmotion/kmotion_dbase
-motion_config_dir: /var/lib/kmotion/motion_config
+
 apache2_config_dir: /var/lib/kmotion/apache2_config
+daemons_dir: /var/lib/kmotion/daemons
+images_dir: /var/lib/kmotion/images
+tmp_dir: /var/lib/kmotion/tmp
+tmp_www: /var/lib/kmotion/www
+
 file_system: /dev/sda1
 cull_trigpc: 90
 
