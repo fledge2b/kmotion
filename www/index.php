@@ -40,12 +40,12 @@
 
 	<?php					// PHP reads in video_feeds & feed_text ...
 
-	$rc = file("/var/lib/motion/feed.rc");		// Read 1st line from feed.rc ... the number of feeds
-	$feeds = rtrim($rc[0]);
+	$rc = file("./php.rc");			// Read 1st line from feed.rc ... the number of feeds
+	$feeds = count($rc) - 1;
 
 	echo "state.video_feeds = $feeds;\n";
 
-	for ($i=1; $i<=$feeds; $i++)
+	for ($i=2; $i<=$feeds + 1; $i++)
 	{
 		$text = rtrim($rc[$i]);		// Read 2+ line from feed.rc ... feed text
 		echo "\tstate.feed_text[$i] = \"$text\";\n";

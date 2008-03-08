@@ -38,7 +38,7 @@ class Parse_Motion:
         motion_config = self.find_motion_conf()
         threads, snapshot_interval = self.parse_motion_conf(motion_config)
         names_list, snapshot_list = self.parse_motionx_conf(threads, snapshot_interval)
-        self.write_feed_rc(names_list)
+        self.write_php_rc(names_list)
         self.write_daemon_rc(snapshot_list)
         
     
@@ -158,12 +158,12 @@ class Parse_Motion:
         return names_list, snapshot_list
             
             
-    def write_feed_rc(self, names_list):
+    def write_php_rc(self, names_list):
         """
-        update feed.rc
+        update php.rc
         """
-        f = open('%s/feed.rc' % (self.misc_config_dir), 'w')
-        f.write('%s\n' % (str(len(names_list))))
+        f = open('%s/php.rc' % (self.www_dir), 'w')
+        f.write('%s\n' % (self.images_dir))
         for name in names_list:
             f.write('%s\n' % (name))
         f.close
@@ -190,6 +190,7 @@ class Parse_Motion:
         parser.read('./daemon.rc')
         self.images_dir = parser.get('dirs', 'images_dir')
         self.misc_config_dir = parser.get('dirs', 'misc_config_dir')
+        self.www_dir = parser.get('dirs', 'www_dir')
         self.log_level = parser.get('debug', 'log_level')
         
             
