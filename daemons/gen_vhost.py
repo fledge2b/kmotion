@@ -32,7 +32,7 @@ def gen_vhost():
     apache2_config_dir = parser.get('dirs', 'apache2_config_dir')
     www_dir = parser.get('dirs', 'www_dir')
 
-    f = open('%s/%s' % (apache2_config_dir, 'kmotion_template'))
+    f = open('%s/%s' % (apache2_config_dir, 'kmotion_vhost_template'))
     config = f.readlines()
     f.close
 
