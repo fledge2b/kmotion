@@ -1,0 +1,237 @@
+#viewer
+	{
+	margin:0px;
+	border:0px;
+	padding:0px;
+	height:100%; 
+	max-height:100%; 
+	font-family:arial, verdana, sans-serif; 
+	background:#ffffff;
+	overflow: hidden; 
+	}
+
+#viewer #top_banner
+	{
+	height:52px;
+	margin:2px; 
+	border-style:solid;
+	border-width:2px;
+	}
+
+#viewer #main_panel
+	{
+	position:absolute;
+	top:58px;
+	left:0px;
+	bottom:0px;
+	right:161px;
+
+	margin:2px; 
+	border-style:solid;
+	border-width:2px;
+	}
+
+#viewer #main_panel iframe
+	{
+	width:100%;
+	}
+
+#viewer #control_panel
+	{
+	position:absolute;
+	top:58px;
+	right:0px;
+	width:155px;
+	bottom:0px;
+	text-align:center;
+
+	margin:2px; 
+	border-style:solid;
+	border-width:2px;
+	}
+
+#viewer #control_panel .headings
+	{	
+	text-align:center;
+	font-weight:bold;
+	font-size:16px;
+	line-height:30px;
+	}
+
+/* **************************************************************************************************************************************************************************** */
+
+#live_view
+	{
+	font-weight:bold;
+	font-size:14px;
+	line-height:20px;
+	color:#c1c1c1;
+	}
+
+/* **************************************************************************************************************************************************************************** */
+
+#server_stats
+	{
+	margin:5px;
+	}
+
+#server_stats #heading
+	{
+	text-align:center;
+	color:#000000;
+	background-color:#d1d1ff;
+	font-weight:bold;
+	font-size:40px;
+	}
+
+#server_stats #heading #sub_heading
+	{
+	font-size:20px;
+	}
+
+#server_stats .section_heading
+	{
+	margin-top:3px;
+	text-align:center;
+	font-weight:bold;
+	font-size:16px;
+	line-height:16px;
+	background-color:#d1d1ff;
+	}
+
+#server_stats .text
+	{
+	font-weight:bold;
+	font-size:16px;
+	line-height:26px;
+	}
+
+#server_stats .bar_graph
+	{
+	margin-top:3px;
+	font-style:italic;
+	background-color:#7979ff;
+	}
+	
+
+/* **************************************************************************************************************************************************************************** */
+
+#pref
+	{
+	margin:5px;
+	}
+
+#pref .heading
+	{
+	text-align:center;
+	color:#000000;
+	background-color:#d1d1ff;
+	font-weight:bold;
+	font-size:40px;
+	}
+
+#pref .section_heading
+	{
+	margin-top:3px;
+	text-align:center;
+	font-weight:bold;
+	font-size:16px;
+	line-height:16px;
+	background-color:#d1d1ff;
+	}
+
+#pref .select_heading
+	{
+	font-style: italic;
+	}
+
+#pref .text
+	{
+	font-weight:bold;
+	font-size:16px;
+	line-height:26px;
+	}
+
+
+/* **************************************************************************************************************************************************************************** */
+
+#about
+	{
+	margin:5px;
+	}
+
+#about #heading
+	{
+	text-align:center;
+	color:#000000;
+	background-color:#d1d1ff;
+	font-weight:bold;
+	font-size:40px;
+	}
+
+#about .section_heading
+	{
+	margin-top:3px;
+	text-align:center;
+	font-weight:bold;
+	font-size:16px;
+	line-height:16px;
+	background-color:#d1d1ff;
+	}
+
+#about .text
+	{
+	font-weight:bold;
+	font-size:16px;
+	line-height:26px;
+	}
+
+#about #rant
+	{
+	font-style: italic;
+	}
+
+
+/* **************************************************************************************************************************************************************************** */
+
+#archive_sel
+	{
+	margin:5px;
+	}
+
+#archive_sel #heading
+	{
+	text-align:center;
+	color:#000000;
+	background-color:#d1d1ff;
+	font-weight:bold;
+	font-size:40px;
+	}
+
+#archive_sel .section_heading
+	{
+	margin-top:3px;
+	text-align:center;
+	font-weight:bold;
+	font-size:16px;
+	line-height:26px;
+	background-color:#d1d1ff;
+	}
+
+#archive_sel .settings
+	{
+	margin-top:3px;
+	text-align:center;
+	font-weight:bold;
+	font-size:40px;
+	line-height:45px;
+	background-color:#fffeb1;
+	}
+
+#archive_sel .text
+	{
+	font-weight:bold;
+	font-size:16px;
+	line-height:26px;
+	}
+
