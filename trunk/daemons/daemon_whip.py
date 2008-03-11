@@ -17,7 +17,7 @@
 # kmotion control daemons
 
 import os, sys, time, ConfigParser
-import kmotion_logger, parse_motion, gen_vhost, gen_start_sh
+import logger, gen_rc_motion, gen_vhost, gen_start_sh
 
 """
 Controls kmotion daemons & reports on their ststus
@@ -26,7 +26,7 @@ Controls kmotion daemons & reports on their ststus
 parser = ConfigParser.SafeConfigParser()
 parsed = parser.read('./daemon.rc')
 log_level = parser.get('debug', 'log_level')
-logger = kmotion_logger.Logger('daemon_whip', log_level)
+logger = logger.Logger('daemon_whip', log_level)
 
  
 def start_daemons():
@@ -37,8 +37,8 @@ def start_daemons():
     parser.read('./daemon.rc')
     daemons_dir =  parser.get('dirs', 'daemons_dir')
         
-    motion = parse_motion.Parse_Motion()  
-    motion.parse() 
+    rc_motion = gen_rc_motion.Gen_Rc_Motion()  
+    rc_motion.gen_rc_motion() 
     gen_vhost.gen_vhost()
     gen_start_sh.gen_start_sh()
     
@@ -75,8 +75,8 @@ def config_reload():
     Force daemons to reload configs
     """
     # Only need to SIGHUP kmotion_hkd1, it SIGHUPs kmotion_hkd2
-    motion = parse_motion.Parse_Motion()  
-    motion.parse() 
+    rc_motion = gen_rc_motion.Gen_Rc_Motion()  
+    rc_motion.gen_rc_motion() 
     gen_vhost.gen_vhost()
     gen_start_sh.gen_start_sh()
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd1.py\'') 
