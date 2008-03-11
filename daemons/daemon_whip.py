@@ -17,29 +17,40 @@
 # kmotion control daemons
 
 import os, sys, time, ConfigParser
-import kmotion_logger, parse_motion
+import kmotion_logger, parse_motion, gen_vhost, gen_start_sh
 
 """
 Controls kmotion daemons & reports on their ststus
 """
 
-logger = kmotion_logger.Logger('daemon_whip', 'WARNING')
+parser = ConfigParser.SafeConfigParser()
+parsed = parser.read('./daemon.rc')
+log_level = parser.get('debug', 'log_level')
+logger = kmotion_logger.Logger('daemon_whip', log_level)
+
  
 def start_daemons():
-    """ Start kmotion_hkd1, kmotion_hkd2 & motion daemons """ 
-    parse_motion = parse_motion.Parse_Motion()  
-    parse_motion.parse()  # locate & parse motion.conf & its thread files. generate feed.rc and modify daemon.rc as appropreate
-    
+    """ 
+    Start kmotion_hkd1, kmotion_hkd2 & motion daemons 
+    """ 
     parser = ConfigParser.SafeConfigParser()
-    parser.read('./kmotion.rc')
+    parser.read('./daemon.rc')
     daemons_dir =  parser.get('dirs', 'daemons_dir')
         
+    motion = parse_motion.Parse_Motion()  
+    motion.parse() 
+    gen_vhost.gen_vhost()
+    gen_start_sh.gen_start_sh()
+    
     # Only need to start kmotion_hkd1, it starts the rest
     if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'): os.system(daemons_dir + '/kmotion_hkd1.py &> /dev/null')
     else: logger.log('start_daemons() - daemons already running - none started', 'DEBUG')
     
+    
 def kill_daemons():
-        """ Stop kmotion_hkd1, kmotion_hkd2 & motion daemons """
+        """ 
+        Stop kmotion_hkd1, kmotion_hkd2 & motion daemons 
+        """
         os.system('pkill -f \'python.+kmotion_hkd1.py\'')
         os.system('pkill -f \'python.+kmotion_hkd2.py\'')
         os.system('killall -q motion')  # Try an initial killall to avoid sleep if possible
@@ -50,16 +61,24 @@ def kill_daemons():
             logger.log('kill_daemons() - motion not killed - retrying ...', 'DEBUG')
         logger.log('kill_daemons() - daemons killed ...', 'DEBUG')
     
+    
 def daemons_running():
-    """ Return true if daemons are running """
+    """ 
+    Return true if daemons are running 
+    """
     if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'):  return False
     else: return True
     
+    
 def config_reload():
-    """ Force daemons to reload configs """
+    """ 
+    Force daemons to reload configs
+    """
     # Only need to SIGHUP kmotion_hkd1, it SIGHUPs kmotion_hkd2
-    parse_motion = parse_motion.Parse_Motion()  
-    parse_motion.parse() 
+    motion = parse_motion.Parse_Motion()  
+    motion.parse() 
+    gen_vhost.gen_vhost()
+    gen_start_sh.gen_start_sh()
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd1.py\'') 
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd2.py\'')
     os.system('killall -s SIGHUP motion 2> /dev/null')

@@ -5,12 +5,11 @@ daemons_dir = /var/lib/kmotion/daemons
 apache2_config_dir = /var/lib/kmotion/apache2_config
 www_dir = /var/lib/kmotion/www
 
-[cull]
-cull_trigpc = 90
-file_system = /dev/sda1
+[storage]
+size_gb = 1
 
 [mode]
-standalone_mode = true
+standalone = true
 
 [debug]
 log_level = DEBUG
@@ -31,7 +30,7 @@ snapshot_interval4 = 300
 snapshot_interval5 = 300
 snapshot_interval2 = 300
 snapshot_interval3 = 300
-snapshot_interval1 = 55
+snapshot_interval1 = 1
 
 [feed_count]
 count = 1

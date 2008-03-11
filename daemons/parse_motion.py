@@ -14,13 +14,13 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# start daemons !
+# parse motion
 
 import os, sys, ConfigParser
 import kmotion_logger
 
 """
-Start the daemons on bootup, cannot just call daemon_whip directly because of circular dependencies
+Parse motion.conf & threads, generate filterd motion.conf & threads + daemon_rc & www_rc
 """
         
 class Parse_Motion:
@@ -38,7 +38,7 @@ class Parse_Motion:
         motion_config = self.find_motion_conf()
         threads, snapshot_interval = self.parse_motion_conf(motion_config)
         names_list, snapshot_list = self.parse_motionx_conf(threads, snapshot_interval)
-        self.write_php_rc(names_list)
+        self.write_www_rc(names_list)
         self.write_daemon_rc(snapshot_list)
         
     
@@ -158,11 +158,11 @@ class Parse_Motion:
         return names_list, snapshot_list
             
             
-    def write_php_rc(self, names_list):
+    def write_www_rc(self, names_list):
         """
         update php.rc
         """
-        f = open('%s/php.rc' % (self.www_dir), 'w')
+        f = open('%s/www.rc' % (self.www_dir), 'w')
         f.write('%s\n' % (self.images_dir))
         for name in names_list:
             f.write('%s\n' % (name))
@@ -171,7 +171,7 @@ class Parse_Motion:
 
     def write_daemon_rc(self, snapshot_list):
         """
-        write config to ./daemon.rc
+        write modified config to ./daemon.rc
         """
         parser = ConfigParser.SafeConfigParser()
         parser.read('./daemon.rc')
@@ -194,12 +194,8 @@ class Parse_Motion:
         self.log_level = parser.get('debug', 'log_level')
         
             
-      
-     
-    
-
+if __name__ == '__main__':
+    parse = Parse_Motion()
+    parse.parse()
         
-parse = Parse_Motion()
-parse.parse()
-    
 

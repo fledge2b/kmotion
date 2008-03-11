@@ -33,68 +33,85 @@ class Kmotion_Hkd1:
         self.misc_config_dir = ''
         self.file_system = ''
         self.cull_trigpc = 0
+        self.prev_date = '000000'
         signal.signal(signal.SIGHUP, self.signal_hup)
         self.read_config()
         self.logger = kmotion_logger.Logger('kmotion_hdk1', self.log_level)
         
+        
     def start_daemon(self):    
-        """"
+        """
         Start the house keeping 1 daemon 
         """
         self.logger.log('Daemon starting ...', 'DEBUG')
-        
         # ensure .../events dir exists & is empty
         shutil.rmtree('%s/events' % (self.images_dir), True)
         os.makedirs('%s/events' % (self.images_dir))
-        
         while(True):   
-            # Check the free disk space ...
-            logon = os.environ['LOGNAME']  
-            os.system('df > /tmp/kmotion-%s' % logon) 
-            f = open('/tmp/kmotion-%s' % logon, 'r')
-            df_op= f.readlines()
-            f.close()
-            
-            found = False
-            for line in df_op:
-                split = line.split()
-                if split[0] == self.file_system:  # Found the file_system, check the space
-                    found = True 
-                    if int(split[4][:-1]) > self.cull_trigpc:
-                        dir = os.listdir('/var/lib/motion')
-                        dir.sort()
-                        if len(dir) == 0:  # Check for no video, if so exit
-                            self.logger.log('Disk space lower limit reached but no video to cull in %s - Killing motion & all daemon processes' % ('/var/lib/motion'), 'CRIT')
-                            daemon_whip.kill_daemons()
-                            sys.exit()
-                        self.logger.log('Disk space lower limit reached - deleteing %s/%s' %  ('/var/lib/motion', dir[0]), 'DEBUG')
-                        shutil.rmtree('%s/%s' % (self.images_dir, dir[0]))  # Delete oldest dir first
-            if not(found): 
-                self.logger.log('Could not identify filesystem %s - Killing motion & all daemon processes' % (self.file_system), 'CRIT')
-                daemon_whip.kill_daemons()
-                sys.exit()
-            
+            self.update_total_size()                # for todays images
+            sum = self.sum_total_sizes()        # for all images
+            if sum > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
+                dir = os.listdir(self.images_dir)
+                dir.sort()
+                self.logger.log('Image storeage limit reached - deleteing %s/%s' %  (self.images_dir, dir[0]), 'CRIT')
+                shutil.rmtree('%s/%s' % (self.images_dir, dir[0]))  # delete oldest dir first
             self.chk_motion()
             self.chk_kmotion_hkd2()
-            time.sleep(5 * 60)
+            time.sleep(15 * 60)
         
         
+    def update_total_size(self):
+        """
+        Update total_size file for todays images
+        """
+        date = time.strftime('%Y%m%d') 
+        # check & create date dir just in case kmotion_hkd1 crosses 00:00 before kmotion_hkd2
+        if self.prev_date != date:  
+            date_dir = '%s/%s' % (self.images_dir, date)
+            if not(os.path.isdir(date_dir)): os.makedirs(date_dir)
+            self.prev_date = date
+        
+        os.system('nice -n 19 du -c --block-size=1 %s/%s | grep total > /tmp/kmotion_size' % (self.images_dir, date)) 
+        f = open('/tmp/kmotion_size', 'r')
+        du_op= f.readline()
+        f.close()
+        
+        f = open('%s/%s/total_size' % (self.images_dir, date), 'w')
+        f.write(du_op.split()[0])
+        f.close()
+
+
+    def sum_total_sizes(self):
+        """
+        Return the sum of all total_size files
+        """
+        sum = 0
+        dirs = os.listdir(self.images_dir)
+        dirs.sort()
+        for date in dirs[:-2]:  # [:-2] to filter off events & last_snap.jpg
+            if os.path.isfile('%s/%s/total_size' % (self.images_dir, date)):
+                f = open('%s/%s/total_size' % (self.images_dir, date), 'r')
+                sum = sum + int(f.readline())
+                f.close()
+        return sum
+
+
     def chk_motion(self):
-            """
-            Check motion is still running ... if not restart it ... 
-            """
-            if os.system('/bin/ps ax | /bin/grep [m]otion\ -c'):
-               self.logger.log('motion not running - starting motion', 'CRIT')
-               os.system('motion -c %s/motion.conf &' % (self.misc_config_dir))
-                
+        """
+        Check motion is still running ... if not restart it ... 
+        """
+        if os.system('/bin/ps ax | /bin/grep [m]otion\ -c'):
+           self.logger.log('motion not running - starting motion', 'CRIT')
+           os.system('motion -c %s/motion.conf 2> /dev/null &' % (self.misc_config_dir))
+            
                 
     def chk_kmotion_hkd2(self):
-            """
-            Check kmotion_hkd2.py is still running ... if not restart it ... 
-            """
-            if os.system('/bin/ps ax | /bin/grep [k]motion_hkd2.py$'):
-               self.logger.log('kmotion_hkd2.py not running - starting kmotion_hkd2.py', 'CRIT')
-               os.system(self.daemons_dir + '/kmotion_hkd2.py &')
+        """
+        Check kmotion_hkd2.py is still running ... if not restart it ... 
+        """
+        if os.system('/bin/ps ax | /bin/grep [k]motion_hkd2.py$'):
+           self.logger.log('kmotion_hkd2.py not running - starting kmotion_hkd2.py', 'CRIT')
+           os.system('%s/kmotion_hkd2.py 2> /dev/null &' % (self.daemons_dir))
 
 
     def read_config(self):
@@ -107,18 +124,17 @@ class Kmotion_Hkd1:
         self.images_dir = parser.get('dirs', 'images_dir')
         self.daemons_dir = parser.get('dirs', 'daemons_dir')
         self.misc_config_dir = parser.get('dirs', 'misc_config_dir')
-        self.file_system = parser.get('cull', 'file_system')
-        self.cull_trigpc = int(parser.get('cull', 'cull_trigpc'))
+        self.size_gb = int(parser.get('storage', 'size_gb')) * 1000000000
         self.log_level = parser.get('debug', 'log_level')
         
         
     def signal_hup(self, signum, frame):
-            """
-            Re-read the config file on SIGHUP 
-            """
-            self.logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
-            self.read_config()
-            
+        """
+        Re-read the config file on SIGHUP 
+        """
+        self.logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
+        self.read_config()
+        
             
 if __name__ == '__main__':
     Hkd1 = Kmotion_Hkd1()
