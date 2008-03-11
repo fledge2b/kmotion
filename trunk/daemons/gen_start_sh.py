@@ -16,10 +16,10 @@
 
 # generate the start.sh bash script
 
-import ConfigParser
+import os, ConfigParser
 
 """
-Generate the start.sh bash script
+Generate the kmotion_start.sh bash script
 """
 
 gpl = """
@@ -39,8 +39,12 @@ gpl = """
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-Starts kmotion daemons, executable from anywhere in the system\n
+# Starts kmotion daemons, executable from anywhere in the system\n
 """
+
+blog = """print "\\033[1;32mkmotion has been started\\033[1;37m"
+"""
+
         
 def gen_start_sh():
     """
@@ -50,14 +54,14 @@ def gen_start_sh():
     parsed = parser.read('./daemon.rc')
     daemons_dir = parser.get('dirs', 'daemons_dir')
     
-    f = open('%s/start_kmotion.sh' % (daemons_dir), 'w')
+    f = open('%s/kmotion_start.sh' % (daemons_dir), 'w')
     f.write(gpl)
-    f.write('cd %s && ./daemon_start.py\n\n' % (daemons_dir))
+    f.write('cd %s && ./daemon_dep.py\n\n' % (daemons_dir))
+    f.write(blog)
     f.close()
     
-    #FIXME: need to google to make exec bit enabled
-    #os.chmod('./start.sh')
-
+    os.chmod('./kmotion_start.sh', 0755)
+    
 
 if __name__ == '__main__':
     gen_start_sh()
