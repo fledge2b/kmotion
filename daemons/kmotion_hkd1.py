@@ -17,7 +17,7 @@
 # kmotion house keeping daemon 1
 
 import os, sys, time, signal, shutil,  ConfigParser, daemon_whip
-import kmotion_logger, parse_motion
+import logger
 
 """
 Checks the % of free disk space & if too low deletes oldest video dirs first. Also
@@ -36,7 +36,7 @@ class Kmotion_Hkd1:
         self.prev_date = '000000'
         signal.signal(signal.SIGHUP, self.signal_hup)
         self.read_config()
-        self.logger = kmotion_logger.Logger('kmotion_hdk1', self.log_level)
+        self.logger = logger.Logger('kmotion_hdk1', self.log_level)
         
         
     def start_daemon(self):    

@@ -14,27 +14,27 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# parse motion
+# generate rc files & motion files
 
 import os, sys, ConfigParser
-import kmotion_logger
+import logger
 
 """
 Parse motion.conf & threads, generate filterd motion.conf & threads + daemon_rc & www_rc
 """
         
-class Parse_Motion:
+class Gen_Rc_Motion:
     
     def __init__(self):  
         self.blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save', 'target_dir']
         
         
-    def parse(self):
+    def gen_rc_motion(self):
         """
         locate & parse motion.conf & its thread files. generate feed.rc and modify daemon.rc as appropreate
         """
         self.read_daemon_rc()
-        self.logger = kmotion_logger.Logger('daemon_start', self.log_level)
+        self.logger = logger.Logger('daemon_start', self.log_level)
         motion_config = self.find_motion_conf()
         threads, snapshot_interval = self.parse_motion_conf(motion_config)
         names_list, snapshot_list = self.parse_motionx_conf(threads, snapshot_interval)
@@ -195,7 +195,7 @@ class Parse_Motion:
         
             
 if __name__ == '__main__':
-    parse = Parse_Motion()
-    parse.parse()
+    rc_motion = Gen_Rc_Motion()
+    rc_motion.gen_rc_motion()
         
 

@@ -16,12 +16,12 @@
 
 # kmotion housekeeping daemon 2
 
-import os, sys, time, signal, shutil, ConfigParser, kmotion_logger, daemon_whip
+import os, sys, time, signal, shutil, ConfigParser, logger, daemon_whip
 
 parser = ConfigParser.SafeConfigParser()
 parsed = parser.read('./daemon.rc')
 log_level = parser.get('debug', 'log_level')
-logger = kmotion_logger.Logger('kmotion_hkd2', log_level)
+logger = logger.Logger('kmotion_hkd2', log_level)
 
 """
 Copys or moves files from /var/lib/kmotion/images_dir/<date>/<feed>/tmp to ../video
