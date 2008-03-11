@@ -1,0 +1,366 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+
+	<meta http-equiv="content-type" content="text/html; charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="base2.css">
+	<title>Kmotion</title>
+
+
+<script language="javascript">
+
+	// The Full frame ... display split screens but goto full screen while events active ... 
+
+	// The variables. Due to Javascript not having a sleep() function window.setTimeout() is used. This causes problems
+	// when trying to pass parameters resulting in a relatively high number of 'global' variables. A closure construct is
+	// unworkable resulting in  a recursion error.
+
+	stream = {
+		cache_jpeg: [],				// Caching jpeg array to avoid flicker
+		cache_num: 0,				// Count into above array
+
+		view: 0,				// Holds the current view number ... 1 ... parent.state.view_format squared
+		feed:0,					// Holds the feed number ... 1 ... state.video_feeds
+		try_count: 0,				// The number of jpeg load retrys
+
+		view_change: 0,				// Contains number of last manual view change, used to avoid caching issues
+		last_camera_button: 0,			// Contains last camera button pressed, ... set by parent.state.view_format()
+
+		server_reply1: [],			// An array of jpeg filenames returned by the AJAX call
+		server_reply2: [],			// An array of events ie feeds with motion detected returned by the AJAX call
+
+		interleave_lock: false,			// Display an interleave feed or a sequence feed
+		interleave_view: start_view()		// Pointer into view sequence ...  1 ... parent.state.view_format squared
+		};
+
+	stream.cache_jpeg[0] = new Image();
+	stream.cache_jpeg[1] = new Image();
+	stream.cache_jpeg[2] = new Image();
+	stream.cache_jpeg[3] = new Image();
+
+
+	// start_view() calculates the initial view setting to ensure that view 1 is updated first in all cases
+	function start_view()
+	{
+		var ptr = 1;
+		for (var i=1; i<=Math.pow(parent.state.view_format, 2); i++)
+		{
+			if (parent.state.view_seqs[parent.state.view_format][i] <= parent.state.video_feeds)
+			{
+				ptr = i;
+			}
+		}
+		return ptr-1;
+	}	
+
+
+	//*******************************************************************************************************************************************************************************
+	// AJAX ...
+	//******************************************************************************************************************************************************************************
+
+	function server_poll()
+	{
+		var xmlHttpReq;
+		var response;
+		// Mozilla/Safari
+		if (window.XMLHttpRequest)
+		{
+			xmlHttpReq = new XMLHttpRequest();
+		}
+		// IE
+		else if (window.ActiveXObject)
+		{
+			xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlHttpReq.open("POST", "feed_status.php", true);
+		xmlHttpReq.send(null);
+		xmlHttpReq.onreadystatechange = function() 
+		{	
+			if (xmlHttpReq.readyState == 4)
+			{						// Array of latest jpeg filenames for feeds: index 1 - 16
+        			stream.server_reply1 = xmlHttpReq.responseText.split("#");
+									// Array of events: index 0 - length
+				stream.server_reply2 = stream.server_reply1[17].split("$");	
+			}
+		}
+	}
+
+
+	//*******************************************************************************************************************************************************************************
+	// Cut down inteleave loop code, uses parent.frame_full_callback() frame to display interleave views
+	//******************************************************************************************************************************************************************************
+
+	function stream_video()
+	{
+		stream.try_count = 0;
+		if (stream.interleave_lock)				// *** Interleave cycle code ***
+		{
+			if ((stream.server_reply2.length) > 1)		// If > 1 an event has occured ie
+			{						// motion has been detected
+									// Callback to parent ... need to go into interleave mode
+				window.setTimeout("parent.frame_full_callback()", 1);
+				return;
+			}
+			else
+			{
+				stream.interleave_lock = false;		// Flip lock
+				window.setTimeout("stream_video()", 1);	// restart stream_video()
+				return;
+			}
+		}
+		else							// *** Normal cycle code ***
+		{	
+			stream.interleave_view++;			// Active normal cycle
+			stream.interleave_view = (stream.interleave_view > (Math.pow(parent.state.view_format, 2)))?1:stream.interleave_view;
+			stream.view = stream.interleave_view;
+			// Dont flag an interleave cycle on 'no video' views else interleave becomes unbalanced
+			if (parent.state.view_seqs[parent.state.view_format][stream.view] <= parent.state.video_feeds)
+			{
+				stream.interleave_lock = true;
+			}
+		}
+
+		server_poll();						// Don't bother with 'no video' views 
+		if (parent.state.view_seqs[parent.state.view_format][stream.view]<= parent.state.video_feeds)
+		{
+			cache();		
+		}
+		else 
+		{
+			window.setTimeout("stream_video()", 5);		// Avoids CPU pegging if all images are 'no video'
+		}
+	}
+
+
+	function cache()
+	{
+		stream.cache_num++;
+		stream.cache_num = (stream.cache_num > 3)?0:stream.cache_num;
+		stream.feed = parent.state.view_seqs[parent.state.view_format][stream.view];	
+		// Avoid flashes of white on views
+		var feed_reply1 = stream.server_reply1[stream.feed];
+		var jpeg_file = (feed_reply1 == undefined)?"misc/caching.jpeg":feed_reply1;
+		if (feed_reply1 != "")
+		{
+			stream.cache_jpeg[stream.cache_num].src = jpeg_file;
+			window.setTimeout("update()", 100);
+		}
+		else
+		{
+			window.setTimeout("stream_video()", 1);
+		}
+	}	
+
+
+	function update()
+	{
+		if (stream.cache_jpeg[stream.cache_num].complete)
+		{
+			if (stream.view_change == stream.view)			// If stream view is the last view changed, cache it for a cycle
+			{
+				stream.cache_jpeg[stream.cache_num].src = "misc/caching.jpeg";
+				stream.view_change = 0;
+			}
+			for (var i=1; i <= (Math.pow(parent.state.view_format, 2)); i++) // Scan for views with duplicate feeds
+			{
+				if (parent.state.view_seqs[parent.state.view_format][i] == stream.feed)
+				{						// Set .src of all views found
+					document.getElementById("image_" + i).src = stream.cache_jpeg[stream.cache_num].src;
+				}
+			}
+			stream.try_count = 0;
+			set_view_status();					// Set text to red if motion detected
+			window.setTimeout("stream_video()", parent.state.pref_normal_pause);
+		}
+		else 
+		{
+			stream.try_count++;					// If cache_jpeg is not completely downloaded, keep trying ...
+			if (stream.try_count > 1000)
+			{
+				window.setTimeout("stream_video()", 1);
+			}
+			window.setTimeout("update()", 25);
+		}
+	}
+
+
+	//*******************************************************************************************************************************************************************************
+	// Setup view code
+	//******************************************************************************************************************************************************************************
+
+	function set_view_background()
+	{
+		for (var i=1; i <= (Math.pow(parent.state.view_format, 2)); i++)
+		{
+			if (parent.state.view_seqs[parent.state.view_format][i] <= parent.state.video_feeds)
+			{
+				document.getElementById("image_"+i).src = "misc/caching.jpeg";
+			}
+			else 
+			{
+				document.getElementById("image_"+i).src = "misc/no_video.jpeg";
+			}
+		}
+	}
+
+
+	function set_view_text()
+	{
+		for (var i=1; i <= (parent.state.view_format * parent.state.view_format); i++)
+		{
+			if (parent.state.view_seqs[parent.state.view_format][i] <= parent.state.video_feeds)
+			{
+				document.getElementById("text_"+i).innerHTML = parent.state.view_seqs[parent.state.view_format][i] + " : " + parent.state.feed_text[parent.state.view_seqs[parent.state.view_format][i]];
+			}
+			else
+			{
+				document.getElementById("text_"+i).innerHTML = parent.state.view_seqs[parent.state.view_format][i] + " : No Video";
+			}
+		}
+	}
+
+
+	function set_view_status()
+	{
+		for (var i=1; i <= (parent.state.view_format * parent.state.view_format); i++)
+		{
+			var view = parent.state.view_seqs[parent.state.view_format][i];
+			{
+				var flag = false;
+				for (var j=0; j < (stream.server_reply2.length); j++)
+				{
+					if (view == stream.server_reply2[j]) flag = true;
+				}
+				if (flag)
+				{
+					document.getElementById("text_"+i).style.color = "#ff0000";
+				}
+				else
+				{
+					document.getElementById("text_"+i).style.color = "#0000ff";	
+				}
+			}
+		
+		}
+	}
+
+
+	//*******************************************************************************************************************************************************************************
+	// View clicked code
+	//******************************************************************************************************************************************************************************
+
+	function view_clicked(view)
+	{
+		if (stream.last_camera_button != 0)
+		{
+			
+			parent.state.view_seqs[parent.state.view_format][view] = stream.last_camera_button;
+			view_change = view;
+
+			if (parent.state.view_seqs[parent.state.view_format][view] <= parent.state.video_feeds)
+			{
+				document.getElementById("image_"+view).src = "misc/caching.jpeg";
+			}
+			else 
+			{
+				document.getElementById("image_"+view).src = "misc/no_video.jpeg";
+			}
+			set_view_text();
+			set_view_status();	
+			stream.last_camera_button = 0;
+		}
+		else 
+		{
+			stream.last_camera_button = 0;	// Call parent so buttons on control panel are updated
+			window.setTimeout("parent.frame_standard_callback("+parent.state.view_seqs[parent.state.view_format][view]+")", 1);
+		}
+	}
+
+	
+	function parent_button_clicked(button)
+	{
+		if (parent.state.view_format == 1)
+		{	
+			parent.state.view_seqs[1][1] = button;
+			stream.view_change = stream.view;
+	
+			if (parent.state.view_seqs[parent.state.view_format][stream.view] <= parent.state.video_feeds)
+			{
+				document.getElementById("image_"+stream.view).src = "misc/caching.jpeg";
+			}
+			else 
+			{
+				document.getElementById("image_"+stream.view).src = "misc/no_video.jpeg";
+			}
+			set_view_text();
+			set_view_status();	
+		}
+		else
+		{
+			stream.last_camera_button = button;
+		}
+	}
+
+</script>
+</head>
+<body id="live_view">
+	<?php  
+
+	define("COLS", $_GET['grid']);
+	define("COL_PADDING", 3);
+
+	define("ROWS", $_GET['grid']);
+	define("ROW_PADDING", 3);
+
+	define("VIEW_WIDTH", $_GET['width']);
+	define("VIEW_HEIGHT", $_GET['height']);
+
+	// This is a black art, px never quite add up so may need to tweak +7	
+	$scale_width = VIEW_WIDTH;
+	$scale_height = VIEW_HEIGHT - ((ROW_PADDING * 2) + 7);
+
+	// Scale the jpeg keeping aspect ratio 384 / 288 = 1.33 
+	if (($scale_width / $scale_height) < 1.33)
+	{
+		$scale = $scale_width / (384 * (COLS - 1));
+		$scale_width = $scale * 384;
+		$scale_height =  $scale * 288;
+	}
+	else
+	{
+		$scale = $scale_height / (288 * ROWS);
+		$scale_width = $scale * 384;
+		$scale_height =  $scale * 288;		
+	}
+	
+	$col_width = $scale_width + COL_PADDING;
+	$total_cols_width = ($col_width * COLS) - COL_PADDING;
+	$lhs_margin = ((VIEW_WIDTH - $total_cols_width) / 2);
+
+	// Absolute positioning 
+	for ($row = 0; $row < ROWS; $row++)
+	{
+		for ($col = 0; $col < COLS; $col++)
+		{
+			$pos = ($col + 1) + ($row * COLS);
+			$camera_src = "misc/cashing.png";
+
+			printf("\n<img id=\"image_%d\" style=\"position:absolute;top:%dpx;left:%dpx;\"  src=\"%s\" width=%dpx height=%dpx onClick=\"view_clicked(%s);\" alt=\"Camera image\">", $pos, (($row + 1) * ROW_PADDING) + ($row * $scale_height), $lhs_margin + ($col * COL_PADDING) + ($col * $scale_width) , $camera_src,  $scale_width, $scale_height, $pos);
+
+			printf("\n<span id=\"text_%d\" style=\"position:absolute;top:%dpx;left:%dpx;\" alt=\"camera text\">", $pos, (($row + 1) * ROW_PADDING) + ($row * $scale_height)+ 3, $lhs_margin + ($col * COL_PADDING) + ($col * $scale_width) + 3);
+			printf("</span>");
+		}
+		printf("\n</div>\n");
+	}
+	?>
+ 
+<script language="JavaScript" type="text/javascript" >
+set_view_background();
+set_view_text();
+set_view_status();
+stream_video();
+</script>
+
+</body>
