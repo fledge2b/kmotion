@@ -131,7 +131,7 @@ class Kmotion_Hkd2:
         images_dir = parser.get('dirs', 'images_dir')
         feed_count = int(parser.get('feed_count', 'count'))
         for i in range(feed_count):
-            snapshot_list.append(int(parser.get('feed_intervals', 'snapshot_interval%d' % (feed_count + 1))))
+            snapshot_list.append(int(parser.get('feed_intervals', 'snapshot_interval%d' % (i + 1))))
         return images_dir, snapshot_list
     
     
@@ -159,6 +159,10 @@ class Kmotion_Hkd2:
             logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
             self.sighup_ok = False
             
+    def signal_kill(self, signum, frame):
+            """
+            
+            """
         
 if __name__ == '__main__':
     Hkd2 = Kmotion_Hkd2()

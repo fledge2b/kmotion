@@ -61,10 +61,11 @@ while (True):
             print '\n\033[1;31m*WARNING* Daemons not running ...\033[1;37m'
     
     elif (opt =='4'):
+        print '\n\033[1;32mQuitting kmotion manual daemon control ...\033[1;37m'
         if(daemon_whip.daemons_running()):
-            print '\n\033[1;31mStarting to kill daemons ...\033[1;37m'
-            daemon_whip.kill_daemons()
-            print '\033[1;31mDaemons have been killed ...\033[1;37m'
+            print '\033[1;32m*WARNING* Daemons still running in background ...\033[1;37m'
+        else:
+            print '\033[1;31m*WARNING* DAEMONS NOT RUNNING ...\033[1;37m'
         sys.exit()
 
 
