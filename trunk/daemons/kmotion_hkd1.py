@@ -124,7 +124,7 @@ class Kmotion_Hkd1:
         self.images_dir = parser.get('dirs', 'images_dir')
         self.daemons_dir = parser.get('dirs', 'daemons_dir')
         self.misc_config_dir = parser.get('dirs', 'misc_config_dir')
-        self.size_gb = int(parser.get('storage', 'size_gb')) * (2**30)  # 2**30 = 1GB
+        self.size_gb = int(parser.get('storage', 'size_gb')) * 2**30  # 2**30 = 1GB
         self.log_level = parser.get('debug', 'log_level')
         
         
