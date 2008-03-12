@@ -24,8 +24,9 @@ Reload all configs
 
 daemon_whip.config_reload()
 print """
-\033[1;32mAll configurations have been regenerated and reloaded. 
+\033[1;32mAll configurations have been regenerated and are being reloaded .... this may take up to
+30 seconds to complete. 
 
-\033[1;31m*WARNING* If you have changed ../apache2_config/kmotion_vhost_template you need to :\n
+\033[1;31m*WARNING* If you have changed ../apache2_config/kmotion_vhost_template you need to :
 sudo /etc/init.d/apache2 restart\033[1;37m\n
 """
