@@ -63,9 +63,9 @@ while (True):
     elif (opt =='4'):
         print '\n\033[1;32mQuitting kmotion manual daemon control ...\033[1;37m'
         if(daemon_whip.daemons_running()):
-            print '\033[1;32m*WARNING* Daemons still running in background ...\033[1;37m'
+            print '\033[1;32m*WARNING* Daemons still running in background ...\033[1;37m\n'
         else:
-            print '\033[1;31m*WARNING* DAEMONS NOT RUNNING ...\033[1;37m'
+            print '\033[1;31m*WARNING* DAEMONS NOT RUNNING ...\033[1;37m\n'
         sys.exit()
 
 
