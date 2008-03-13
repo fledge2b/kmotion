@@ -6,7 +6,7 @@ apache2_config_dir = /var/lib/kmotion/apache2_config
 www_dir = /var/lib/kmotion/www
 
 [storage]
-size_gb = 1
+size_gb = 5
 
 [mode]
 standalone = true
