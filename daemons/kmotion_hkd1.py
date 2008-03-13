@@ -48,8 +48,8 @@ class Kmotion_Hkd1:
         shutil.rmtree('%s/events' % (self.images_dir), True)
         os.makedirs('%s/events' % (self.images_dir))
         while(True):   
-            self.update_total_size()                # for todays images
-            sum = self.sum_total_sizes()        # for all images
+            self.update_size()                # for todays images
+            sum = self.sum_sizes()        # for all images
             if sum > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
                 dir = os.listdir(self.images_dir)
                 dir.sort()
@@ -60,9 +60,9 @@ class Kmotion_Hkd1:
             time.sleep(15 * 60)
         
         
-    def update_total_size(self):
+    def update_size(self):
         """
-        Update total_size file for todays images
+        Update size file for todays images
         """
         date = time.strftime('%Y%m%d') 
         # check & create date dir just in case kmotion_hkd1 crosses 00:00 before kmotion_hkd2
@@ -76,21 +76,21 @@ class Kmotion_Hkd1:
         du_op= f.readline()
         f.close()
         
-        f = open('%s/%s/total_size' % (self.images_dir, date), 'w')
+        f = open('%s/%s/size' % (self.images_dir, date), 'w')
         f.write(du_op.split()[0])
         f.close()
 
 
-    def sum_total_sizes(self):
+    def sum_sizes(self):
         """
-        Return the sum of all total_size files
+        Return the sum of all size files
         """
         sum = 0
         dirs = os.listdir(self.images_dir)
         dirs.sort()
         for date in dirs[:-2]:  # [:-2] to filter off events & last_snap.jpg
-            if os.path.isfile('%s/%s/total_size' % (self.images_dir, date)):
-                f = open('%s/%s/total_size' % (self.images_dir, date), 'r')
+            if os.path.isfile('%s/%s/size' % (self.images_dir, date)):
+                f = open('%s/%s/size' % (self.images_dir, date), 'r')
                 sum = sum + int(f.readline())
                 f.close()
         return sum
