@@ -20,9 +20,9 @@ import os, sys, time, signal, shutil,  ConfigParser, daemon_whip
 import logger
 
 """
-Checks the % of free disk space & if too low deletes oldest video dirs first. Also
-checks that 'motion' & 'kmotion_hkd2.py' are running, restarting them if they are not. 
-Finally responds to a SIGHUP by re-reading kmotion.rc.
+Checks the size of the images_dir deleteing the oldest directorys first when 90% of size_gb is reached.   
+Checks that 'motion' & 'kmotion_hkd2.py' are running, restarting them if neccessary. Responds to a 
+SIGHUP by re-reading its configuration.
 """
 
 class Kmotion_Hkd1:
@@ -41,15 +41,15 @@ class Kmotion_Hkd1:
         
     def start_daemon(self):    
         """
-        Start the house keeping 1 daemon 
+        Start the house keeping 1 daemon. This daemon wakes up every 15 minutes
         """
         self.logger.log('Daemon starting ...', 'DEBUG')
-        # ensure .../events dir exists & is empty
+        # ensure .../events directory exists & is empty
         shutil.rmtree('%s/events' % (self.images_dir), True)
         os.makedirs('%s/events' % (self.images_dir))
         while(True):   
-            self.update_size()                # for todays images
-            sum = self.sum_sizes()        # for all images
+            self.update_size()                 # for todays images
+            sum = self.sum_sizes()         # for all images
             if sum > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
                 dir = os.listdir(self.images_dir)
                 dir.sort()
@@ -62,10 +62,10 @@ class Kmotion_Hkd1:
         
     def update_size(self):
         """
-        Update size file for todays images
+        Calculate todays images_dir file size and modify size file
         """
         date = time.strftime('%Y%m%d') 
-        # check & create date dir just in case kmotion_hkd1 crosses 00:00 before kmotion_hkd2
+        # check & create date dir just in case kmotion_hkd1 crosses 00:00 before motion
         if self.prev_date != date:  
             date_dir = '%s/%s' % (self.images_dir, date)
             if not(os.path.isdir(date_dir)): os.makedirs(date_dir)
@@ -83,6 +83,8 @@ class Kmotion_Hkd1:
 
     def sum_sizes(self):
         """
+        Sums all avaliable images_dir size files 
+        
         Return the sum of all size files
         """
         sum = 0
@@ -116,7 +118,7 @@ class Kmotion_Hkd1:
 
     def read_config(self):
         """ 
-        Read config file from ./kmotion.rc 
+        Read config from daemon.rc 
         """
         parser = ConfigParser.SafeConfigParser()  
         parsed = parser.read('./daemon.rc')
@@ -130,7 +132,7 @@ class Kmotion_Hkd1:
         
     def signal_hup(self, signum, frame):
         """
-        Re-read the config file on SIGHUP 
+        On SIGHUP re-read the config file 
         """
         self.logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
         self.read_config()
