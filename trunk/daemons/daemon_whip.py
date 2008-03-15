@@ -17,10 +17,10 @@
 # kmotion control daemons
 
 import os, sys, time, ConfigParser
-import logger, gen_rc_motion, gen_vhost, gen_start_sh
+import logger, gen_rc_motion, gen_vhost, gen_kmotion, gen_kmotion_restart
 
 """
-Controls kmotion daemons & reports on their ststus
+Controls kmotion daemons & reports on their status
 """
 
 parser = ConfigParser.SafeConfigParser()
@@ -40,7 +40,8 @@ def start_daemons():
     rc_motion = gen_rc_motion.Gen_Rc_Motion()  
     rc_motion.gen_rc_motion() 
     gen_vhost.gen_vhost()
-    gen_start_sh.gen_start_sh()
+    gen_kmotion.gen_kmotion()
+    gen_kmotion_restart.gen_kmotion_restart()
     
     # Only need to start kmotion_hkd1, it starts the rest
     if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'): os.system(daemons_dir + '/kmotion_hkd1.py &> /dev/null')
@@ -78,7 +79,8 @@ def config_reload():
     rc_motion = gen_rc_motion.Gen_Rc_Motion()  
     rc_motion.gen_rc_motion() 
     gen_vhost.gen_vhost()
-    gen_start_sh.gen_start_sh()
+    gen_kmotion.gen_kmotion()
+    gen_kmotion_restart.gen_kmotion_restart()
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd1.py\'') 
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd2.py\'')
     os.system('killall -s SIGHUP motion 2> /dev/null')

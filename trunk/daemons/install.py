@@ -54,7 +54,7 @@ def install():
     # configure kmotion
     print
     print_checking('Configuring kmotion')
-    os.system('sudo -u %s ./reconfig.py' % login)
+    os.system('sudo -u %s ./config.py' % login)
     print_ok()
     
     # link vhost file
@@ -68,48 +68,40 @@ def install():
     print
     os.system('/etc/init.d/apache2 restart')
     
-    # link kmotion to /usr/local/bin
+    # move kmotion to /usr/bin
     print_checking('Adding \'kmotion\' to \'/usr/bin\'')
     print_ok()
-    os.system('ln -fs %s/kmotion /usr/bin' % daemons_dir)
+    os.rename('%s/kmotion' % daemons_dir, '/usr/bin/kmotion')
     
-    # link kmotion_restart to /usr/local/bin
+    # move kmotion_restart to /usr/local/bin
     print_checking('Adding \'kmotion_restart\' to \'/usr/bin\'')
     print_ok()
-    os.system('ln -fs %s/kmotion_restart /usr/bin' % daemons_dir)
-    
-    # add startup to /etc/rc.local
+    os.rename('%s/kmotion_restart' % daemons_dir,  '/usr/bin/kmotion_restart')
+            
+    # add kmotion to /etc/rc.local
     print_checking('Adding \'kmotion\' to \'/etc/rc.local\' for auto startup')
     f = open('/etc/rc.local', 'r')
     lines = f.readlines()
     f.close
     
     f = open('/etc/rc.local', 'w')
+    ok = False
     for line in lines:
         if line == 'sudo -u %s motion &\n' % login: continue
-        if line == 'exit 0\n':
+        if line[:4] == 'exit':
             f.write('sudo -u %s motion &\n' %  login)
+            ok = True
         f.write(line)
     f.close
-    print_ok()
+    if ok: 
+        print_ok()
+    else: print_fail('Failed to add kmotion to \'/etc/rc.local\' please ensure \'/etc/rc.local\' has the line \'exit 0\' as the last line')
     print
-            
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
 def print_checking(text):
     length = len(text)
-    print '\033[1;32m%s' % (text),
+    print '\033[1;32m%s' % text,
     print '.' *  (65 - length) , 
     print '\033[1;37m',
     
@@ -117,16 +109,7 @@ def print_ok():
     print '\033[1;32m[OK]\033[1;37m'
     
 def print_fail(text):
-    print '\033[1;31m[FAIL]\n\n%s\n\033[1;37m' % (text)
+    print '\033[1;31m[FAIL]\n\n%s\n\033[1;37m' % text,
     
     
-        
-    
-    
-    
-    
-
-
-
-
 install()
