@@ -14,8 +14,6 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# kmotion house keeping daemon 1
-
 import os, sys, time, signal, shutil,  ConfigParser, daemon_whip
 import logger
 

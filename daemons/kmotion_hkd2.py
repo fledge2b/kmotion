@@ -14,8 +14,6 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# kmotion housekeeping daemon 2
-
 import os, sys, time, signal, shutil, ConfigParser, logger, daemon_whip
 
 parser = ConfigParser.SafeConfigParser()
@@ -24,14 +22,16 @@ log_level = parser.get('debug', 'log_level')
 logger = logger.Logger('kmotion_hkd2', log_level)
 
 """
-Copys or moves files from /var/lib/kmotion/images_dir/<date>/<feed>/tmp to ../video
-as defined in kmotion.rc. Updates /var/lib/kmotion/images_dir/<date>/<feed>/journal_snap
-with snapshot information. Finally responds to a SIGHUP by re-reading kmotion.rc.
+A fairly complex daemon that copys, moves or deletes files from images_dir/.../tmp to images_dir/.../video
+as defined in kmotion.rc generating a 'sanitized' snapsot sequence. Updates journal_snap with snapshot 
+information, responds to a SIGHUP by re-reading its configuration. Responds to a SIGKILL by updateing
+journal_snap with a special #<START SECONDS>$86400 'no snapshot' string
 """
 
 class Hkd2_Feed:
     
     def __init__(self, feed, images_dir, snapshot_interval):
+        signal.signal(signal.SIGHUP, self.signal_kill)
         self.feed = feed
         self.images_dir = images_dir
         self.snapshot_current = '000000'
@@ -41,7 +41,8 @@ class Hkd2_Feed:
         
     def run(self):
         """ 
-        process the snapshots 
+        Copys, moves or deletes files from images_dir/.../tmp to images_dir/.../video as defined in kmotion.rc 
+        generating a 'sanitized' snapsot sequence
         """
         date = time.strftime('%Y%m%d')
         tmp_dir = '%s/%s/%02i/tmp/' % (self.images_dir, date, self.feed + 1) 
@@ -91,7 +92,7 @@ class Hkd2_Feed:
             
     def update_journal(self, date, feed, seconds, pause):
         """ 
-        update the snapshot journal
+        Given the date, feed number, seconds and pause in seconds updates journal_snap
         """
         # add to journal of snapshots in the form #<snapshot start seconds>$<snapshot pause in seconds>
         journal = open('%s/%s/%02i/journal_snap' % (self.images_dir, date, (feed + 1)), 'a')
@@ -101,7 +102,9 @@ class Hkd2_Feed:
             
     def inc_time(self, time, inc_secs):
         """ 
-        increment a time string of format HHMMSS with inc_secs seconds, returns a time string of the format HHMMSS 
+        Given a time string in the format HHMMSS and the seconds to increment, calculates a new time string
+        
+        Returns a new time string in the format HHMMSS
         """
         hh = int(time[:2])
         mm = int(time[2:4])
@@ -113,6 +116,17 @@ class Hkd2_Feed:
         return '%02i%02i%02i' % (hh, mm, ss)
         
 
+    def signal_kill(self, signum, frame):
+        """
+        On SIGKILL update journal_snap with a special #<START SECONDS>$86400 'no snapshot' string
+        """
+        now_secs =  time.strftime('%H') * 60 * 60
+        now_secs =  time.strftime('%M') * 60 + now_secs
+        now_secs =  time.strftime('%S') + now_secs
+        update_journal(self,  time.strftime('%Y%m%d'), self.feed, now_secs, 86400)
+        sys.exit()
+        
+
 class Kmotion_Hkd2:
     
     def __init__(self):
@@ -122,7 +136,9 @@ class Kmotion_Hkd2:
         
     def read_config(self):
         """
-        read the config file, return a list of snapshot_intervals where the lists length represents the number of feeds 
+        Read the config from daemon.rc 
+        
+        Returns a full path images_dir and a list of snapshot values
         """
         parser = ConfigParser.SafeConfigParser()
         parsed = parser.read('./daemon.rc')
@@ -137,7 +153,7 @@ class Kmotion_Hkd2:
     
     def start_daemon(self):
         """" 
-        Start the house keeping 2 daemon 
+        Start the house keeping 2 daemon. This daemon wakes up every 2 seconds
         """
         logger.log('Daemon starting ...', 'CRIT')
         while (True):
@@ -154,16 +170,12 @@ class Kmotion_Hkd2:
         
     def signal_hup(self, signum, frame):
             """ 
-            set change self.sighup_ok on SIGHUP 
+            On SIGHUP set self.sighup_ok to False to force a re-read of the config file 
             """
             logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
             self.sighup_ok = False
-##            
-##    def signal_kill(self, signum, frame):
-##            """
-##            
-##            """
-##        
+            
+            
 if __name__ == '__main__':
     Hkd2 = Kmotion_Hkd2()
     Hkd2.start_daemon()
