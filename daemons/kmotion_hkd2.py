@@ -158,12 +158,12 @@ class Kmotion_Hkd2:
             """
             logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
             self.sighup_ok = False
-            
-    def signal_kill(self, signum, frame):
-            """
-            
-            """
-        
+##            
+##    def signal_kill(self, signum, frame):
+##            """
+##            
+##            """
+##        
 if __name__ == '__main__':
     Hkd2 = Kmotion_Hkd2()
     Hkd2.start_daemon()
