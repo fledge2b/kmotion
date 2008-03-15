@@ -14,12 +14,11 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# start kmotion
-
 import daemon_whip
 
 """
-Starts kmotion
+Called by the bin kmotion file this module simply calls start_daemons().  The bin kmotion file cannot
+call start_daemons() directly because it may be in a different working directory.
 """
 
 daemon_whip.start_daemons()

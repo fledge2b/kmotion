@@ -14,18 +14,14 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# generate the kmotion_restart module
-
 import os, ConfigParser
 
 """
-Generate the kmotion start module
+Generate the kmotion_restart module which when executed always cd's to the correct directory 
+and calls kmotion_restart.py
 """
 
 def gen_kmotion_restart():
-    """
-    Generate the kmotion_restart module
-    """
     
     parser = ConfigParser.SafeConfigParser()  
     parsed = parser.read('./daemon.rc')

@@ -14,16 +14,18 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# reload all configs
-
-import gen_rc_motion, gen_vhost, gen_kmotion, gen_kmotion_restart
+import gen_rcs, gen_vhost, gen_kmotion, gen_kmotion_restart
 
 """
-Reload all configs
+Generate all rc's by parsing motion.conf files, generate modified motion.conf files for kmotion,
+generate www.rc and modify daemon.rc 
+
+Generate vhost file from vhost template and bin files kmotion and kmotion_restart
 """
 
-rc_motion = gen_rc_motion.Gen_Rc_Motion()  
-rc_motion.gen_rc_motion() 
+rcs = gen_rcs.Gen_Rcs()  
+rcs.gen_rcs() 
+
 gen_vhost.gen_vhost()
 gen_kmotion.gen_kmotion()
 gen_kmotion_restart.gen_kmotion_restart()

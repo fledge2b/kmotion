@@ -14,21 +14,22 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# kmotion logger - very light weight
-
 import syslog
 
 """
-Workaround for the buggy syslog module - should not be necessary
+A workaround for the buggy syslog module - should not be necessary but nothing
+is perfect
 """
 
 class Logger:
 
     def __init__(self, ident, min_priority):
-        """ Create a 'Logger' instance whith a min logging priority of 'min_priority' """
+        """ 
+        Given a identity string and a min priority string create a logger instance. The priority string
+        must be one of EMERG, ALERT, CRIT, ERR, WARNING, NOTICE, INFO, DEBUG
+        """
         # 'min_priority' is the min priority level at which events will be sent to syslog, 
-        # it  must be one of ...
-        # EMERG, ALERT, CRIT, ERR, WARNING, NOTICE, INFO, DEBUG
+        # it  must be one of ... EMERG, ALERT, CRIT, ERR, WARNING, NOTICE, INFO, DEBUG
         self.case = {'EMERG': syslog.LOG_EMERG,
                             'ALERT': syslog.LOG_ALERT,
                             'CRIT': syslog.LOG_CRIT,
@@ -41,11 +42,18 @@ class Logger:
         self.min_priority = min_priority       
     
     def set_prority(self,  min_priority):
-        """ Change the min logging priority """
+        """
+        Given the min priority string modify the classes min priority value. The priority string must be one 
+        of EMERG, ALERT, CRIT, ERR, WARNING, NOTICE, INFO, DEBUG
+        """
         self.min_priority = min_priority  
     
     def log(self, msg, priority):
-        """ Log an message with priority 'priority' """
+        """
+        Log an message string with a certain priority string. If that priority is greater than the pre-defined
+        min priority log the message to /var/log/messages.  The priority string must be one of EMERG, ALERT,
+        CRIT, ERR, WARNING, NOTICE, INFO, DEBUG
+        """
         # 'priority' is the actual level of the event, it must be one of ...
         # EMERG, ALERT, CRIT, ERR, WARNING, NOTICE, INFO, DEBUG
         # 'msg' will only be sent to syslog if 'priority' >= 'min_priority'

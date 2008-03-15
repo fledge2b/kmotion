@@ -14,18 +14,15 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# generate apache2 vhost file
-
 import ConfigParser
 
 """
-From kmotion_template, generate kmotion_vhost
+Generate the kmotion_vhost file from kmotion_vhost_template expanding %directory%
+strings to their full paths as defined in daemon.rc
 """
         
 def gen_vhost():
-    """
-    From kmotion_template, generate kmotion_vhost
-    """
+    
     parser = ConfigParser.SafeConfigParser()  
     parsed = parser.read('./daemon.rc')
     images_dir = parser.get('dirs', 'images_dir')
