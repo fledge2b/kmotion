@@ -14,26 +14,28 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# kmotion install daemon
+# kmotion install 
 
-import os, ConfigParser
+import os, pwd, ConfigParser
 
 def install():
 
-    # check for root authority
+    # check not running as root
     print_checking('Checking install is running as root')
     uid = os.getuid()
     if uid != 0:
-        print_fail( 'install.py needs to be run as \'sudo install.py\'')
+        print_fail( 'Install needs to be runs as root, try \'sudo install\'')
         return
     print_ok()
     
+    login = os.environ['SUDO_USER']
+
     # check we can read ./daemon.rc
     print_checking('Checking install is running in daemons directory')
     parser = ConfigParser.SafeConfigParser()
     parsed = parser.read('./daemon.rc')
     if parsed != ['./daemon.rc']:
-        print_fail( 'please \'cd\' to the kmotion daemons directory')
+        print_fail( 'Please \'cd\' to the kmotion daemons directory')
         return
     print_ok()
         
@@ -42,23 +44,22 @@ def install():
     daemons_dir = parser.get('dirs', 'daemons_dir')
     apache2_config_dir = parser.get('dirs', 'apache2_config_dir')
     www_dir = parser.get('dirs', 'www_dir')
+    
     # apt-get the packages
     print_checking('Requesting critical packages')
     print_ok()
     print
     os.system('apt-get install libapache2-mod-php5 apache2 motion screen')
     
-    # reconfigure kmotion
+    # configure kmotion
     print
     print_checking('Configuring kmotion')
-    #FIXME: need to get users name :)
-    os.system('sudo -u dave ./reconfig.py')
+    os.system('sudo -u %s ./reconfig.py' % login)
     print_ok()
     
     # link vhost file
     print_checking('Linking apache2 \'sites-enabled\' to kmotion \'kmotion_vhost\'')
-    os.system('rm /etc/apache2/sites-enabled/kmotion_vhost &> /dev/null')
-    os.system('ln -s %s/kmotion_vhost  /etc/apache2/sites-enabled' % apache2_config_dir)
+    os.system('ln -fs %s/kmotion_vhost  /etc/apache2/sites-enabled' % apache2_config_dir)
     print_ok()
         
     # restart apache
@@ -67,27 +68,32 @@ def install():
     print
     os.system('/etc/init.d/apache2 restart')
     
+    # link kmotion to /usr/local/bin
+    print_checking('Adding \'kmotion\' to \'/usr/bin\'')
+    print_ok()
+    os.system('ln -fs %s/kmotion /usr/bin' % daemons_dir)
+    
+    # link kmotion_restart to /usr/local/bin
+    print_checking('Adding \'kmotion_restart\' to \'/usr/bin\'')
+    print_ok()
+    os.system('ln -fs %s/kmotion_restart /usr/bin' % daemons_dir)
+    
     # add startup to /etc/rc.local
-    print_checking('Adding \'kmotion\' to \'/etc/rc.local\'')
+    print_checking('Adding \'kmotion\' to \'/etc/rc.local\' for auto startup')
     f = open('/etc/rc.local', 'r')
     lines = f.readlines()
     f.close
     
     f = open('/etc/rc.local', 'w')
     for line in lines:
-        if line == 'motion &': continue
-        if line == 'exit 0':
-    #FIXME: need to get users name :)
-            f.write('sudo -u %s -s motion &')
+        if line == 'sudo -u %s motion &\n' % login: continue
+        if line == 'exit 0\n':
+            f.write('sudo -u %s motion &\n' %  login)
         f.write(line)
     f.close
-            
-    print_checking('Linking \'kmotion\' to \'/usr/local/bin\'')
     print_ok()
-    #FIXME: need to get users name :)
-    os.system('sudo -u dave ln -s %s/kmotion /usr/local/bin')
-    
-    
+    print
+            
     
     
     
