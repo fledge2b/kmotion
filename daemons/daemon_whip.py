@@ -14,13 +14,12 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# kmotion control daemons
-
 import os, sys, time, ConfigParser
 import logger, gen_rc_motion, gen_vhost, gen_kmotion, gen_kmotion_restart
 
 """
-Controls kmotion daemons & reports on their status
+Controls kmotion daemons allowing daemon starting, stopping, checking of status
+and configuration reloading
 """
 
 parser = ConfigParser.SafeConfigParser()
@@ -37,15 +36,15 @@ def start_daemons():
     parser.read('./daemon.rc')
     daemons_dir =  parser.get('dirs', 'daemons_dir')
         
-    rc_motion = gen_rc_motion.Gen_Rc_Motion()  
-    rc_motion.gen_rc_motion() 
+    rcs = gen_rcs.Gen_Rcs()  
+    rcs.gen_rcs() 
     gen_vhost.gen_vhost()
-    gen_kmotion.gen_kmotion()
-    gen_kmotion_restart.gen_kmotion_restart()
     
     # Only need to start kmotion_hkd1, it starts the rest
-    if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'): os.system(daemons_dir + '/kmotion_hkd1.py &> /dev/null')
-    else: logger.log('start_daemons() - daemons already running - none started', 'DEBUG')
+    if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'): 
+        os.system(daemons_dir + '/kmotion_hkd1.py &> /dev/null')
+    else: 
+        logger.log('start_daemons() - daemons already running - none started', 'DEBUG')
     
     
 def kill_daemons():
@@ -67,20 +66,16 @@ def daemons_running():
     """ 
     Return true if daemons are running 
     """
-    if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'):  return False
-    else: return True
+    return not os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null') and not os.system('ps ax | grep \'kmotion_hkd2.py$\' > /dev/null') and not os.system('/bin/ps ax | /bin/grep [m]otion\ -c')
     
     
 def config_reload():
     """ 
     Force daemons to reload configs
     """
-    # Only need to SIGHUP kmotion_hkd1, it SIGHUPs kmotion_hkd2
-    rc_motion = gen_rc_motion.Gen_Rc_Motion()  
-    rc_motion.gen_rc_motion() 
+    rcs = gen_rcs.Gen_Rcs()  
+    rcs.gen_rcs() 
     gen_vhost.gen_vhost()
-    gen_kmotion.gen_kmotion()
-    gen_kmotion_restart.gen_kmotion_restart()
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd1.py\'') 
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd2.py\'')
     os.system('killall -s SIGHUP motion 2> /dev/null')

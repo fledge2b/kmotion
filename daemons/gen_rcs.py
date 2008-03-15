@@ -14,38 +14,39 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# generate rc files & motion files
-
 import os, sys, ConfigParser
 import logger
 
 """
-Parse motion.conf & threads, generate filterd motion.conf & threads + daemon_rc & www_rc
+Generate rc's by parsing motion.conf files, generate modified motion.conf files for kmotion,
+generate www.rc and modify daemon.rc 
 """
         
-class Gen_Rc_Motion:
+class Gen_Rcs:
     
     def __init__(self):  
         self.blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save', 'target_dir']
         
         
-    def gen_rc_motion(self):
+    def gen_rcs(self):
         """
-        locate & parse motion.conf & its thread files. generate feed.rc and modify daemon.rc as appropreate
+        Generate rc's by parsing motion.conf files, generate modified motion.conf files for kmotion,
+        generate www.rc and modify daemon.rc 
         """
         self.read_daemon_rc()
         self.logger = logger.Logger('daemon_start', self.log_level)
         motion_config = self.find_motion_conf()
-        threads, snapshot_interval = self.parse_motion_conf(motion_config)
-        names_list, snapshot_list = self.parse_motionx_conf(threads, snapshot_interval)
-        self.write_www_rc(names_list)
-        self.write_daemon_rc(snapshot_list)
+        threads, snapshot_interval = self.gen_motion_conf(motion_config)
+        names_list, snapshot_list = self.gen_motionx_conf(threads, snapshot_interval)
+        self.gen_www_rc(names_list)
+        self.modify_daemon_rc(snapshot_list)
         
     
     def find_motion_conf(self):
         """
-        look for motion.conf in the optional arguments, cwd, /etc/motion/, ~/.motion/, /usr/local/etc/
-        If found set motion_config if not log & sys.exit().
+        Search for motion.conf in the optional arguments, cwd, /etc/motion/, ~/.motion/ and /usr/local/etc/
+        
+        Returns full path and filename
         """
         cwd = os.getcwd() + '/motion.conf'
         home = os.path.expanduser( '~/.motion/motion.conf')
@@ -69,10 +70,12 @@ class Gen_Rc_Motion:
         return motion_config
                 
                 
-    def parse_motion_conf(self, motion_config):
+    def gen_motion_conf(self, motion_config):
         """
-        parse motion.conf, check for blacklist options, global snapshot_intervals and threads. returns
-        a list of thread files & any snapshot_intervals
+        Given a full path motion.conf file, parse it and check for blacklist options, global snapshot_intervals and threads.
+        Generate a modified motion.conf file. 
+        
+        Returns a list of full path thread files and a global snapshot_interval
         """
         snapshot_interval = 0
         threads = []  # list of motion.conf thread file names
@@ -108,10 +111,12 @@ class Gen_Rc_Motion:
         return threads, snapshot_interval
         
         
-    def parse_motionx_conf(self, threads, snapshot_interval):
+    def gen_motionx_conf(self, threads, snapshot_interval):
         """
-        parse all threads pointed to in motion.conf, check for blacklist options, snapshot_intervals, and the #ktext
-        operator. returns a #ktext names & snapshot_intervals
+        Given a list of full path thread files and a global snapshot_interval parse all threads and check for blacklist options, 
+        snapshot_intervals, and the #ktext operator. Generate modified thread files.
+          
+        Returns two lists, one of #ktext names and one of snapshot_intervals
         """
         thread_count = 0
         names_list = []       # list of feed names from motionx.conf's
@@ -158,9 +163,10 @@ class Gen_Rc_Motion:
         return names_list, snapshot_list
             
             
-    def write_www_rc(self, names_list):
+    def gen_www_rc(self, names_list):
         """
-        update php.rc
+        Given a list of camera / feed names generate www.rc consisting of the images_dir path followed by a list of the names
+        for apache2 PHP code
         """
         f = open('%s/www.rc' % (self.www_dir), 'w')
         f.write('%s\n' % (self.images_dir))
@@ -169,9 +175,9 @@ class Gen_Rc_Motion:
         f.close
 
 
-    def write_daemon_rc(self, snapshot_list):
+    def modify_daemon_rc(self, snapshot_list):
         """
-        write modified config to ./daemon.rc
+        Given a list of snapshot_intervals modify daemon.rc
         """
         parser = ConfigParser.SafeConfigParser()
         parser.read('./daemon.rc')
@@ -184,7 +190,7 @@ class Gen_Rc_Motion:
         
     def read_daemon_rc(self):
         """ 
-        read config from ./daemon.rc 
+        Read configuration from daemon.rc 
         """
         parser = ConfigParser.SafeConfigParser()
         parser.read('./daemon.rc')
@@ -195,7 +201,7 @@ class Gen_Rc_Motion:
         
             
 if __name__ == '__main__':
-    rc_motion = Gen_Rc_Motion()
-    rc_motion.gen_rc_motion()
+    rcs = Gen_Rcs()
+    rcs.gen_rcs()
         
 

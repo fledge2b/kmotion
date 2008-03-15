@@ -14,9 +14,11 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# kmotion manual daemon control
-
 import time, sys, daemon_whip
+
+"""
+A crude daemon control program, usefull for kmotion diagnostics
+"""
 
 print '\nkmotion manual daemon control ........'
 while (True):

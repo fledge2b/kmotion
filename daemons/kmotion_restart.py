@@ -14,12 +14,12 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# start kmotion
-
 import daemon_whip
 
 """
-Restart kmotion
+Called by the bin kmotion_restart file this module simply calls config_reload() or if the
+daemons are not running calls start_daemons().  The bin kmotion_restart file cannot 
+call config_reload() directly because it may be in a different working directory.
 """
 
 if daemon_whip.daemons_running():
