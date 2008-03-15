@@ -14,17 +14,16 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# kmotion daemon dependency workaround
+# start kmotion
 
 import daemon_whip
 
 """
-The only reason daemon_dep.py exists is as a workaround for circular dependencies
+Restart kmotion
 """
 
-daemon_whip.start_daemons()
-
-
-
-
-
+if daemon_whip.daemons_running():
+    daemon_whip.config_reload()
+else:
+    daemon_whip.start_daemons()
+    
