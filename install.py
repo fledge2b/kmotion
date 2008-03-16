@@ -63,7 +63,7 @@ Press ENTER to start install.\033[1;37m"""
     os.system('sudo -u %s ./install_utils.py' % login)
     
     parser = ConfigParser.SafeConfigParser()
-    parsed = parser.read('./daemons/daemon.rc')
+    parsed = parser.read('./daemon.rc')
     
     images_dir = parser.get('dirs', 'images_dir')
     misc_config_dir = parser.get('dirs', 'misc_config_dir')
