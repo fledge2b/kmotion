@@ -91,7 +91,7 @@ Press ENTER to start uninstall.\033[1;37m"""
     f = open('/etc/rc.local', 'w')
     detected = False
     for line in lines:
-        if line == 'sudo -u %s motion &\n' % login:
+        if line == 'sudo -u %s kmotion &\n' % login:
             detected = True
             continue
         f.write(line)

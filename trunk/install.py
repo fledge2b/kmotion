@@ -109,9 +109,9 @@ Press ENTER to start install.\033[1;37m"""
     f = open('/etc/rc.local', 'w')
     ok = False
     for line in lines:
-        if line == 'sudo -u %s motion &\n' % login: continue
+        if line == 'sudo -u %s kmotion &\n' % login: continue
         if line[:4] == 'exit':
-            f.write('sudo -u %s motion &\n' %  login)
+            f.write('sudo -u %s kmotion &\n' %  login)
             ok = True
         f.write(line)
     f.close
