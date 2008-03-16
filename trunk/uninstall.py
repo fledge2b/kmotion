@@ -100,7 +100,7 @@ Press ENTER to start uninstall.\033[1;37m"""
     else:
         print_fail('\'kmotion\' already removed from \'/etc/rc.local\'')
     print
-    
+
 
 def print_checking(text):
     """
