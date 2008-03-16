@@ -22,13 +22,13 @@ Generate rc's by parsing motion.conf files, generate modified motion.conf files 
 generate www.rc and modify daemon.rc 
 """
         
-class Gen_Rcs:
+class Gen_Int_Rcs:
     
     def __init__(self):  
         self.blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save', 'target_dir']
         
         
-    def gen_rcs(self):
+    def gen_int_rcs(self):
         """
         Generate rc's by parsing motion.conf files, generate modified motion.conf files for kmotion,
         generate www.rc and modify daemon.rc 
@@ -44,7 +44,7 @@ class Gen_Rcs:
     
     def find_motion_conf(self):
         """
-        Search for motion.conf in the optional arguments, cwd, /etc/motion/, ~/.motion/ and /usr/local/etc/
+        Search for motion.conf in the optional arguments, /etc/motion/, ~/.motion/ and /usr/local/etc/
         
         Returns full path and filename
         """
@@ -53,9 +53,9 @@ class Gen_Rcs:
         etc = '/etc/motion/motion.conf'
         usr =  '/usr/local/etc/motion.conf'
         
-        if  len(sys.argv) == 2  and sys.argv[1].split('/')[-1:][0] == 'motion.conf' and os.path.isfile(sys.argv[1]): 
-            motion_config = sys.argv[1]
-        elif os.path.isfile(cwd): 
+        #if  len(sys.argv) == 2  and sys.argv[1].split('/')[-1:][0] == 'motion.conf' and os.path.isfile(sys.argv[1]): 
+        #    motion_config = sys.argv[1]
+        if os.path.isfile(cwd): 
             motion_config = cwd
         elif os.path.isfile(home): 
             motion_config = home
@@ -64,7 +64,7 @@ class Gen_Rcs:
         elif os.path.isfile(usr): 
             motion_config = usr
         else:
-            self.logger.log('Could not find config file in <arg>, ./motion.conf, /etc/motion/motion.conf, ~/.motion/motion.conf or /usr/local/etc/motion.conf - exiting', 'CRIT')
+            self.logger.log('Could not find config file in ./motion.conf, /etc/motion/motion.conf, ~/.motion/motion.conf or /usr/local/etc/motion.conf - exiting', 'CRIT')
             sys.exit()
         self.logger.log('Found config file %s' % (motion_config), 'NOTICE')
         return motion_config
@@ -201,7 +201,7 @@ class Gen_Rcs:
         
             
 if __name__ == '__main__':
-    rcs = Gen_Rcs()
-    rcs.gen_rcs()
+    rcs = Gen_Int_Rcs()
+    rcs.gen_int_rcs()
         
 

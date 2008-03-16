@@ -15,7 +15,7 @@
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
 import os, sys, time, ConfigParser
-import logger, gen_rc_motion, gen_vhost, gen_kmotion, gen_kmotion_restart
+import logger, gen_int_rcs, gen_vhost, gen_kmotion, gen_kmotion_restart
 
 """
 Controls kmotion daemons allowing daemon starting, stopping, checking of status
@@ -36,8 +36,8 @@ def start_daemons():
     parser.read('./daemon.rc')
     daemons_dir =  parser.get('dirs', 'daemons_dir')
         
-    rcs = gen_rcs.Gen_Rcs()  
-    rcs.gen_rcs() 
+    rcs = gen_int_rcs.Gen_Int_Rcs()  
+    rcs.gen_int_rcs() 
     gen_vhost.gen_vhost()
     
     # Only need to start kmotion_hkd1, it starts the rest
@@ -73,8 +73,8 @@ def config_reload():
     """ 
     Force daemons to reload configs
     """
-    rcs = gen_rcs.Gen_Rcs()  
-    rcs.gen_rcs() 
+    rcs = gen_int_rcs.Gen_Int_Rcs()  
+    rcs.gen_int_rcs() 
     gen_vhost.gen_vhost()
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd1.py\'') 
     os.system('pkill -SIGHUP -f \'python.+kmotion_hkd2.py\'')

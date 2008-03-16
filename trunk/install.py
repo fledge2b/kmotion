@@ -20,6 +20,20 @@ def install():
     """
     A very simple automated install script ... this code is not bombproof !
     """
+    
+    print """\033[1;32m
+Welcome to the kmotion v1.10b installer. Apart from internal configurations 
+the only changes that will be made to your system are:
+
+(1) A link from /etc/apache2/sites-enabled/ to this directory
+(2) The addition of 'kmotion' and 'kmotion_restart' to /usr/bin/
+(3) The addition of 'sudo -u <name> motion &' to /etc/rc.local
+
+All of which are reversible manually or by executing uninstall.py. 
+
+Press ENTER to start install.\033[1;37m"""
+
+    raw_input()
 
     # check not running as root
     print_checking('Checking install is running as root')
@@ -31,15 +45,25 @@ def install():
     
     login = os.environ['SUDO_USER']
 
-    # check we can read ./daemon.rc - if we can't assume we are not in the daemons directory
-    print_checking('Checking install is running in daemons directory')
+    # check we can read ./daemons/daemon.rc - if we can't assume we are not in the root directory
+    print_checking('Checking install is running in correct directory')
     parser = ConfigParser.SafeConfigParser()
-    parsed = parser.read('./daemon.rc')
-    if parsed != ['./daemon.rc']:
-        print_fail( 'Please \'cd\' to the kmotion daemons directory')
+    parsed = parser.read('./daemons/daemon.rc')
+    if parsed != ['./daemons/daemon.rc']:
+        print_fail( 'Please \'cd\' to the kmotion root directory')
         return
     print_ok()
+    
+    # ironically then change to the daemons dir !
+    os.chdir('./daemons')
         
+    # configure kmotion
+    print_checking('Generating kmotion configurations')
+    print_ok()
+    print_checking('Changing kmotion paths to cwd')
+    print_ok()
+    os.system('sudo -u %s ./install_utils.py' % login)
+    
     images_dir = parser.get('dirs', 'images_dir')
     misc_config_dir = parser.get('dirs', 'misc_config_dir')
     daemons_dir = parser.get('dirs', 'daemons_dir')
@@ -52,13 +76,8 @@ def install():
     print
     os.system('apt-get install libapache2-mod-php5 apache2 motion screen')
     
-    # configure kmotion
-    print
-    print_checking('Generating all kmotion configurations')
-    os.system('sudo -u %s ./gen_all.py' % login)
-    print_ok()
-    
     # link vhost file
+    print
     print_checking('Linking apache2 \'sites-enabled\' to kmotion \'kmotion_vhost\'')
     os.system('ln -fs %s/kmotion_vhost  /etc/apache2/sites-enabled' % apache2_config_dir)
     print_ok()

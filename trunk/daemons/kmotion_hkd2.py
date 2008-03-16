@@ -16,11 +16,6 @@
 
 import os, sys, time, signal, shutil, ConfigParser, logger, daemon_whip
 
-parser = ConfigParser.SafeConfigParser()
-parsed = parser.read('./daemon.rc')
-log_level = parser.get('debug', 'log_level')
-logger = logger.Logger('kmotion_hkd2', log_level)
-
 """
 A fairly complex daemon that copys, moves or deletes files from images_dir/.../tmp to images_dir/.../video
 as defined in kmotion.rc generating a 'sanitized' snapsot sequence. Updates journal_snap with snapshot 
@@ -28,10 +23,14 @@ information, responds to a SIGHUP by re-reading its configuration. Responds to a
 journal_snap with a special #<START SECONDS>$86400 'no snapshot' string
 """
 
+parser = ConfigParser.SafeConfigParser()
+parsed = parser.read('./daemon.rc')
+log_level = parser.get('debug', 'log_level')
+logger = logger.Logger('kmotion_hkd2', log_level)
+
 class Hkd2_Feed:
     
     def __init__(self, feed, images_dir, snapshot_interval):
-        signal.signal(signal.SIGHUP, self.signal_kill)
         self.feed = feed
         self.images_dir = images_dir
         self.snapshot_current = '000000'
@@ -115,18 +114,7 @@ class Hkd2_Feed:
         ss =  tmp_secs - hh * 60 * 60 - mm * 60
         return '%02i%02i%02i' % (hh, mm, ss)
         
-
-    def signal_kill(self, signum, frame):
-        """
-        On SIGKILL update journal_snap with a special #<START SECONDS>$86400 'no snapshot' string
-        """
-        now_secs =  time.strftime('%H') * 60 * 60
-        now_secs =  time.strftime('%M') * 60 + now_secs
-        now_secs =  time.strftime('%S') + now_secs
-        update_journal(self,  time.strftime('%Y%m%d'), self.feed, now_secs, 86400)
-        sys.exit()
         
-
 class Kmotion_Hkd2:
     
     def __init__(self):
@@ -175,11 +163,16 @@ class Kmotion_Hkd2:
             logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
             self.sighup_ok = False
             
-            
-if __name__ == '__main__':
-    Hkd2 = Kmotion_Hkd2()
-    Hkd2.start_daemon()
-    
+##            
+##    # configure kmotion
+##    print
+##    print_checking('Generating all kmotion configurations')
+##    os.system('sudo -u %s ./install_utils.py' % login)
+##    print_ok()
+##if __name__ == '__main__':
+##    Hkd2 = Kmotion_Hkd2()
+##    Hkd2.start_daemon()
+##    
             
             
  
