@@ -30,6 +30,7 @@ parser.set('dirs', 'misc_config_dir', cwd + 'misc_config')
 parser.set('dirs', 'daemons_dir', cwd + 'daemons')
 parser.set('dirs', 'apache2_config_dir', cwd + 'apache2_config')
 parser.set('dirs', 'www_dir', cwd + 'www')
+parser.write(open('./daemon.rc', 'w'))  # when parser writes the file WHAT A HORRIBLE MESS - YUK !
 
 gen_vhost.gen_vhost()
 gen_kmotion.gen_kmotion()
