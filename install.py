@@ -47,7 +47,7 @@ Press ENTER to start install.\033[1;37m"""
 
     # check we can read ./daemons/daemon.rc - if we can't assume we are not in the root directory
     print_checking('Checking install is running in correct directory')
-    if not os.isfile('./daemons/daemon.rc'):
+    if not os.path.isfile('./daemons/daemon.rc'):
         print_fail( 'Please \'cd\' to the kmotion root directory')
         return
     print_ok()
@@ -62,7 +62,6 @@ Press ENTER to start install.\033[1;37m"""
     print_ok()
     os.system('sudo -u %s ./install_utils.py' % login)
     
-    # have to re-parse since instal_utils changed paths
     parser = ConfigParser.SafeConfigParser()
     parsed = parser.read('./daemons/daemon.rc')
     
