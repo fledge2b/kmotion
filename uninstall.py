@@ -116,14 +116,6 @@ Press ENTER to start uninstall.\033[1;37m"""
     print
     
 
-
-
-
-
-
-
-
-
 def print_checking(text):
     """
     Given a text string colorise to green and calculate the number of '.'s
