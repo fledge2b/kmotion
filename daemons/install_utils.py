@@ -14,17 +14,22 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-import gen_rcs, gen_vhost, gen_kmotion, gen_kmotion_restart
+import os, ConfigParser
+import gen_vhost, gen_kmotion, gen_kmotion_restart
 
 """
-Generate all rc's by parsing motion.conf files, generate modified motion.conf files for kmotion,
-generate www.rc and modify daemon.rc 
-
-Generate vhost file from vhost template and bin files kmotion and kmotion_restart
+Modify daemon.rc paths to reflect cwd. Generate vhost file from vhost template. Generate 
+bin files kmotion and kmotion_restart
 """
 
-rcs = gen_rcs.Gen_Rcs()  
-rcs.gen_rcs() 
+parser = ConfigParser.SafeConfigParser()
+parsed = parser.read('./daemon.rc')
+cwd = os.getcwd()[:-7]  # strips off 'daemons' to get root directory
+parser.set('dirs', 'images_dir', cwd + 'images')
+parser.set('dirs', 'misc_config_dir', cwd + 'misc_config')
+parser.set('dirs', 'daemons_dir', cwd + 'daemons')
+parser.set('dirs', 'apache2_config_dir', cwd + 'apache2_config')
+parser.set('dirs', 'www_dir', cwd + 'www')
 
 gen_vhost.gen_vhost()
 gen_kmotion.gen_kmotion()

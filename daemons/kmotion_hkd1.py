@@ -23,6 +23,11 @@ Checks that 'motion' & 'kmotion_hkd2.py' are running, restarting them if neccess
 SIGHUP by re-reading its configuration.
 """
 
+parser = ConfigParser.SafeConfigParser()
+parsed = parser.read('./daemon.rc')
+log_level = parser.get('debug', 'log_level')
+logger = logger.Logger('kmotion_hkd1', log_level)
+
 class Kmotion_Hkd1:
     
     def __init__(self):
@@ -34,14 +39,13 @@ class Kmotion_Hkd1:
         self.prev_date = '000000'
         signal.signal(signal.SIGHUP, self.signal_hup)
         self.read_config()
-        self.logger = logger.Logger('kmotion_hdk1', self.log_level)
         
         
     def start_daemon(self):    
         """
         Start the house keeping 1 daemon. This daemon wakes up every 15 minutes
         """
-        self.logger.log('Daemon starting ...', 'DEBUG')
+        logger.log('Daemon starting ...', 'DEBUG')
         # ensure .../events directory exists & is empty
         shutil.rmtree('%s/events' % (self.images_dir), True)
         os.makedirs('%s/events' % (self.images_dir))
@@ -51,7 +55,7 @@ class Kmotion_Hkd1:
             if sum > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
                 dir = os.listdir(self.images_dir)
                 dir.sort()
-                self.logger.log('Image storeage limit reached - deleteing %s/%s' %  (self.images_dir, dir[0]), 'CRIT')
+                logger.log('Image storeage limit reached - deleteing %s/%s' %  (self.images_dir, dir[0]), 'CRIT')
                 shutil.rmtree('%s/%s' % (self.images_dir, dir[0]))  # delete oldest dir first
             self.chk_motion()
             self.chk_kmotion_hkd2()
@@ -101,7 +105,7 @@ class Kmotion_Hkd1:
         Check motion is still running ... if not restart it ... 
         """
         if os.system('/bin/ps ax | /bin/grep [m]otion\ -c'):
-           self.logger.log('motion not running - starting motion', 'CRIT')
+           logger.log('motion not running - starting motion', 'CRIT')
            os.system('motion -c %s/motion.conf &' % (self.misc_config_dir))
             
                 
@@ -110,7 +114,7 @@ class Kmotion_Hkd1:
         Check kmotion_hkd2.py is still running ... if not restart it ... 
         """
         if os.system('/bin/ps ax | /bin/grep [k]motion_hkd2.py$'):
-           self.logger.log('kmotion_hkd2.py not running - starting kmotion_hkd2.py', 'CRIT')
+           logger.log('kmotion_hkd2.py not running - starting kmotion_hkd2.py', 'CRIT')
            os.system('%s/kmotion_hkd2.py &' % (self.daemons_dir))
 
 
@@ -125,14 +129,13 @@ class Kmotion_Hkd1:
         self.daemons_dir = parser.get('dirs', 'daemons_dir')
         self.misc_config_dir = parser.get('dirs', 'misc_config_dir')
         self.size_gb = int(parser.get('storage', 'size_gb')) * 2**30  # 2**30 = 1GB
-        self.log_level = parser.get('debug', 'log_level')
         
         
     def signal_hup(self, signum, frame):
         """
         On SIGHUP re-read the config file 
         """
-        self.logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
+        logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
         self.read_config()
         
             
