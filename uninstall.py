@@ -53,8 +53,11 @@ Press ENTER to start uninstall.\033[1;37m"""
     
     # delete link from /etc/apache2/sites-enabled/
     print_checking('Deleteing apache2 \'sites-enabled\' link')
-    os.remove('/etc/apache2/sites-enabled/kmotion_vhost')
-    print_ok()  
+    if os.path.islink('/etc/apache2/sites-enabled/kmotion_vhost'):
+        os.remove('/etc/apache2/sites-enabled/kmotion_vhost')
+        print_ok()  
+    else:
+        print_fail('apache2 \'sites-enabled\' link already deleted')
 
     # restart apache2
     print_checking('Restarting apache2')
@@ -64,14 +67,20 @@ Press ENTER to start uninstall.\033[1;37m"""
 
     # delete /usr/bin/kmotion
     print_checking('Deleteing /usr/bin/kmotion')
-    os.remove('/usr/bin/kmotion')
-    print_ok()  
+    if os.path.isfile('/usr/bin/kmotion'):
+        os.remove('/usr/bin/kmotion')
+        print_ok() 
+    else:
+        print_fail('/usr/bin/kmotion already deleted')
     
     # delete /usr/bin/kmotion_restart
     print_checking('Deleteing /usr/bin/kmotion_restart')
-    os.remove('/usr/bin/kmotion_restart')
-    print_ok()  
-
+    if os.path.isfile('/usr/bin/kmotion_restart'):
+        os.remove('/usr/bin/kmotion_restart')
+        print_ok()  
+    else:
+        print_fail('/usr/bin/kmotion_restart already deleted')
+    
     # remove kmotion from /etc/rc.local
     print_checking('Removing \'kmotion\' from \'/etc/rc.local\' for auto startup')
     f = open('/etc/rc.local', 'r')
@@ -79,12 +88,17 @@ Press ENTER to start uninstall.\033[1;37m"""
     f.close
     
     f = open('/etc/rc.local', 'w')
-    ok = False
+    detected = False
     for line in lines:
-        if line == 'sudo -u %s motion &\n' % login: continue
+        if line == 'sudo -u %s motion &\n' % login:
+            detected = True
+            continue
         f.write(line)
     f.close
-    print_ok()
+    if detected:
+        print_ok()
+    else:
+        print_fail('\'kmotion\' already removed from \'/etc/rc.local\'')
     print
     
 
@@ -107,7 +121,7 @@ def print_fail(text):
     """
     Given a text string colorise to red and prepend a [fail] 
     """
-    print '\033[1;31m[FAIL]\n\n%s\n\033[1;37m' % text,
+    print '\033[1;31m[FAIL] : %s\033[1;37m' % text
     
 
 uninstall()

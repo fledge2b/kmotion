@@ -74,7 +74,7 @@ Press ENTER to start install.\033[1;37m"""
     print_checking('Requesting critical packages')
     print_ok()
     print
-    os.system('apt-get install libapache2-mod-php5 apache2 motion screen')
+    os.system('apt-get install libapache2-mod-php5 apache2 motion ntp screen')
     
     # link vhost file
     print
