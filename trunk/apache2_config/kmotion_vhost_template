@@ -2,7 +2,7 @@
     ServerAdmin webmaster@localhost
     DocumentRoot %www_dir%
     
-    <Directory />
+    <Directory %www_dir%>
         Options FollowSymLinks MultiViews
         AllowOverride None
         Order allow,deny
