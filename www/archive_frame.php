@@ -1307,7 +1307,7 @@
 	$dir = dir($path."/".$date_dir);
 	while (false !== ($entry = $dir->read())) 
 	{
-		if ($entry != "." and $entry != "..")
+		if ($entry != "." and $entry != ".." and $entry != 'size')
 		{
 			$feed_dirs[] = $entry;
 		}
