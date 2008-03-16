@@ -27,14 +27,29 @@ while (True):
     print '2: Kill Daemons'
     print '3: Reload Daemon configs'
     print '4: Quit'
+    print '\nENTER: Refresh'
     
-    if(daemon_whip.daemons_running()):
-      status = '\033[1;32mRunning\033[1;37m'
+    status = daemon_whip.daemon_status()
+    if status['kmotion_hkd1.py']:
+        text = '\033[1;32mRunning\033[1;37m'
     else:
-      status = '\033[1;31mNot running\033[1;37m'
-    print '\nDaemon status : ' + status
+        text= '\033[1;31mNot running\033[1;37m'
+    print '\nkmotion_hkd1.py status : ' + text
     
-    opt = raw_input('Option number then ENTER :')
+    if status['kmotion_hkd2.py']:
+        text = '\033[1;32mRunning\033[1;37m'
+    else:
+        text= '\033[1;31mNot running\033[1;37m'
+    print 'kmotion_hkd2.py status : ' + text
+    
+    if status['motion']:
+        text = '\033[1;32mRunning\033[1;37m'
+    else:
+        text= '\033[1;31mNot running\033[1;37m'
+    print 'motion status          : ' + text
+    print
+    
+    opt = raw_input('Option number then ENTER to select : ')
     
     if (opt == '1'):
         if(daemon_whip.daemons_running()):
@@ -51,6 +66,7 @@ while (True):
         if(daemon_whip.daemons_running()):
             print '\n\033[1;31mStarting to kill daemons ...\033[1;37m'
             daemon_whip.kill_daemons()
+            time.sleep(2)
             print '\033[1;31mDaemons have been killed ...\033[1;37m'
         else:
             print '\n\033[1;31m*INFORMATION* Daemons not running ...\033[1;37m'
@@ -67,7 +83,7 @@ while (True):
         if(daemon_whip.daemons_running()):
             print '\033[1;32m*WARNING* Daemons still running in background ...\033[1;37m\n'
         else:
-            print '\033[1;31m*WARNING* DAEMONS NOT RUNNING ...\033[1;37m\n'
+            print '\033[1;31m*WARNING* Daemons not running ...\033[1;37m\n'
         sys.exit()
 
 

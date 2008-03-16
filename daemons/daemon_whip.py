@@ -42,7 +42,7 @@ def start_daemons():
     
     # Only need to start kmotion_hkd1, it starts the rest
     if os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null'): 
-        os.system(daemons_dir + '/kmotion_hkd1.py &> /dev/null')
+        os.system(daemons_dir + '/kmotion_hkd1.py &')
     else: 
         logger.log('start_daemons() - daemons already running - none started', 'DEBUG')
     
@@ -64,10 +64,21 @@ def kill_daemons():
     
 def daemons_running():
     """ 
-    Return true if daemons are running 
+    Return true if kmotion_hkd1.py is running, kmotion_hkd1.py starts kmotion_hkd2.py and motion
     """
-    return not os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null') and not os.system('ps ax | grep \'kmotion_hkd2.py$\' > /dev/null') and not os.system('/bin/ps ax | /bin/grep [m]otion\ -c')
+    return not os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null') 
     
+    
+def daemon_status():
+    """ 
+    Returns a list of daemon names as keys and True / False for daemon running
+    """
+    status = {}
+    status['kmotion_hkd1.py'] = not os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null')
+    status['kmotion_hkd2.py'] = not os.system('ps ax | grep \'kmotion_hkd2.py$\' > /dev/null')
+    status['motion'] = not os.system('/bin/ps ax | /bin/grep [m]otion\ -c')
+    return status
+
     
 def config_reload():
     """ 

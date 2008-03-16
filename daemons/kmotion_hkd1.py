@@ -106,7 +106,7 @@ class Kmotion_Hkd1:
         """
         if os.system('/bin/ps ax | /bin/grep [m]otion\ -c'):
            logger.log('motion not running - starting motion', 'CRIT')
-           os.system('motion -c %s/motion.conf &' % (self.misc_config_dir))
+           os.system('motion -c %s/motion.conf 2> /dev/null &' % (self.misc_config_dir))
             
                 
     def chk_kmotion_hkd2(self):

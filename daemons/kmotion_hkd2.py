@@ -19,8 +19,7 @@ import os, sys, time, signal, shutil, ConfigParser, logger, daemon_whip
 """
 A fairly complex daemon that copys, moves or deletes files from images_dir/.../tmp to images_dir/.../video
 as defined in kmotion.rc generating a 'sanitized' snapsot sequence. Updates journal_snap with snapshot 
-information, responds to a SIGHUP by re-reading its configuration. Responds to a SIGKILL by updateing
-journal_snap with a special #<START SECONDS>$86400 'no snapshot' string
+information, responds to a SIGHUP by re-reading its configuration.
 """
 
 parser = ConfigParser.SafeConfigParser()
@@ -147,7 +146,7 @@ class Kmotion_Hkd2:
         while (True):
             images_dir, snapshot_list = self.read_config()
             instance = []
-            for i in xrange(len(snapshot_list)):
+            for i in range(len(snapshot_list)):
                 instance.append(Hkd2_Feed(i, images_dir, snapshot_list[i]))
             
             self.sighup_ok = True
@@ -157,22 +156,17 @@ class Kmotion_Hkd2:
                 time.sleep(2)
         
     def signal_hup(self, signum, frame):
-            """ 
-            On SIGHUP set self.sighup_ok to False to force a re-read of the config file 
-            """
-            logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
-            self.sighup_ok = False
-            
-##            
-##    # configure kmotion
-##    print
-##    print_checking('Generating all kmotion configurations')
-##    os.system('sudo -u %s ./install_utils.py' % login)
-##    print_ok()
-##if __name__ == '__main__':
-##    Hkd2 = Kmotion_Hkd2()
-##    Hkd2.start_daemon()
-##    
+        """ 
+        On SIGHUP set self.sighup_ok to False to force a re-read of the config file 
+        """
+        logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
+        self.sighup_ok = False
+ 
+ 
+if __name__ == '__main__':
+    Hkd2 = Kmotion_Hkd2()
+    Hkd2.start_daemon()
+    
             
             
  

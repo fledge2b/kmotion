@@ -12,7 +12,7 @@ size_gb = 5
 standalone = true
 
 [debug]
-log_level = DEBUG
+log_level = WARNING
 
 [feed_intervals]
 snapshot_interval14 = 300
@@ -30,7 +30,7 @@ snapshot_interval4 = 300
 snapshot_interval5 = 300
 snapshot_interval2 = 300
 snapshot_interval3 = 300
-snapshot_interval1 = 1
+snapshot_interval1 = 300
 
 [feed_count]
 count = 1
