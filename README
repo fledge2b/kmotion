@@ -1,0 +1,19 @@
+** NOTE **
+If you downloaded kmotion from svn you will have to ...
+
+sudo chmod +x install.py
+
+GoogleCode seems to have a hang up about letting 'install.py' be executable !
+
+-----------
+
+I have written some documentation which is hopefully usefull, its in the docs directory
+in odt & PDF formats.
+
+Let me know what you think
+
+Cheers
+
+Dave
+
+dave6502@googlemail.com
