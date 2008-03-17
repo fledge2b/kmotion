@@ -64,7 +64,7 @@ class Gen_Int_Rcs:
         elif os.path.isfile(usr): 
             motion_config = usr
         else:
-            self.logger.log('Could not find config file in ./motion.conf, /etc/motion/motion.conf, ~/.motion/motion.conf or /usr/local/etc/motion.conf - exiting', 'CRIT')
+            self.logger.log('Could not find config file in ./motion.conf, /etc/motion/motion.conf, ~/.motion/motion.conf or /usr/local/etc/motion.conf - exiting', 'CRIT') 
             sys.exit()
         self.logger.log('Found config file %s' % (motion_config), 'NOTICE')
         return motion_config
