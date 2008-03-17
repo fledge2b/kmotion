@@ -61,7 +61,7 @@ Press ENTER to start install.\033[1;37m"""
     print_ok()
     print_checking('Changing kmotion paths to cwd')
     print_ok()
-    os.system('sudo -u %s ./install_utils.py' % login)
+    os.system('sudo -u %s ./install_int.py' % login)
     
     parser = ConfigParser.SafeConfigParser()
     parsed = parser.read('./daemon.rc')
