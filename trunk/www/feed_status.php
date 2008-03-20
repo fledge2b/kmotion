@@ -14,6 +14,10 @@ Returns the latest jpeg filenames for all active video feeds plus any feeds iden
 events directory (ie feeds with motion detection active)
 
 The returned data is in a form that facilitates rapid Javascript string splitting
+
+<hash><latest filename camera 1><hash><latest filename camera 2>...<hash><latest filename camera 16>
+<dollar><event number><dollar><event number>
+
 -->
 <?php
 
