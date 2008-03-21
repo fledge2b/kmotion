@@ -132,7 +132,17 @@ Press ENTER to start install.\033[1;37m"""
         f.write(line)
     f.close
     print_ok()
-    print
+    
+    # WARNING about motion
+    xxxprint """\033[1;31m
+*IMPORTANT* 
+
+motions default configuration in /etc/motion/motion.conf does not
+specify threads and so is incompatible with kmotion. For an example of 
+a threaded motion.conf see %s
+
+For full kmotion diagnostics enter 'tail -f /var/log/messages'
+\033[1;37m""" % 'dgfdgd'
     
    
 def print_checking(text):
