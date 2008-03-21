@@ -42,7 +42,7 @@ The Kmotion web interface
 </div>
 
 <div class="text">
-Kmotion v1.12b - Developed on Gutsy Kubuntu 7.10, Released under the GPL
+Kmotion v1.12b - Developed on a stock Gutsy Kubuntu 7.10, <br>Released under the GPL
 </div>
 
 <div class="section_heading text">
