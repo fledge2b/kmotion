@@ -135,7 +135,9 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		if (first_image())
 		{
 			document.getElementById("image_1").src = "misc/caching.jpeg";
+alert('aaaa');
 			tline_populate();
+alert('bbbb');
 			tline_marker(parseInt(image.jpeg_secs / 300));
 			update_status_bar();
 			update_buttons();
@@ -869,7 +871,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	{
 		for (var i = dbase.snap.length - 1; i >= 0; i--)
 		{
-			if (dbase.snap[i] <= image.jpeg_secs)
+			if (dbase.snap[i] <= image.jpeg_secs && dbase.snap_delay[i] != 0)
 			{
 				var strip = image.jpeg_secs - dbase.snap[i];
 				var ratio = strip / dbase.snap_delay[i];
@@ -1004,7 +1006,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	{
 		for (var i = dbase.snap.length - 1; i >= 0; i--)
 		{
-			if (dbase.snap[i] < image.jpeg_secs)
+			if (dbase.snap[i] < image.jpeg_secs && dbase.snap_delay[i] != 0)
 			{
 				var strip = image.jpeg_secs - dbase.snap[i];
 				var ratio = strip / dbase.snap_delay[i];
@@ -1038,16 +1040,19 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		var snap_end = 86400 + 1;
 		for (var i = dbase.snap.length - 1; i >= 0; i--)  // snapshots
 		{
-			for (var snap = dbase.snap[i]; snap < snap_end; snap += dbase.snap_delay[i])
+			if (dbase.snap_delay[i] != 0)  // watch out for infinate loop
 			{
-				if (is_valid_secs(snap))
+				for (var snap = dbase.snap[i]; snap < snap_end; snap += dbase.snap_delay[i])
 				{
-					var tblock = parseInt(snap / 300);	// 300 = (24 * 60 * 60) / 288
-					tline.snap.push(tblock);
-					document.getElementById("tline_" + tblock).src = "misc/tline_snap.png";
+					if (is_valid_secs(snap))
+					{
+						var tblock = parseInt(snap / 300);	// 300 = (24 * 60 * 60) / 288
+						tline.snap.push(tblock);
+						document.getElementById("tline_" + tblock).src = "misc/tline_snap.png";
+					}
 				}
+				snap_end = dbase.snap[i];
 			}
-			snap_end = dbase.snap[i];
 		}
 	
 		for (var tblock = 0; tblock < 288; tblock++)  // events
