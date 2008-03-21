@@ -82,10 +82,25 @@ while (True):
     
     elif (opt =='4'):
         print '\n\033[1;32mQuitting kmotion manual daemon control ...\033[1;37m'
-        if(daemon_whip.daemons_running()):
-            print '\033[1;32m*WARNING* Daemons still running in background ...\033[1;37m\n'
+        status = daemon_whip.daemon_status()
+        if status['kmotion_hkd1.py']:
+            text = '\033[1;32mRunning\033[1;37m'
         else:
-            print '\033[1;31m*WARNING* Daemons not running ...\033[1;37m\n'
+            text= '\033[1;31mNot running\033[1;37m'
+        print '\nkmotion_hkd1.py status : ' + text
+        
+        if status['kmotion_hkd2.py']:
+            text = '\033[1;32mRunning\033[1;37m'
+        else:
+            text= '\033[1;31mNot running\033[1;37m'
+        print 'kmotion_hkd2.py status : ' + text
+        
+        if status['motion']:
+            text = '\033[1;32mRunning\033[1;37m'
+        else:
+            text= '\033[1;31mNot running\033[1;37m'
+        print 'motion status          : ' + text
+        print
         sys.exit()
 
 
