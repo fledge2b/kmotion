@@ -37,7 +37,7 @@ class Gen_Int_Rcs:
         """
         self.read_daemon_rc()
         self.logger = logger.Logger('daemon_start', self.log_level)
-        os.remove('%s/motion.conf' % self.misc_config_dir)  # remove old config in case of sys.exit() here
+        if os.path.isfile('%s/motion.conf' % self.misc_config_dir): os.remove('%s/motion.conf' % self.misc_config_dir)  # remove old config in case of sys.exit() here
         motion_config = self.find_motion_conf()
         threads, snapshot_interval = self.gen_motion_conf(motion_config)
         names_list, snapshot_list = self.gen_threadx_conf(threads, snapshot_interval)
@@ -133,7 +133,7 @@ class Gen_Int_Rcs:
             lines = f.readlines()
             f.close()
                     
-            f = open('%s/motion%d.conf' % (self.misc_config_dir, thread_count), 'w')
+            f = open('%s/thread%d.conf' % (self.misc_config_dir, thread_count), 'w')
             for line in lines:
                 line_split = line.split()
                 if not len(line_split):  # if [], blank line, skip it
@@ -160,7 +160,7 @@ class Gen_Int_Rcs:
             snapshot_list.append(snapshot)
             if ktext == '':
                 names_list.append('Default Text')
-                self.logger.log('No #ktext specified in motion%d.conf - \'Default Text\' used' % (thread_count), 'CRIT')
+                self.logger.log('No #ktext specified in thread%d.conf - \'Default Text\' used' % (thread_count), 'CRIT')
             else:
                 names_list.append(ktext)
         return names_list, snapshot_list

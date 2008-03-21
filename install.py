@@ -24,7 +24,7 @@ def install():
     """
     
     print """\033[1;32m
-Welcome to the kmotion v1.10b installer. Apart from internal configurations 
+Welcome to the kmotion v1.12b installer. Apart from internal configurations 
 the only changes that will be made to your system are:
 
 (1) A link from /etc/apache2/sites-enabled/ to this directory
