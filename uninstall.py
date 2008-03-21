@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Copyright 2008 David Selby dave6502@googlemail.com
+
 # GNU General Public Licence (GPL)
 # 
 # This program is free software; you can redistribute it and/or modify it under
@@ -102,7 +104,7 @@ Press ENTER to start uninstall.\033[1;37m"""
         print_fail('\'kmotion\' already removed from \'/etc/rc.local\'')
   
     # remove 127.0.0.1 kmotion from /etc/hosts
-    print_checking('Removeing \'127.0.0.1\' from \'/etc/hosts\'')
+    print_checking('Removeing \'127.0.0.1    kmotion\' from \'/etc/hosts\'')
     f = open('/etc/hosts', 'r')
     lines = f.readlines()
     f.close
