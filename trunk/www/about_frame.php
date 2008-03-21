@@ -42,8 +42,7 @@ The Kmotion web interface
 </div>
 
 <div class="text">
-Kmotion v1.10b - motion 3.2.3; Python 2.5.1; Apache 2.2.4; -<br>
-Developed on Gutsy Kubuntu 7.10, Released under the GPL
+Kmotion v1.12b - Developed on Gutsy Kubuntu 7.10, Released under the GPL
 </div>
 
 <div class="section_heading text">
