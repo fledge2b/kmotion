@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Copyright 2008 David Selby dave6502@googlemail.com
+
 # GNU General Public Licence (GPL)
 # 
 # This program is free software; you can redistribute it and/or modify it under
@@ -35,9 +37,10 @@ class Gen_Int_Rcs:
         """
         self.read_daemon_rc()
         self.logger = logger.Logger('daemon_start', self.log_level)
+        os.remove('%s/motion.conf' % self.misc_config_dir)  # remove old config in case of sys.exit() here
         motion_config = self.find_motion_conf()
         threads, snapshot_interval = self.gen_motion_conf(motion_config)
-        names_list, snapshot_list = self.gen_motionx_conf(threads, snapshot_interval)
+        names_list, snapshot_list = self.gen_threadx_conf(threads, snapshot_interval)
         self.gen_www_rc(names_list)
         self.modify_daemon_rc(snapshot_list)
         
@@ -98,7 +101,7 @@ class Gen_Int_Rcs:
                 continue
             elif line_split[0] == 'thread'and len(line_split) == 2:
                 threads.append(line_split[1])
-                f.write('thread %s/motion%s.conf\n' % (self.misc_config_dir,  len(threads)))
+                f.write('thread %s/thread%s.conf\n' % (self.misc_config_dir,  len(threads)))
                 continue
             f.write(line)
         f.write('\nsnapshot_interval 1\n')
@@ -111,7 +114,7 @@ class Gen_Int_Rcs:
         return threads, snapshot_interval
         
         
-    def gen_motionx_conf(self, threads, snapshot_interval):
+    def gen_threadx_conf(self, threads, snapshot_interval):
         """
         Given a list of full path thread files and a global snapshot_interval parse all threads and check for blacklist options, 
         snapshot_intervals, and the #ktext operator. Generate modified thread files.

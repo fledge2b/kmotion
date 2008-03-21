@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Copyright 2008 David Selby dave6502@googlemail.com
+
 # GNU General Public Licence (GPL)
 # 
 # This program is free software; you can redistribute it and/or modify it under
@@ -120,7 +122,7 @@ Press ENTER to start install.\033[1;37m"""
     else: print_fail('Failed to add kmotion to \'/etc/rc.local\' please ensure \'/etc/rc.local\' has the line \'exit 0\' as the last line')
     
     # add 127.0.0.1 kmotion to /etc/hosts
-    print_checking('Adding \'127.0.0.1\' to \'/etc/hosts\'')
+    print_checking('Adding \'127.0.0.1     kmotion\' to \'/etc/hosts\'')
     f = open('/etc/hosts', 'r')
     lines = f.readlines()
     f.close
@@ -134,15 +136,15 @@ Press ENTER to start install.\033[1;37m"""
     print_ok()
     
     # WARNING about motion
-    xxxprint """\033[1;31m
+    print """\033[1;31m
 *IMPORTANT* 
 
 motions default configuration in /etc/motion/motion.conf does not
-specify threads and so is incompatible with kmotion. For an example of 
-a threaded motion.conf see %s
+specify threads and so is incompatible with kmotion. See the docs directory
+for details. For an example of a threaded motion.conf see docs/examples/
 
-For full kmotion diagnostics enter 'tail -f /var/log/messages'
-\033[1;37m""" % 'dgfdgd'
+For kmotion diagnostics execute 'tail -f /var/log/messages'
+\033[1;37m"""
     
    
 def print_checking(text):
