@@ -237,7 +237,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 							var delay_secs = dbase.snap_delay[i];
 						}
 					}
-					var max_skip = 500 / delay_secs
+					var max_skip = 300 / delay_secs
 					for (var i = 0; i < Math.min((delay_ms / snap_limit_ms), max_skip); i++)
 					{
 						nearest_next_image();
@@ -351,7 +351,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 							var delay_secs = dbase.snap_delay[i];
 						}
 					}
-					var max_skip = 500 / delay_secs
+					var max_skip = 300 / delay_secs
 					for (var i = 0; i < Math.min((delay_ms / snap_limit_ms), max_skip); i++)
 					{
 						nearest_prev_image();
