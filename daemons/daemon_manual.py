@@ -25,10 +25,10 @@ A crude daemon control program, usefull for kmotion diagnostics
 print '\nkmotion manual daemon control ........'
 while (True):
     print '\nThe Options ....\n'
-    print '1: Start Daemons'
-    print '2: Kill Daemons'
-    print '3: Reload Daemon configs'
-    print '4: Quit'
+    print '\033[1;33ms: Start Daemons\033[1;37m'
+    print '\033[1;33mk: Kill Daemons\033[1;37m'
+    print '\033[1;33mr: Reload Daemon configs\033[1;37m'
+    print '\033[1;33mq: Quit\033[1;37m'
     print '\nENTER: Refresh'
     
     status = daemon_whip.daemon_status()
@@ -51,9 +51,9 @@ while (True):
     print 'motion status          : ' + text
     print
     
-    opt = raw_input('Option number then ENTER to select : ')
+    opt = raw_input('Option letter then ENTER to select : ')
     
-    if (opt == '1'):
+    if (opt == 's'):
         if(daemon_whip.daemons_running()):
             print '\n\033[1;32mDaemons already running ...\033[1;37m'
         else:
@@ -64,7 +64,7 @@ while (True):
             else:
               print '\n\033[1;31m*WARNING* Unable to start daemons ...\033[1;37m'
               
-    elif (opt == '2'):
+    elif (opt == 'k'):
         if(daemon_whip.daemons_running()):
             print '\n\033[1;31mStarting to kill daemons ...\033[1;37m'
             daemon_whip.kill_daemons()
@@ -73,14 +73,14 @@ while (True):
         else:
             print '\n\033[1;31m*INFORMATION* Daemons not running ...\033[1;37m'
     
-    elif (opt == '3'):
+    elif (opt == 'r'):
         if(daemon_whip.daemons_running()):
             daemon_whip.config_reload()
             print '\n\033[1;33mDaemons config reloaded ...\033[1;37m'
         else:
             print '\n\033[1;31m*WARNING* Daemons not running ...\033[1;37m'
     
-    elif (opt =='4'):
+    elif (opt =='q'):
         print '\n\033[1;32mQuitting kmotion manual daemon control ...\033[1;37m'
         status = daemon_whip.daemon_status()
         if status['kmotion_hkd1.py']:
