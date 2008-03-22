@@ -59,8 +59,8 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 
 		event_frames: [],			// event number of frames mid sequence
 
-		snap: [],				// snapshot: num of seconds at start & number of seconds delay
-		snap_delay: [],				// part of event dbase
+		snap: [],				// snapshot: num of seconds at start 
+		snap_delay: [],				// snapshot: number of seconds delay
 
 		populated: false			// dbase populated flag
 		};
@@ -135,9 +135,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		if (first_image())
 		{
 			document.getElementById("image_1").src = "misc/caching.jpeg";
-alert('aaaa');
 			tline_populate();
-alert('bbbb');
 			tline_marker(parseInt(image.jpeg_secs / 300));
 			update_status_bar();
 			update_buttons();
@@ -209,9 +207,14 @@ alert('bbbb');
 				}
 				else  // if images can not be downloaded fast enough - skip images ...
 				{
-					for (var i = 0; i < (delay_ms / event_limit_ms); i++)
+					for (var i = 0; i < Math.min((delay_ms / event_limit_ms), image.max_frames); i++)
 					{
 						nearest_next_image();
+						if (!image.is_event)  // in case of overrun from event to snapshot
+						{
+							window.setTimeout("play_forward();", 1);
+							return;
+						}
 					} 
 					//nexus.skip_frames = true;
 					window.setTimeout("play_forward();", 1);
@@ -226,10 +229,24 @@ alert('bbbb');
 					window.setTimeout("play_forward();", snap_limit_ms - delay_ms);
 				}
 				else  // if images can not be downloaded fast enough - skip images ...
-				{
-					for (var i = 0; i < (delay_ms / snap_limit_ms); i++)
+				{			
+					for (var i = dbase.snap.length - 1; i >= 0; i--)  // find the snapshot delay seconds
+					{
+						if (dbase.snap[i] <= image.jpeg_secs)
+						{
+							var delay_secs = dbase.snap_delay[i];
+						}
+					}
+					var max_skip = 500 / delay_secs
+					for (var i = 0; i < Math.min((delay_ms / snap_limit_ms), max_skip); i++)
 					{
 						nearest_next_image();
+						if (image.is_event)  // in case of overrun from snapshot to event
+						{
+							
+							window.setTimeout("play_forward();", 1);
+							return;
+						}
 					} 
 					//nexus.skip_frames = true;
 					window.setTimeout("play_forward();", 1);
@@ -304,9 +321,14 @@ alert('bbbb');
 				}
 				else  // if images can not be downloaded fast enough - skip images ...
 				{
-					for (var i = 0; i < (delay_ms / event_limit_ms); i++)
+					for (var i = 0; i < Math.min((delay_ms / event_limit_ms), image.max_frames); i++)
 					{
 						nearest_prev_image();
+						if (!image.is_event)  // in case of overrun from event to snapshot
+						{
+							window.setTimeout("play_reverse();", 1);
+							return;
+						}
 					} 
 					//nexus.skip_frames = true;
 					window.setTimeout("play_reverse();", 1);
@@ -322,9 +344,22 @@ alert('bbbb');
 				}
 				else  // if images can not be downloaded fast enough - skip images ...
 				{
-					for (var i = 0; i < (delay_ms / snap_limit_ms); i++)
+					for (var i = dbase.snap.length - 1; i >= 0; i--)  // find the snapshot delay seconds
+					{
+						if (dbase.snap[i] <= image.jpeg_secs)
+						{
+							var delay_secs = dbase.snap_delay[i];
+						}
+					}
+					var max_skip = 500 / delay_secs
+					for (var i = 0; i < Math.min((delay_ms / snap_limit_ms), max_skip); i++)
 					{
 						nearest_prev_image();
+						if (image.is_event)  // in case of overrun from snapshot to event
+						{
+							window.setTimeout("play_reverse();", 1);
+							return;
+						}
 					} 
 					//nexus.skip_frames = true;
 					window.setTimeout("play_reverse();", 1);
