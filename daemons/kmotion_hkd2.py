@@ -21,7 +21,8 @@ import os, sys, time, signal, shutil, ConfigParser, logger, daemon_whip
 """
 A fairly complex daemon that copys, moves or deletes files from images_dir/.../tmp to images_dir/.../video
 as defined in kmotion.rc generating a 'sanitized' snapshot sequence. Updates journal_snap with snapshot 
-information, responds to a SIGHUP by re-reading its configuration. ??????????????????????????????????????????????????????????????????????????
+information, responds to a SIGHUP by re-reading its configuration. Responds to SIGTERM by updateing 
+journal_snap with #HHMMSS$86400 signifying no more snapshots.
 """
 
 parser = ConfigParser.SafeConfigParser()
@@ -90,8 +91,10 @@ class Hkd2_Feed:
                 jpeg_list = jpeg_list[1:] 
             
             
-    def update_journal_break():
-        # ????????????????????????????????????????
+    def update_journal_break(self):
+        """
+        updates journal_snap with #HHMMSS$86400 signifying no more snapshots
+        """
         self.update_journal(time.strftime('%Y%m%d'), self.feed,  time.strftime('%H%M%S'), (60 * 60 * 24))
             
             
@@ -99,6 +102,7 @@ class Hkd2_Feed:
         """ 
         Given the date, feed number, seconds and pause in seconds updates journal_snap
         """
+        print 'JOURNAL@','%s/%s/%02i/journal_snap' % (self.images_dir, date, (feed + 1))
         # add to journal of snapshots in the form #<snapshot start seconds>$<snapshot pause in seconds>
         journal = open('%s/%s/%02i/journal_snap' % (self.images_dir, date, (feed + 1)), 'a')
         journal.write('#%s$%s' % (seconds, pause))
@@ -125,17 +129,14 @@ class Kmotion_Hkd2:
     
     def __init__(self):
         signal.signal(signal.SIGHUP, self.signal_hup)
-        self.sighup_ok = True
-        signal.signal(signal.SIGTERM, self.signal_term)
-        self.daemon_sleeping = False
+        signal.signal(signal.SIGTERM, self.signal_term)  
+        self.no_sighup = True
         self.Hk2_feed_instances = []
         
         
     def update_Hk2_feed_instances(self):
         """
-        Read the config from daemon.rc 
-        
-        Returns a full path images_dir and a list of snapshot values ??????????????????????????????????????????????????????????????????????????????????????????????
+        Read the config from daemon.rc and generates a list of Hk2_feed_instances
         """
         parser = ConfigParser.SafeConfigParser()
         parsed = parser.read('./daemon.rc')
@@ -152,33 +153,28 @@ class Kmotion_Hkd2:
         Start the house keeping 2 daemon. This daemon wakes up every 2 seconds
         """
         logger.log('Daemon starting ...', 'CRIT')
-        self.update_Hk2_feed_instances()
-        while (True):
-            for instance in self.Hk2_feed_instances:
-                instance.run()
-            self.daemon_sleeping = True
-            time.sleep(2)
-            self.daemon_sleeping = False
+        while True:
+            self.no_sighup = True
+            self.update_Hk2_feed_instances()
+            while self.no_sighup:
+                for instance in self.Hk2_feed_instances:
+                    instance.run()
+                time.sleep(2)
         
         
     def signal_hup(self, signum, frame):
         """ 
         On SIGHUP set self.sighup_ok to False to force a re-read of the config file 
         """
-        while self.daemon_sleeping:
-            time.sleep(0.1)
         logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
-        self.update_Hk2_feed_instances()
+        self.no_sighup = False
  
  
     def signal_term(self, signum, frame):
         """ 
-        On SIGHUP set self.sighup_ok to False to force a re-read of the config file ?????????????????????????????????
+        On SIGTERM update journal_snap with #HHMMSS$86400 signifying no more snapshots
         """
-        sys.exit() ##################################################################################
         logger.log('Signal SIGTERM detected, updateing journal with break #HHMMSS$86400', 'DEBUG')
-        while self.daemon_sleeping:
-            time.sleep(0.1)
         for instance in self.Hk2_feed_instances:
             instance.update_journal_break()
         sys.exit()
