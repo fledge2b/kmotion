@@ -20,8 +20,8 @@ import os, sys, time, signal, shutil, ConfigParser, logger, daemon_whip
 
 """
 A fairly complex daemon that copys, moves or deletes files from images_dir/.../tmp to images_dir/.../video
-as defined in kmotion.rc generating a 'sanitized' snapsot sequence. Updates journal_snap with snapshot 
-information, responds to a SIGHUP by re-reading its configuration.
+as defined in kmotion.rc generating a 'sanitized' snapshot sequence. Updates journal_snap with snapshot 
+information, responds to a SIGHUP by re-reading its configuration. ??????????????????????????????????????????????????????????????????????????
 """
 
 parser = ConfigParser.SafeConfigParser()
@@ -42,7 +42,7 @@ class Hkd2_Feed:
     def run(self):
         """ 
         Copys, moves or deletes files from images_dir/.../tmp to images_dir/.../video as defined in kmotion.rc 
-        generating a 'sanitized' snapsot sequence
+        generating a 'sanitized' snapshot sequence
         """
         date = time.strftime('%Y%m%d')
         tmp_dir = '%s/%s/%02i/tmp/' % (self.images_dir, date, self.feed + 1) 
@@ -90,6 +90,11 @@ class Hkd2_Feed:
                 jpeg_list = jpeg_list[1:] 
             
             
+    def update_journal_break():
+        # ????????????????????????????????????????
+        self.update_journal(time.strftime('%Y%m%d'), self.feed,  time.strftime('%H%M%S'), (60 * 60 * 24))
+            
+            
     def update_journal(self, date, feed, seconds, pause):
         """ 
         Given the date, feed number, seconds and pause in seconds updates journal_snap
@@ -121,48 +126,62 @@ class Kmotion_Hkd2:
     def __init__(self):
         signal.signal(signal.SIGHUP, self.signal_hup)
         self.sighup_ok = True
+        signal.signal(signal.SIGTERM, self.signal_term)
+        self.daemon_sleeping = False
+        self.Hk2_feed_instances = []
         
         
-    def read_config(self):
+    def update_Hk2_feed_instances(self):
         """
         Read the config from daemon.rc 
         
-        Returns a full path images_dir and a list of snapshot values
+        Returns a full path images_dir and a list of snapshot values ??????????????????????????????????????????????????????????????????????????????????????????????
         """
         parser = ConfigParser.SafeConfigParser()
         parsed = parser.read('./daemon.rc')
         
-        snapshot_list = []
+        self.Hk2_feed_instances = []
         images_dir = parser.get('dirs', 'images_dir')
         feed_count = int(parser.get('feed_count', 'count'))
         for i in range(feed_count):
-            snapshot_list.append(int(parser.get('feed_intervals', 'snapshot_interval%d' % (i + 1))))
-        return images_dir, snapshot_list
-    
+            self.Hk2_feed_instances.append(Hkd2_Feed(i, images_dir, int(parser.get('feed_intervals', 'snapshot_interval%d' % (i + 1)))))
+            
     
     def start_daemon(self):
         """" 
         Start the house keeping 2 daemon. This daemon wakes up every 2 seconds
         """
         logger.log('Daemon starting ...', 'CRIT')
+        self.update_Hk2_feed_instances()
         while (True):
-            images_dir, snapshot_list = self.read_config()
-            instance = []
-            for i in range(len(snapshot_list)):
-                instance.append(Hkd2_Feed(i, images_dir, snapshot_list[i]))
-            
-            self.sighup_ok = True
-            while (self.sighup_ok):
-                for i in range(len(instance)):
-                    instance[i].run()
-                time.sleep(2)
+            for instance in self.Hk2_feed_instances:
+                instance.run()
+            self.daemon_sleeping = True
+            time.sleep(2)
+            self.daemon_sleeping = False
+        
         
     def signal_hup(self, signum, frame):
         """ 
         On SIGHUP set self.sighup_ok to False to force a re-read of the config file 
         """
+        while self.daemon_sleeping:
+            time.sleep(0.1)
         logger.log('Signal SIGHUP detected, re-reading config file', 'DEBUG')
-        self.sighup_ok = False
+        self.update_Hk2_feed_instances()
+ 
+ 
+    def signal_term(self, signum, frame):
+        """ 
+        On SIGHUP set self.sighup_ok to False to force a re-read of the config file ?????????????????????????????????
+        """
+        sys.exit() ##################################################################################
+        logger.log('Signal SIGTERM detected, updateing journal with break #HHMMSS$86400', 'DEBUG')
+        while self.daemon_sleeping:
+            time.sleep(0.1)
+        for instance in self.Hk2_feed_instances:
+            instance.update_journal_break()
+        sys.exit()
  
  
 if __name__ == '__main__':
