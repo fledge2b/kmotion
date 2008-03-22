@@ -102,7 +102,6 @@ class Hkd2_Feed:
         """ 
         Given the date, feed number, seconds and pause in seconds updates journal_snap
         """
-        print 'JOURNAL@','%s/%s/%02i/journal_snap' % (self.images_dir, date, (feed + 1))
         # add to journal of snapshots in the form #<snapshot start seconds>$<snapshot pause in seconds>
         journal = open('%s/%s/%02i/journal_snap' % (self.images_dir, date, (feed + 1)), 'a')
         journal.write('#%s$%s' % (seconds, pause))
