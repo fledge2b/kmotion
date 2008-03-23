@@ -34,6 +34,12 @@ the only changes that will be made to your system are:
 
 All of which are reversible manually or by executing uninstall.py. 
 
+\033[1;31m*IMPORTANT*
+
+ubuntu 8.04 Hardy Heron has a bug in its motion package. On completion
+of install motion is automatically started. As a workaround 'sudo apt-get install
+motion' and 'killall motion' BEFORE executing 'sudo ./install.py'. \033[1;32m
+
 Press ENTER to start install.\033[1;37m"""
 
     raw_input()
@@ -122,7 +128,7 @@ Press ENTER to start install.\033[1;37m"""
     else: print_fail('Failed to add kmotion to \'/etc/rc.local\' please ensure \'/etc/rc.local\' has the line \'exit 0\' as the last line')
     
     # add 127.0.0.1 kmotion to /etc/hosts
-    print_checking('Adding \'127.0.0.1     kmotion\' to \'/etc/hosts\'')
+    print_checking('Adding \'127.0.0.1 kmotion\' to \'/etc/hosts\'')
     f = open('/etc/hosts', 'r')
     lines = f.readlines()
     f.close
