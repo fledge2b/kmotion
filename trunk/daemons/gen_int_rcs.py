@@ -156,7 +156,7 @@ class Gen_Int_Rcs:
             f.write('on_event_end \'/bin/rm %s/events/%d\'\n' % (self.images_dir, thread_count))
             
             # auto compensate for early motion version used in ubuntu 7.10  
-            if os.system('motion -h | grep 3.2.x'):
+            if os.system('motion -h | grep 3.2.3'):
                 f.write('on_picture_save echo %%f > %s/%%Y%%m%%d/%0.2d/last_jpeg' % (self.images_dir, thread_count))
             else:
                 f.write('on_picture_save echo > %s/%%Y%%m%%d/%0.2d/last_jpeg' % (self.images_dir, thread_count))

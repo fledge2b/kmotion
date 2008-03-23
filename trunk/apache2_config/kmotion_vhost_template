@@ -1,4 +1,7 @@
-<VirtualHost *>
+NameVirtualHost *:80
+
+<VirtualHost *:80>
+
     ServerName kmotion
     ServerAdmin webmaster@localhost
     DocumentRoot %www_dir%
