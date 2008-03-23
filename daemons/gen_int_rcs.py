@@ -154,8 +154,13 @@ class Gen_Int_Rcs:
             f.write('snapshot_filename %%Y%%m%%d/%0.2d/tmp/%%H%%M%%S\n' % (thread_count))
             f.write('on_event_start \'/usr/bin/touch %s/events/%d\'\n' % (self.images_dir, thread_count))
             f.write('on_event_end \'/bin/rm %s/events/%d\'\n' % (self.images_dir, thread_count))
-            #FIXME: needs logic here - amenment for hardy
-            f.write('on_picture_save echo %%f > %s/%%Y%%m%%d/%0.2d/last_jpeg' % (self.images_dir, thread_count))
+            
+            # auto compensate for early motion version used in ubuntu 7.10  
+            if os.system('motion -h | grep 3.2.x'):
+                f.write('on_picture_save echo %%f > %s/%%Y%%m%%d/%0.2d/last_jpeg' % (self.images_dir, thread_count))
+            else:
+                f.write('on_picture_save echo > %s/%%Y%%m%%d/%0.2d/last_jpeg' % (self.images_dir, thread_count))
+                
             f.close()
             
             snapshot_list.append(snapshot)

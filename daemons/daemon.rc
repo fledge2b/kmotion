@@ -9,7 +9,6 @@ www_dir = /home/dave/kmotion/www
 size_gb = 5
 
 [mode]
-version = 8.04
 standalone = true
 
 [debug]
@@ -23,9 +22,9 @@ snapshot_interval10 = 300
 snapshot_interval11 = 300
 snapshot_interval12 = 300
 snapshot_interval13 = 300
-snapshot_interval7 = 300
-snapshot_interval8 = 300
 snapshot_interval9 = 300
+snapshot_interval8 = 300
+snapshot_interval7 = 300
 snapshot_interval6 = 300
 snapshot_interval4 = 300
 snapshot_interval5 = 300
