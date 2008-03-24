@@ -52,6 +52,10 @@ class Kmotion_Hkd1:
         shutil.rmtree('%s/events' % (self.images_dir), True)
         os.makedirs('%s/events' % (self.images_dir))
         while(True):   
+            self.chk_motion() 
+            self.chk_kmotion_hkd2()
+            time.sleep(15 * 60)  # sleep here to allow system to settle after boot
+            
             self.update_size()                 # for todays images
             sum = self.sum_sizes()         # for all images
             if sum > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
@@ -59,9 +63,6 @@ class Kmotion_Hkd1:
                 dir.sort()
                 logger.log('Image storeage limit reached - deleteing %s/%s' %  (self.images_dir, dir[0]), 'CRIT')
                 shutil.rmtree('%s/%s' % (self.images_dir, dir[0]))  # delete oldest dir first
-            self.chk_motion()
-            self.chk_kmotion_hkd2()
-            time.sleep(15 * 60)
         
         
     def update_size(self):
