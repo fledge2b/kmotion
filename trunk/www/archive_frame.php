@@ -1338,7 +1338,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	sort($date_dirs, SORT_NUMERIC);
 
 	printf("<div style=\"position:absolute;top:%dpx;left:%dpx\">\n", ROW_PADDING, $lhs_margin);
-	printf("<form>\n");
+	printf("<form action=\"#\">\n");
 	printf("<select id=\"date\" name=\"date\" onChange=\"date_changed();\" style=\"width:105px\">\n");
 	for ($i=sizeof($date_dirs) - 1; $i >= 0; $i--)
 	{	
@@ -1412,7 +1412,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	$total_width = $button_width * 5;
 	$margin_offset = ($scale_width - $total_width) / 2;
 	printf("<div style=\"position:absolute;top:%dpx;left:%dpx\">\n", (2 * ROW_PADDING) + $scale_height + 22, $lhs_margin + $margin_offset);
-	printf("<form>\n");
+	printf("<form action=\"#\">\n");
 	printf("<input type=\"button\" name=\"minus_event\" value=\"- event\"  onClick=\"prev_event_block();\" style=\"width: %dpx\">", $button_width);
 	printf("<input id=\"minus_one_button\" type=\"button\" name=\"minus_1\" value=\"<\" onClick=\"minus_clicked();\" style=\"width: %dpx\">", $button_width);
 	printf("<input id=\"play_pause_button\" type=\"button\" name=\"play_pause\" value=\"Click to Pause\" onClick=\"play_pause_clicked();\" style=\"width: %dpx\">", $button_width);
