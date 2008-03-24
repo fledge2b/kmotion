@@ -65,16 +65,16 @@ The returned data is in a form that facilitates rapid Javascript string splittin
 			for ($j=0; $j<3; $j++)
 			{
 				$jpeg_holder = sprintf($path."/%s/%02d/last_jpeg", date("Ymd"), $i);
-				//$jpeg_holder = sprintf("/var/lib/motion/%s/%02d/last_jpeg", date("Ymd"), 1);  // usefull for simulating multiple feeds
+				// $jpeg_holder = sprintf("/var/lib/motion/%s/%02d/last_jpeg", date("Ymd"), 1);  // usefull for simulating multiple feeds
 				if (file_exists($jpeg_holder))  // Abort of file does not exist
 				{
 					$jpeg_name = trim(file_get_contents($jpeg_holder));
-					# using '/images' as a key breakup the path & re-construct to match apache alias
+					// using '/images' as a key breakup the path & re-construct to match apache alias
 					$jpeg_name = explode('/images', $jpeg_name);
 					$jpeg_name = $jpeg_name[1];
 					$jpeg_name = '/images'.$jpeg_name;
-
-					if($jpeg_name !== "") break;
+					// match end of string to check its complete
+					if(substr($jpeg_name, -4) == ".jpg") break;
 					usleep(10);
 				}
 				else break;
