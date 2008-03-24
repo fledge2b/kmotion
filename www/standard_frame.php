@@ -435,12 +435,12 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			$pos = ($col + 1) + ($row * COLS);
 			$camera_src = "misc/caching.jpeg";
 
-			printf("\n<img id=\"image_%d\" style=\"position:absolute;top:%dpx;left:%dpx;\"  src=\"%s\" width=%dpx height=%dpx onClick=\"view_clicked(%s);\" alt=\"Camera image\">", $pos, (($row + 1) * ROW_PADDING) + ($row * $scale_height), $lhs_margin + ($col * COL_PADDING) + ($col * $scale_width) , $camera_src,  $scale_width, $scale_height, $pos);
+			printf("<img id=\"image_%d\" style=\"position:absolute;top:%dpx;left:%dpx;\"  src=\"%s\" width=%dpx height=%dpx onClick=\"view_clicked(%s);\" alt=\"Camera image\">", $pos, (($row + 1) * ROW_PADDING) + ($row * $scale_height), $lhs_margin + ($col * COL_PADDING) + ($col * $scale_width) , $camera_src,  $scale_width, $scale_height, $pos);
 
-			printf("\n<span id=\"text_%d\" style=\"position:absolute;top:%dpx;left:%dpx;\">", $pos, (($row + 1) * ROW_PADDING) + ($row * $scale_height)+ 3, $lhs_margin + ($col * COL_PADDING) + ($col * $scale_width) + 3);
+			printf("<span id=\"text_%d\" style=\"position:absolute;top:%dpx;left:%dpx;\">", $pos, (($row + 1) * ROW_PADDING) + ($row * $scale_height)+ 3, $lhs_margin + ($col * COL_PADDING) + ($col * $scale_width) + 3);
 			printf("</span>");
 		}
-		printf("\n</div>\n");
+		printf("</div>");
 	}
 	?>
  

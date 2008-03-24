@@ -80,12 +80,12 @@ elegant fashion :)
 
 		if ($value >= $warning_value) $bar_color='ff0000';
 		else $bar_color='00ff00';
-		echo "<div style=\"background-color:#e1e1e1;\">\n";
-		printf("<div class=\"bar_graph text\" style=\"width:%dpx;background-color:#%s;\">\n", $bar_px, $bar_color);
-		printf("&nbsp;%s\n", $bar_text1);
-		printf("<span style=\"position:absolute;left:%dpx;\">&nbsp;%s</span>\n", $bar_offset, $bar_text2);
-		echo "</div>\n";
-		echo "</div>\n\n";
+		echo "<div style=\"background-color:#e1e1e1;\">";
+		printf("<div class=\"bar_graph text\" style=\"width:%dpx;background-color:#%s;\">", $bar_px, $bar_color);
+		printf("&nbsp;%s", $bar_text1);
+		printf("<span style=\"position:absolute;left:%dpx;\">&nbsp;%s</span>", $bar_offset, $bar_text2);
+		echo "</div>";
+		echo "</div>";
 	}
 
 	// Get data from 'top' for rest of statistics
@@ -93,9 +93,9 @@ elegant fashion :)
 
 	// Heading
 	$uname = exec('uname -a');
-	echo "\n<div id=\"heading\">\n";
+	echo "<div id=\"heading\">";
 	$uname_array = explode(' ', $uname);
-	printf("Server Stats: %s %s<br>\n",  $uname_array[0],$uname_array[1]);
+	printf("Server Stats: %s %s<br>",  $uname_array[0],$uname_array[1]);
 	unset ($uname_array[0]);  // Remove items from array
 	unset ($uname_array[1]);
 	printf("<span id=\"sub_heading\">%s<br>", implode(" ", $uname_array));	
@@ -107,12 +107,12 @@ elegant fashion :)
 			printf($top_array[$i].' ');
 			$i++;
 		}
-	echo "</span></div>\n\n";
+	echo "</span></div>";
 
 	// Load averages
-	echo "<div class=\"section_heading text\">\n";
-	echo "Load Averages\n";
-	echo "</div>\n\n";
+	echo "<div class=\"section_heading text\">";
+	echo "Load Averages";
+	echo "</div>";
 	$top_array = preg_split("/[\s,]+/", $topinfo[0]);
 	$offset = sizeof($top_array) - 3;
 	display_bar('1&nbsp;Min', $top_array[$offset], 90, $top_array[$offset], 1, 1.5);

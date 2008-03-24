@@ -1337,9 +1337,9 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	$dir->close();
 	sort($date_dirs, SORT_NUMERIC);
 
-	printf("<div style=\"position:absolute;top:%dpx;left:%dpx\">\n", ROW_PADDING, $lhs_margin);
-	printf("<form action=\"#\">\n");
-	printf("<select id=\"date\" name=\"date\" onChange=\"date_changed();\" style=\"width:105px\">\n");
+	printf("<div style=\"position:absolute;top:%dpx;left:%dpx\">", ROW_PADDING, $lhs_margin);
+	printf("<form action=\"#\">");
+	printf("<select id=\"date\" name=\"date\" onChange=\"date_changed();\" style=\"width:105px\">");
 	for ($i=sizeof($date_dirs) - 1; $i >= 0; $i--)
 	{	
 		$yy = substr($date_dirs[$i], 0, 4);
@@ -1350,9 +1350,9 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		{
 			printf(" selected");  // the selected date
 		}
-		printf(">%s-%s-%s</option>\n", $yy, $mm, $dd);
+		printf(">%s-%s-%s</option>", $yy, $mm, $dd);
 	}		
-	printf("</select>\n");
+	printf("</select>");
 
 	// Feed selection dropdown
 	// if $date_dir == "", page was not called with a ?date_dir= therefore auto select
@@ -1374,7 +1374,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	sort($feed_dirs, SORT_NUMERIC);
 
 	$rc = file("./www.rc");
-	printf("<select id=\"feed\" name=\"feed\" onChange=\"feed_changed()\" style=\"width:160px\">\n");
+	printf("<select id=\"feed\" name=\"feed\" onChange=\"feed_changed()\" style=\"width:160px\">");
 	for ($i=0; $i < sizeof($feed_dirs); $i++)
 	{	
 		printf("<option");
@@ -1382,9 +1382,9 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		{
 			printf(" selected");  // the selcted feed
 		}
-		printf(">%s : %s</option>\n", $feed_dirs[$i], $rc[(int)$feed_dirs[$i]]);
+		printf(">%s : %s</option>", $feed_dirs[$i], $rc[(int)$feed_dirs[$i]]);
 	}		
-	printf("</select>\n");
+	printf("</select>");
 	printf("</form>");
 	printf("</div>");
 
@@ -1392,7 +1392,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	printf("<div id=\"status_background\" style=\"position:absolute;top:%dpx;left:%dpx;height:%dpx;width:%dpx;background-color:#%s;\">", ROW_PADDING, $lhs_margin + 275, 20, $scale_width - 275, "c1c1c1");
 	printf("</div>");
 
-	printf("\n<div id=\"status_text\" style=\"position:absolute;top:%dpx;left:%dpx;color:#%s\">", ROW_PADDING, $lhs_margin + 280, "000000");
+	printf("<div id=\"status_text\" style=\"position:absolute;top:%dpx;left:%dpx;color:#%s\">", ROW_PADDING, $lhs_margin + 280, "000000");
 	printf("</div>");
 
 	// The jpeg ...
@@ -1403,7 +1403,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			$pos = ($col + 1) + ($row * COLS);
 			$camera_src = "misc/indexing.jpeg";
 
-			printf("\n<img id=\"image_%d\" style=\"position:absolute;top:%dpx;left:%dpx;\" src=\"%s\" width=%dpx height=%dpx title=\"Right click the mouse and select 'Save image as'.\" onClick=\"view_clicked(%s);\" alt=\"\">", $pos, (($row + 1) * ROW_PADDING) + ($row * $scale_height) + 22, $lhs_margin + ($col * COL_PADDING) + ($col * $scale_width) , $camera_src,  $scale_width, $scale_height, $pos);
+			printf("<img id=\"image_%d\" style=\"position:absolute;top:%dpx;left:%dpx;\" src=\"%s\" width=%dpx height=%dpx title=\"Right click the mouse and select 'Save image as'.\" onClick=\"view_clicked(%s);\" alt=\"\">", $pos, (($row + 1) * ROW_PADDING) + ($row * $scale_height) + 22, $lhs_margin + ($col * COL_PADDING) + ($col * $scale_width) , $camera_src,  $scale_width, $scale_height, $pos);
 		}
 	}
 
@@ -1411,8 +1411,8 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	$button_width = (int)($scale_width / 5);
 	$total_width = $button_width * 5;
 	$margin_offset = ($scale_width - $total_width) / 2;
-	printf("<div style=\"position:absolute;top:%dpx;left:%dpx\">\n", (2 * ROW_PADDING) + $scale_height + 22, $lhs_margin + $margin_offset);
-	printf("<form action=\"#\">\n");
+	printf("<div style=\"position:absolute;top:%dpx;left:%dpx\">", (2 * ROW_PADDING) + $scale_height + 22, $lhs_margin + $margin_offset);
+	printf("<form action=\"#\">");
 	printf("<input type=\"button\" name=\"minus_event\" value=\"- event\"  onClick=\"prev_event_block();\" style=\"width: %dpx\">", $button_width);
 	printf("<input id=\"minus_one_button\" type=\"button\" name=\"minus_1\" value=\"<\" onClick=\"minus_clicked();\" style=\"width: %dpx\">", $button_width);
 	printf("<input id=\"play_pause_button\" type=\"button\" name=\"play_pause\" value=\"Click to Pause\" onClick=\"play_pause_clicked();\" style=\"width: %dpx\">", $button_width);
@@ -1422,7 +1422,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	printf("</div>");
 
 	// The time line
-	printf("<div style=\"position:absolute;top:%dpx;left:%dpx\">\n", (3 * ROW_PADDING) + $scale_height + 44, $lhs_margin);
+	printf("<div style=\"position:absolute;top:%dpx;left:%dpx\">", (3 * ROW_PADDING) + $scale_height + 44, $lhs_margin);
 	$tline_scale = $scale_width / 288;
 	for ($tline_offset = 0; $tline_offset < 288; $tline_offset++)
 	{	
