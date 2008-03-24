@@ -1,15 +1,15 @@
 [dirs]
-images_dir = /home/dave/kmotion/images
-misc_config_dir = /home/dave/kmotion/misc_config
-daemons_dir = /home/dave/kmotion/daemons
-apache2_config_dir = /home/dave/kmotion/apache2_config
-www_dir = /home/dave/kmotion/www
+images_dir = /home/john/kmotion/images
+misc_config_dir = /home/john/kmotion/misc_config
+daemons_dir = /home/john/kmotion/daemons
+apache2_config_dir = /home/john/kmotion/apache2_config
+www_dir = /home/john/kmotion/www
 
 [storage]
 size_gb = 5
 
 [misc]
-port = 8080
+port = 8085
 standalone = true
 
 [debug]
@@ -31,7 +31,7 @@ snapshot_interval4 = 300
 snapshot_interval5 = 300
 snapshot_interval2 = 300
 snapshot_interval3 = 300
-snapshot_interval1 = 30
+snapshot_interval1 = 300
 
 [feed_count]
 count = 1
