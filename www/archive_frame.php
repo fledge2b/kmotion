@@ -1072,7 +1072,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 
 	function tline_populate()
 	{
-		var snap_end = 86400 + 1;
+		var snap_end = 86400;
 		for (var i = dbase.snap.length - 1; i >= 0; i--)  // snapshots
 		{
 			if (dbase.snap_delay[i] != 0)  // watch out for infinate loop
@@ -1085,9 +1085,9 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 						tline.snap.push(tblock);
 						document.getElementById("tline_" + tblock).src = "misc/tline_snap.png";
 					}
-				}
-				snap_end = dbase.snap[i];
+				};
 			}
+			snap_end = dbase.snap[i]
 		}
 	
 		for (var tblock = 0; tblock < 288; tblock++)  // events
