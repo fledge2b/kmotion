@@ -28,8 +28,7 @@ all traces of kmotion will be uninstalled. This includes
 
 (1) A link from /etc/apache2/sites-enabled/ to this directory
 (2) The addition of 'kmotion' and 'kmotion_restart' in /usr/bin/
-(3) The addition of 'sudo -u <name> motion &' in /etc/rc.local
-(4) The addition of '127.0.0.1 kmotion' to /etc/hosts \033[1;32m
+(3) The addition of 'sudo -u <name> motion &' in /etc/rc.local\033[1;32m
 
 Press ENTER to start uninstall.\033[1;37m"""
 
@@ -102,20 +101,20 @@ Press ENTER to start uninstall.\033[1;37m"""
         print_ok()
     else:
         print_fail('\'kmotion\' already removed from \'/etc/rc.local\'')
-  
-    # remove 127.0.0.1 kmotion from /etc/hosts
-    print_checking('Removeing \'127.0.0.1    kmotion\' from \'/etc/hosts\'')
-    f = open('/etc/hosts', 'r')
-    lines = f.readlines()
-    f.close
-
-    f = open('/etc/hosts', 'w')
-    for line in lines:
-        if line == '127.0.0.1\tkmotion\n': continue
-        f.write(line)
-    f.close
-    print_ok()
-    print
+        
+##    # remove 127.0.0.1 kmotion from /etc/hosts
+##    print_checking('Removeing \'127.0.0.1    kmotion\' from \'/etc/hosts\'')
+##    f = open('/etc/hosts', 'r')
+##    lines = f.readlines()
+##    f.close
+##
+##    f = open('/etc/hosts', 'w')
+##    for line in lines:
+##        if line == '127.0.0.1\tkmotion\n': continue
+##        f.write(line)
+##    f.close
+##    print_ok()
+##    print
     
 
 def print_checking(text):
