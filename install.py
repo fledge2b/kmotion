@@ -30,7 +30,6 @@ the only changes that will be made to your system are:
 (1) A link from /etc/apache2/sites-enabled/ to this directory
 (2) The addition of 'kmotion' and 'kmotion_restart' to /usr/bin/
 (3) The addition of 'sudo -u <name> motion &' to /etc/rc.local
-(4) The addition of '127.0.0.1 kmotion' to /etc/hosts
 
 All of which are reversible manually or by executing uninstall.py. 
 
@@ -127,19 +126,19 @@ Press ENTER to start install.\033[1;37m"""
         print_ok()
     else: print_fail('Failed to add kmotion to \'/etc/rc.local\' please ensure \'/etc/rc.local\' has the line \'exit 0\' as the last line')
     
-    # add 127.0.0.1 kmotion to /etc/hosts
-    print_checking('Adding \'127.0.0.1 kmotion\' to \'/etc/hosts\'')
-    f = open('/etc/hosts', 'r')
-    lines = f.readlines()
-    f.close
-
-    f = open('/etc/hosts', 'w')
-    if lines[0] != '127.0.0.1\tkmotion\n':
-        f.write('127.0.0.1\tkmotion\n')
-    for line in lines:
-        f.write(line)
-    f.close
-    print_ok()
+##    # add 127.0.0.1 kmotion to /etc/hosts
+##    print_checking('Adding \'127.0.0.1 kmotion\' to \'/etc/hosts\'')
+##    f = open('/etc/hosts', 'r')
+##    lines = f.readlines()
+##    f.close
+##
+##    f = open('/etc/hosts', 'w')
+##    if lines[0] != '127.0.0.1\tkmotion\n':
+##        f.write('127.0.0.1\tkmotion\n')
+##    for line in lines:
+##        f.write(line)
+##    f.close
+##    print_ok()
     
     # WARNING about motion
     print """\033[1;31m
