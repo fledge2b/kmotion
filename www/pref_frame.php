@@ -80,7 +80,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 
 <body id="pref">
 
-<form name="pref_form">
+<form name="pref_form" action="#">
 <div class="heading">
 Preferences:
 </div>
