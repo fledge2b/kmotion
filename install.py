@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-import os, pwd, ConfigParser
+import os, sys, pwd, ConfigParser
 
 def install():
     """
@@ -35,13 +35,18 @@ All of which are reversible manually or by executing uninstall.py.
 
 \033[1;31m*IMPORTANT*
 
-ubuntu 8.04 Hardy Heron has a bug in its motion package. On completion
-of install motion is automatically started. As a workaround 'sudo apt-get install
-motion' and 'killall motion' BEFORE executing 'sudo ./install.py'. \033[1;32m
+Ubuntu 8.04 Hardy Heron has a problematic .deb motion package. 
+Motion is configured to automatically start on bootup via /etc/init.d/motion 
+and even starts itself on install. Both features cause problems for kmotion.
+The motion daemon has to be killed and the auto startup script disabled 
+BEFORE executing 'sudo ./install.py'. \033[1;32m
 
-Press ENTER to start install.\033[1;37m"""
+Type \'install\' ENTER to start install :\033[1;37m""",
 
-    raw_input()
+    if raw_input() != 'install':
+        print
+        sys.exit()
+    print
 
     # check we are running as root
     print_checking('Checking install is running as root')

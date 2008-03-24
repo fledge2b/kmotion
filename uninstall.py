@@ -16,7 +16,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-import os, pwd, ConfigParser
+import os, sys, pwd, ConfigParser
 
 def uninstall():
     """
@@ -30,9 +30,12 @@ all traces of kmotion will be uninstalled. This includes
 (2) The addition of 'kmotion' and 'kmotion_restart' in /usr/bin/
 (3) The addition of 'sudo -u <name> motion &' in /etc/rc.local\033[1;32m
 
-Press ENTER to start uninstall.\033[1;37m"""
+Type \'uninstall\' ENTER to start uninstall :\033[1;37m""",
 
-    raw_input()
+    if raw_input() != 'uninstall':
+        print
+        sys.exit()
+    print
 
     # check we are running as root
     print_checking('Checking install is running as root')
