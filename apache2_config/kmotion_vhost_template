@@ -1,6 +1,7 @@
-NameVirtualHost *:80
+Listen %port%
+NameVirtualHost *:%port%
 
-<VirtualHost *:80>
+<VirtualHost *:%port%>
 
     ServerName kmotion
     ServerAdmin webmaster@localhost

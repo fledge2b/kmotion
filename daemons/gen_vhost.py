@@ -30,6 +30,7 @@ def gen_vhost():
     images_dir = parser.get('dirs', 'images_dir')
     apache2_config_dir = parser.get('dirs', 'apache2_config_dir')
     www_dir = parser.get('dirs', 'www_dir')
+    port = parser.get('misc', 'port')
 
     f = open('%s/%s' % (apache2_config_dir, 'kmotion_vhost_template'))
     config = f.readlines()
@@ -39,6 +40,7 @@ def gen_vhost():
         config[i] = config[i].replace('%images_dir%', images_dir)
         config[i] = config[i].replace('%apache2_config_dir%', apache2_config_dir)
         config[i] = config[i].replace('%www_dir%', www_dir)
+        config[i] = config[i].replace('%port%', port)
         
     f = open('%s/%s' % (apache2_config_dir, 'kmotion_vhost'), 'w')
     for line in config:
