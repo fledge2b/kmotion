@@ -22,7 +22,7 @@ import os, sys, time, signal, shutil, ConfigParser, logger, daemon_whip
 A fairly complex daemon that copys, moves or deletes files from images_dir/.../tmp to images_dir/.../video
 as defined in kmotion.rc generating a 'sanitized' snapshot sequence. Updates journal_snap with snapshot 
 information, responds to a SIGHUP by re-reading its configuration. Responds to SIGTERM by updateing 
-journal_snap with #HHMMSS$86399 signifying no more snapshots.
+journal_snap with #HHMMSS$0 signifying no more snapshots.
 """
 
 parser = ConfigParser.SafeConfigParser()
@@ -93,9 +93,9 @@ class Hkd2_Feed:
             
     def update_journal_break(self):
         """
-        updates journal_snap with #HHMMSS$86399 signifying no more snapshots
+        updates journal_snap with #HHMMSS$0 signifying no more snapshots
         """
-        self.update_journal(time.strftime('%Y%m%d'), self.feed,  time.strftime('%H%M%S'), (60 * 60 * 24) - 1)
+        self.update_journal(time.strftime('%Y%m%d'), self.feed,  time.strftime('%H%M%S'), 0)
             
             
     def update_journal(self, date, feed, seconds, pause):
@@ -171,9 +171,9 @@ class Kmotion_Hkd2:
  
     def signal_term(self, signum, frame):
         """ 
-        On SIGTERM update journal_snap with #HHMMSS$86399 signifying no more snapshots
+        On SIGTERM update journal_snap with #HHMMSS$0 signifying no more snapshots
         """
-        logger.log('Signal SIGTERM detected, updateing journal with break #HHMMSS$86400', 'DEBUG')
+        logger.log('Signal SIGTERM detected, updateing journal with break #HHMMSS$0', 'DEBUG')
         for instance in self.Hk2_feed_instances:
             instance.update_journal_break()
         sys.exit()
