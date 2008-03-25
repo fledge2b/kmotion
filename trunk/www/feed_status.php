@@ -73,8 +73,7 @@ The returned data is in a form that facilitates rapid Javascript string splittin
 					$jpeg_name = explode('/images', $jpeg_name);
 					$jpeg_name = $jpeg_name[1];
 					$jpeg_name = '/images'.$jpeg_name;
-					// match end of string to check its complete
-					if(substr($jpeg_name, -4) == ".jpg") break;
+					if($jpeg_name != "") break;
 					usleep(10);
 				}
 				else break;

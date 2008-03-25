@@ -17,6 +17,7 @@
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
 import os, sys, pwd, ConfigParser
+import sys_v_ctrl
 
 def install():
     """
@@ -27,9 +28,10 @@ def install():
 Welcome to the kmotion v1.12b installer. Apart from internal configurations 
 the only changes that will be made to your system are:
 
-(1) A link from /etc/apache2/sites-enabled/ to this directory
-(2) The addition of 'kmotion' and 'kmotion_restart' to /usr/bin/
-(3) The addition of 'sudo -u <name> motion &' to /etc/rc.local
+(1) If '/etc/init.d/motion' is detected it is disabled
+(2) A link from /etc/apache2/sites-enabled/ to this directory
+(3) The addition of 'kmotion' and 'kmotion_restart' to /usr/bin/
+(4) The addition of 'sudo -u <name> motion &' to /etc/rc.local
 
 All of which are reversible manually or by executing uninstall.py. 
 
