@@ -906,8 +906,12 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	{
 		for (var i = dbase.snap.length - 1; i >= 0; i--)
 		{
-			if (dbase.snap[i] <= image.jpeg_secs && dbase.snap_delay[i] != 0)
+			if (dbase.snap[i] <= image.jpeg_secs)
 			{
+				if (dbase.snap_delay[i] == 0)
+				{
+					return [false, 0];
+				}
 				var strip = image.jpeg_secs - dbase.snap[i];
 				var ratio = strip / dbase.snap_delay[i];
 				ratio = parseInt(ratio) + 1;
@@ -1041,8 +1045,12 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	{
 		for (var i = dbase.snap.length - 1; i >= 0; i--)
 		{
-			if (dbase.snap[i] < image.jpeg_secs && dbase.snap_delay[i] != 0)
+			if (dbase.snap[i] < image.jpeg_secs)
 			{
+				if (dbase.snap_delay[i] == 0)
+				{
+					return [false, 0];
+				}
 				var strip = image.jpeg_secs - dbase.snap[i];
 				var ratio = strip / dbase.snap_delay[i];
 				if (parseInt(ratio) == ratio)
