@@ -23,7 +23,7 @@ Generate the kmotion_restart module which when executed always cd's to the corre
 and calls kmotion_restart.py
 """
 
-def gen_kmotion_restart():
+def gen_kmotion_reload():
     
     parser = ConfigParser.SafeConfigParser()  
     parsed = parser.read('./daemon.rc')
@@ -45,21 +45,21 @@ def gen_kmotion_restart():
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
-# Starts kmotion daemons, executable from anywhere in the system\n
+# Reloads config for kmotion daemons, executable from anywhere in the system\n
 
 import os
 
 os.chdir('%s')
-os.system('./kmotion_restart.py')
+os.system('./kmotion_reload.py')
 """ % daemons_dir
         
-    f = open('%s/kmotion_restart' % (daemons_dir), 'w')
+    f = open('%s/kmotion_reload' % (daemons_dir), 'w')
     f.write(blog)
     f.close()
-    os.chmod('./kmotion_restart', 0755)
+    os.chmod('./kmotion_reload', 0755)
     
 
 if __name__ == '__main__':
-    gen_kmotion_restart()
+    gen_kmotion_reload()
     
     

@@ -17,7 +17,6 @@
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
 import os, sys, pwd, ConfigParser
-import sys_v_ctrl
 
 def install():
     """
@@ -30,20 +29,20 @@ the only changes that will be made to your system are:
 
 (1) If '/etc/init.d/motion' is detected it is disabled
 (2) A link from /etc/apache2/sites-enabled/ to this directory
-(3) The addition of 'kmotion' and 'kmotion_restart' to /usr/bin/
+(3) The addition of 'kmotion' and 'kmotion_reload' to /usr/bin/
 (4) The addition of 'sudo -u <name> motion &' to /etc/rc.local
 
-All of which are reversible manually or by executing uninstall.py. 
-
-\033[1;31m*IMPORTANT*
-
-Ubuntu 8.04 Hardy Heron has a problematic .deb motion package. 
-Motion is configured to automatically start on bootup via /etc/init.d/motion 
-and even starts itself on install. Both features cause problems for kmotion.
-The motion daemon has to be killed and the auto startup script disabled 
-BEFORE executing 'sudo ./install.py'. \033[1;32m
+All of which are reversible manually or by executing uninstall.py. \033[1;32m
 
 Type \'install\' ENTER to start install :\033[1;37m""",
+
+##\033[1;31m*IMPORTANT*
+##
+##Ubuntu 8.04 Hardy Heron has a problematic .deb motion package. 
+##Motion is configured to automatically start on bootup via /etc/init.d/motion 
+##and even starts itself on install. Both features cause problems for kmotion.
+##The motion daemon has to be killed and the auto startup script disabled 
+##BEFORE executing 'sudo ./install.py'.
 
     if raw_input() != 'install':
         print
@@ -109,9 +108,9 @@ Type \'install\' ENTER to start install :\033[1;37m""",
     os.rename('%s/kmotion' % daemons_dir, '/usr/bin/kmotion')
     print_ok()
     
-    # move bin file kmotion_restart to /usr/local/bin
-    print_checking('Adding \'kmotion_restart\' to \'/usr/bin\'')
-    os.rename('%s/kmotion_restart' % daemons_dir,  '/usr/bin/kmotion_restart')
+    # move bin file kmotion_reload to /usr/local/bin
+    print_checking('Adding \'kmotion_reload\' to \'/usr/bin\'')
+    os.rename('%s/kmotion_reload' % daemons_dir,  '/usr/bin/kmotion_reload')
     print_ok()
             
     # add kmotion to /etc/rc.local
@@ -168,17 +167,78 @@ def print_checking(text):
     print '.' *  (65 - length) , 
     print '\033[1;37m',
     
+    
 def print_ok():
     """
     Colorise a green [ok]
     """
     print '\033[1;32m[OK]\033[1;37m'
     
+    
 def print_fail(text):
     """
     Given a text string colorise to red and prepend a [fail] 
     """
     print '\033[1;31m[FAIL]\n\n%s\n\033[1;37m' % text,
+    
+    
+def sys_v_exists(service):
+    """
+    Given the name of a service in '/etc/init.d/' returns a bool true
+    if the file exists 
+    """
+    return os.path.isfile('/etc/init.d/%s' % service)
+
+
+def sys_v_remove(service):
+    """
+    Given the name of a service in '/etc/init.d/' changes all links in all '/etc/rc?.d' directories
+    to 'K??service' effectively disableing the service.
+    """
+    if not os.path.isfile('/etc/init.d/%s' % service): 
+        return False
+
+    os.system('update-rc.d -f %s remove' % service)
+    os.system('update-rc.d %s stop 0 1 2 3 4 5 6 .' % service)
+    return True
+    
+
+def sys_v_add(service):
+    """
+    Given the name of a service in '/etc/init.d/' changes all links in all '/etc/rc?.d' directories
+    to 'defaults' effectively enableing the service.
+    """
+    if not os.path.isfile('/etc/init.d/%s' % service): 
+        return False
+
+    os.system('update-rc.d -f %s remove' % service)
+    os.system('update-rc.d %s multiuser' % service)
+    return True
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
 install()

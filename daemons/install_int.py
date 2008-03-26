@@ -36,7 +36,7 @@ parser.write(open('./daemon.rc', 'w'))  # when parser writes the file WHAT A HOR
 
 gen_vhost.gen_vhost()
 gen_kmotion.gen_kmotion()
-gen_kmotion_restart.gen_kmotion_restart()
+gen_kmotion_reload.gen_kmotion_reload()
 
     
     
