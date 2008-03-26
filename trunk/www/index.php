@@ -128,7 +128,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		preload9 = new Image();
 		preload9.src = "misc/no_video.jpeg";
 		preload10 = new Image();
-		preload10.src = "misc/scanning.jpeg";
+		preload10.src = "misc/scanning.png";
 	}
 
 
