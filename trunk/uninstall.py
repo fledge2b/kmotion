@@ -27,7 +27,7 @@ Welcome to the kmotion v1.12b uninstaller. Apart from the kmotion directory
 all traces of kmotion will be uninstalled. This includes
 
 (1) A link from /etc/apache2/sites-enabled/ to this directory
-(2) The addition of 'kmotion' and 'kmotion_restart' in /usr/bin/
+(2) The addition of 'kmotion' and 'kmotion_reload' in /usr/bin/
 (3) The addition of 'sudo -u <name> motion &' in /etc/rc.local\033[1;32m
 
 Type \'uninstall\' ENTER to start uninstall :\033[1;37m""",
@@ -78,13 +78,13 @@ Type \'uninstall\' ENTER to start uninstall :\033[1;37m""",
     else:
         print_fail('/usr/bin/kmotion already deleted')
     
-    # delete /usr/bin/kmotion_restart
-    print_checking('Deleteing /usr/bin/kmotion_restart')
-    if os.path.isfile('/usr/bin/kmotion_restart'):
-        os.remove('/usr/bin/kmotion_restart')
+    # delete /usr/bin/kmotion_reload
+    print_checking('Deleteing /usr/bin/kmotion_reload')
+    if os.path.isfile('/usr/bin/kmotion_reload'):
+        os.remove('/usr/bin/kmotion_reload')
         print_ok()  
     else:
-        print_fail('/usr/bin/kmotion_restart already deleted')
+        print_fail('/usr/bin/kmotion_reload already deleted')
     
     # remove kmotion from /etc/rc.local
     print_checking('Removing \'kmotion\' from \'/etc/rc.local\' for auto startup')

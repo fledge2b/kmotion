@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-3.9.dtd">
 <!-- Project file for project kmotion -->
-<!-- Saved: 2008-03-21, 11:37:41 -->
+<!-- Saved: 2008-03-26, 15:23:57 -->
 <!-- Copyright (C) 2008 ,  -->
 <Project version="3.9">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -65,6 +65,9 @@
     <Source>
       <Name>uninstall.py</Name>
     </Source>
+    <Source>
+      <Name>sys_v_ctrl.py</Name>
+    </Source>
   </Sources>
   <Forms>
   </Forms>
@@ -122,9 +125,9 @@ s.</VcsOtherData>
   </Vcs>
   <FiletypeAssociations>
     <FiletypeAssociation pattern="*.ui.h" type="FORMS" />
-    <FiletypeAssociation pattern="*.ui" type="FORMS" />
-    <FiletypeAssociation pattern="*.idl" type="INTERFACES" />
-    <FiletypeAssociation pattern="*.py" type="SOURCES" />
     <FiletypeAssociation pattern="*.ptl" type="SOURCES" />
+    <FiletypeAssociation pattern="*.idl" type="INTERFACES" />
+    <FiletypeAssociation pattern="*.ui" type="FORMS" />
+    <FiletypeAssociation pattern="*.py" type="SOURCES" />
   </FiletypeAssociations>
 </Project>

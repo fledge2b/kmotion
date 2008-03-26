@@ -47,7 +47,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	stream = {
 		cache_jpeg: [],				// Caching jpeg array to avoid flicker
 		cache_num: 0,				// Count into above array
-		loaded: false,				// Status flag, true if image has been loaded
+		loaded: "false",			// Three way status flag string, false, error or true if image has been loaded
 
 		feed:0,					// Holds the feed pointer
 		start_time: 0,				// The start time in ms for the current view
@@ -153,25 +153,23 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		stream.cache_num++;  // caching as a browser workaround
 		stream.cache_num = (stream.cache_num > 3)?0:stream.cache_num;
 
-		stream.cache_jpeg[stream.cache_num].onload = function ()
-		{
-			set_view_text();
-			stream.cache_try_count = 0;
-			stream.loaded = true;
-		}
-
-		stream.cache_jpeg[stream.cache_num].onerror = function ()
-		{
-			stream.cache_try_count = 0;
-			stream.loaded = true;
-		}
-
-		// Avoid flashes of white on views
 		var feed_reply1 = stream.server_reply1[stream.feed];
 		var jpeg_file = (feed_reply1 == undefined)?"misc/caching.jpeg":feed_reply1;
 		if (feed_reply1 != "" && feed_reply1 != undefined)
 		{
-			document.getElementById("image_1").src = jpeg_file;
+			stream.cache_jpeg[stream.cache_num].onload = function ()
+			{
+				set_view_text();
+				stream.cache_try_count = 0;
+				document.getElementById("image_1").src = jpeg_file;
+				stream.loaded = "true";
+			}
+	
+			stream.cache_jpeg[stream.cache_num].onerror = function ()
+			{
+				stream.cache_try_count = 0;
+				stream.loaded = "error";
+			}
 			stream.cache_jpeg[stream.cache_num].src = jpeg_file;
 			cache_wait();
 		}
@@ -185,13 +183,19 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	function cache_wait()
 	{
 		stream.cache_try_count++;
-		if (stream.loaded)
+		if (stream.loaded == "true")
 		{
-				stream.loaded = false;
-				var pause = Math.max(parent_cache.pref_motion_pause, 100);  // pause needed if browser accessing server on localhost, code in lowbw runns too fast 
-				window.setTimeout("stream_video();", pause);  // causing image freezing issues
+			stream.loaded = "false";
+			var pause = Math.max(parent_cache.pref_motion_pause, 100);  // pause needed if browser accessing server on localhost, code in lowbw runs too fast 
+			window.setTimeout("stream_video();", pause);  // causing image freezing issues
 		}
-		else
+		else if (stream.loaded = "error")
+		{
+			stream.cache_try_count = 0;
+			stream.loaded = "false";
+			window.setTimeout("stream_video();", 1);
+		}
+		else if (stream.loaded == "false")
 		{
 			if (stream.cache_try_count < 99)
 			{
@@ -200,7 +204,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			else
 			{
 				stream.cache_try_count = 0;
-				stream.loaded = false;
+				stream.loaded = "false";
 				window.setTimeout("stream_video();", 1);
 			}
 		}
