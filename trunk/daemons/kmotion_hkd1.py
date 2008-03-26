@@ -65,6 +65,39 @@ class Kmotion_Hkd1:
                 shutil.rmtree('%s/%s' % (self.images_dir, dir[0]))  # delete oldest dir first
         
         
+###########################################################################################################
+
+
+
+
+
+
+
+
+    
+    def read_av_dir_size(self, thread):
+        """
+        Reads todays average directory size, if 'av_dir_size' file returns 0
+        """
+        if os.path.isfile('%s/%s' % (self.date_dir, thread)):
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def update_size(self):
         """
         Calculate todays images_dir file size and modify size file
@@ -75,6 +108,16 @@ class Kmotion_Hkd1:
             date_dir = '%s/%s' % (self.images_dir, date)
             if not(os.path.isdir(date_dir)): os.makedirs(date_dir)
             self.prev_date = date
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         os.system('nice -n 19 du -c --block-size=1 %s/%s | grep total > /tmp/kmotion_size' % (self.images_dir, date)) 
         f = open('/tmp/kmotion_size', 'r')
@@ -103,6 +146,7 @@ class Kmotion_Hkd1:
         return sum
 
 
+###########################################################################################################
     def chk_motion(self):
         """
         Check motion is still running ... if not restart it ... 
