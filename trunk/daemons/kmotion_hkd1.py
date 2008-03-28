@@ -54,9 +54,17 @@ class Kmotion_Hkd1:
         while(True):   
             self.chk_motion() 
             self.chk_kmotion_hkd2()
-            time.sleep(15 * 60)  # sleep here to allow system to settle after boot
+            
+            
+            
             
             self.update_size()                 # for todays images
+            
+            
+            
+            
+            time.sleep(15 * 60)  # sleep here to allow system to settle after boot
+            
             sum = self.sum_sizes()         # for all images
             if sum > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
                 dir = os.listdir(self.images_dir)
@@ -74,59 +82,161 @@ class Kmotion_Hkd1:
 
 
 
-    
-    def read_av_dir_size(self, thread):
+
+
+
+
+
+
+
+
+
+
+
+    def total_size(self):
+        update_todays_size()
+        
+
+
+
+
+
+    def update_todays_size(self):
         """
-        Reads todays average directory size, if 'av_dir_size' file returns 0
-        """
-        if os.path.isfile('%s/%s' % (self.date_dir, thread)):
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def update_size(self):
-        """
-        Calculate todays images_dir file size and modify size file
+        Calculate todays 'images_dir' file size and modify 'dir_size' file
         """
         date = time.strftime('%Y%m%d') 
+        date_dir = '%s/%s' % (self.images_dir, date)
         # check & create date dir just in case kmotion_hkd1 crosses 00:00 before motion
         if self.prev_date != date:  
-            date_dir = '%s/%s' % (self.images_dir, date)
             if not(os.path.isdir(date_dir)): os.makedirs(date_dir)
             self.prev_date = date
         
+        size = 0
+        feeds = [x for x in os.listdir(date_dir) if os.path.isdir('%s/%s' % (date_dir, x))]  # directories only
+        for feed in feeds:
+            feed_dir = '%s/%s' % (date_dir, feed)
+            dir_size = dir_size + self.av_file_size(feed_dir) * self.av_file_count(feed_dir)
+            dir_size = dir_size + self.av_dir_size(feed_dir) * self.av_dir_count(feed_dir)
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        os.system('nice -n 19 du -c --block-size=1 %s/%s | grep total > /tmp/kmotion_size' % (self.images_dir, date)) 
-        f = open('/tmp/kmotion_size', 'r')
-        du_op= f.readline()
+        f = open('%s/dir_size' % date_dir, 'w')
+        f.write(str(dir_size))
         f.close()
         
-        f = open('%s/%s/size' % (self.images_dir, date), 'w')
-        f.write(du_op.split()[0])
-        f.close()
+        
+    def av_file_size(self, feed_dir):
+        """
+        If 'av_file_size' exists return its value else attempt to calculate its value, create 'av_file_size' and return its value, 
+        else if there is insufficient data to calculate 'av_file_size' return 0 
+        """
+        if os.path.isfile('%s/av_file_size' % feed_dir):  # if there is a update_av_file_size file, average has already been calculated
+            f = open('%s/av_file_size' % feed_dir, 'r')
+            av_file_size = int(f.readline(av_file_size))
+            f.close
+        else:
+            av_file_size = 0
+            files = [x for x in os.listdir('%s/video/' %  feed_dir) if os.path.isfile('%s/video/%s' % (feed_dir, x))]
+            if len(files) > 50:
+                size = 0
+                for file in files:
+                    size = size + os.path.getsize('%s/video/%s' % (feed_dir, file))
+                av_file_size = size // len(files)
+                f = open('%s/av_file_size' % feed_dir, 'w')
+                f.write(str(av_file_size))
+                f.close
+        return av_file_size
+            
+            
+    def file_count(self, feed_dir):
+        """
+        If an 'av_file_size' file exists calculate and return an updated directory count, else return 0
+        """
+        # FIXME: if there are 10's of thousands of files a more efficient way to count would be to read
+        # in 'journal_snap' file, decode it and calculate the number of files from there. thats a fair bit
+        # of code for an unlikely event.
+        dir_count = 0
+        if os.path.isfile('%s/av_file_size' % feed_dir):
+            # using BASH directly to count the number of files is the fastest way when they may be
+            # in the 10's of thousands. messy but quick
+            os.system('nice -n 19 ls -l %s/video | grep .*\.jpg | wc -l > /tmp/kmotion_bash' % feed_dir)
+            f = open('/tmp/kmotion_bash', 'r')
+            file_count = int(f.readline())
+            f.close()
+        return file_count
+        
+
+    def av_dir_size(self, feed_dir):
+        """
+        If 'av_dir_size' exists return its value else attempt to calculate its value, create 'av_dir_size' and return its value, 
+        else if there is insufficient data to calculate 'av_dir_size' return 0 
+        """
+        if os.path.isfile('%s/av_dir_size' % feed_dir):  # if there is a update_av_dir_size file, average has already been calculated
+            f = open('%s/av_dir_size' % feed_dir, 'r')
+            av_dir_size = int(f.readline(av_file_size))
+            f.close
+        else:
+            av_dir_size = 0
+            dirs = [x for x in os.listdir('%s/video/' %  feed_dir) if os.path.isdir('%s/video/%s' % (feed_dir, x))]
+            if len(dirs) > 50:
+                size = 0
+                count = 0
+                for dir in dirs:
+                    count = count + 1
+                    for file in os.listdir('%s/video/%s' %  (feed_dir, dir)):
+                        size = size + os.path.getsize('%s/video/%s/%s' % (feed_dir, dir, file))
+                av_dir_size = size // count
+                f = open('%s/av_dir_size' % feed_dir, 'w')
+                f.write(str(av_dir_size))
+                f.close
+        return av_dir_size
+         
+         
+    def dir_count(self, feed_dir):
+        """
+        If an 'av_dir_size' file exists calculate and return an updated directory count, else return 0
+        """
+        dir_count = 0
+        if os.path.isfile('%s/av_dir_size' % feed_dir):
+            # using BASH directly to count the number of directories is the fastest way when they may be
+            # in the 10's of thousands. messy but quick
+            os.system('nice -n 19 ls -l %s/video | grep -v .*\.jpg | wc -l > /tmp/kmotion_bash' % feed_dir)
+            f = open('/tmp/kmotion_bash', 'r')
+            dir_count = int(f.readline())
+            f.close()
+        return dir_count
+            
+        
+
+        
+        
+        
+        
+            
+            
+            
+            
+            
+            
+            
+            
+        
+##        
+##        
+##        os.system('nice -n 19 du -c --block-size=1 %s/%s | grep total > /tmp/kmotion_size' % (self.images_dir, date)) 
+##        f = open('/tmp/kmotion_size', 'r')
+##        du_op= f.readline()
+##        f.close()
+##        
+##        f = open('%s/%s/size' % (self.images_dir, date), 'w')
+##        f.write(du_op.split()[0])
+##        f.close()
+##
+##
+
+
+
+
+
 
 
     def sum_sizes(self):

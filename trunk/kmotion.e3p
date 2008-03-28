@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-3.9.dtd">
 <!-- Project file for project kmotion -->
-<!-- Saved: 2008-03-26, 15:23:57 -->
+<!-- Saved: 2008-03-26, 14:01:08 -->
 <!-- Copyright (C) 2008 ,  -->
 <Project version="3.9">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -30,10 +30,6 @@
     <Source>
       <Dir>daemons</Dir>
       <Name>kmotion_hkd1.py</Name>
-    </Source>
-    <Source>
-      <Dir>daemons</Dir>
-      <Name>gen_kmotion_restart.py</Name>
     </Source>
     <Source>
       <Dir>daemons</Dir>
@@ -66,7 +62,12 @@
       <Name>uninstall.py</Name>
     </Source>
     <Source>
-      <Name>sys_v_ctrl.py</Name>
+      <Dir>daemons</Dir>
+      <Name>gen_kmotion_reload.py</Name>
+    </Source>
+    <Source>
+      <Dir>daemons</Dir>
+      <Name>check_size.py</Name>
     </Source>
   </Sources>
   <Forms>
@@ -124,10 +125,10 @@ I1
 s.</VcsOtherData>
   </Vcs>
   <FiletypeAssociations>
+    <FiletypeAssociation pattern="*.py" type="SOURCES" />
     <FiletypeAssociation pattern="*.ui.h" type="FORMS" />
-    <FiletypeAssociation pattern="*.ptl" type="SOURCES" />
     <FiletypeAssociation pattern="*.idl" type="INTERFACES" />
     <FiletypeAssociation pattern="*.ui" type="FORMS" />
-    <FiletypeAssociation pattern="*.py" type="SOURCES" />
+    <FiletypeAssociation pattern="*.ptl" type="SOURCES" />
   </FiletypeAssociations>
 </Project>
