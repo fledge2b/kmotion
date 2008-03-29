@@ -54,53 +54,36 @@ class Kmotion_Hkd1:
         while(True):   
             self.chk_motion() 
             self.chk_kmotion_hkd2()
-            
-            
-            
-            
-            self.update_size()                 # for todays images
-            
-            
-            
-            
             time.sleep(15 * 60)  # sleep here to allow system to settle after boot
             
-            sum = self.sum_sizes()         # for all images
-            if sum > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
+            if  self.total_images_size() > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
                 dir = os.listdir(self.images_dir)
                 dir.sort()
                 logger.log('Image storeage limit reached - deleteing %s/%s' %  (self.images_dir, dir[0]), 'CRIT')
                 shutil.rmtree('%s/%s' % (self.images_dir, dir[0]))  # delete oldest dir first
         
+
+    def total_images_size(self):
+        """
+        Returns the total size of the images directory
+        """
+        # the following rather elaborate system is designed to lighten the server load. if there are 10's of thousands of
+        # files a 'du -h' command will peg the server for several seconds or minutes every 15 mins
+        # this code waits for > 50 files or directories then averages their size as a once off. a 'ls | grep | wc' structure 
+        # then quickly counts the number of files and directories, multiply by average size and total size is calculated.
+        self.update_todays_size()
+        total_images_size = 0
+        dates = [x for x in os.listdir(self.images_dir) if x != 'events']
+        for date in dates:
+            date_dir = '%s/%s' % (self.images_dir, date)
+            if os.path.isfile('%s/dir_size' % date_dir):
+                f = open('%s/dir_size' % date_dir)
+                print date_dir, f.readline()
+                #total_images_size = total_images_size + int(f.readline())
+                f.close()
+        return total_images_size
         
-###########################################################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def total_size(self):
-        update_todays_size()
-        
-
-
-
-
-
+            
     def update_todays_size(self):
         """
         Calculate todays 'images_dir' file size and modify 'dir_size' file
@@ -112,12 +95,12 @@ class Kmotion_Hkd1:
             if not(os.path.isdir(date_dir)): os.makedirs(date_dir)
             self.prev_date = date
         
-        size = 0
+        dir_size = 0
         feeds = [x for x in os.listdir(date_dir) if os.path.isdir('%s/%s' % (date_dir, x))]  # directories only
         for feed in feeds:
             feed_dir = '%s/%s' % (date_dir, feed)
-            dir_size = dir_size + self.av_file_size(feed_dir) * self.av_file_count(feed_dir)
-            dir_size = dir_size + self.av_dir_size(feed_dir) * self.av_dir_count(feed_dir)
+            dir_size = dir_size + self.av_file_size(feed_dir) * self.file_count(feed_dir)
+            dir_size = dir_size + self.av_dir_size(feed_dir) * self.dir_count(feed_dir)
         
         f = open('%s/dir_size' % date_dir, 'w')
         f.write(str(dir_size))
@@ -154,7 +137,7 @@ class Kmotion_Hkd1:
         # FIXME: if there are 10's of thousands of files a more efficient way to count would be to read
         # in 'journal_snap' file, decode it and calculate the number of files from there. thats a fair bit
         # of code for an unlikely event.
-        dir_count = 0
+        file_count = 0
         if os.path.isfile('%s/av_file_size' % feed_dir):
             # using BASH directly to count the number of files is the fastest way when they may be
             # in the 10's of thousands. messy but quick
@@ -206,57 +189,6 @@ class Kmotion_Hkd1:
         return dir_count
             
         
-
-        
-        
-        
-        
-            
-            
-            
-            
-            
-            
-            
-            
-        
-##        
-##        
-##        os.system('nice -n 19 du -c --block-size=1 %s/%s | grep total > /tmp/kmotion_size' % (self.images_dir, date)) 
-##        f = open('/tmp/kmotion_size', 'r')
-##        du_op= f.readline()
-##        f.close()
-##        
-##        f = open('%s/%s/size' % (self.images_dir, date), 'w')
-##        f.write(du_op.split()[0])
-##        f.close()
-##
-##
-
-
-
-
-
-
-
-    def sum_sizes(self):
-        """
-        Sums all avaliable images_dir size files 
-        
-        Return the sum of all size files
-        """
-        sum = 0
-        dirs = os.listdir(self.images_dir)
-        dirs.sort()
-        for date in dirs[:-2]:  # [:-2] to filter off events & last_snap.jpg
-            if os.path.isfile('%s/%s/size' % (self.images_dir, date)):
-                f = open('%s/%s/size' % (self.images_dir, date), 'r')
-                sum = sum + int(f.readline())
-                f.close()
-        return sum
-
-
-###########################################################################################################
     def chk_motion(self):
         """
         Check motion is still running ... if not restart it ... 
