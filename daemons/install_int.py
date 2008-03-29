@@ -17,7 +17,7 @@
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
 import os, ConfigParser
-import gen_vhost, gen_kmotion, gen_kmotion_restart
+import gen_vhost, gen_kmotion, gen_kmotion_reload
 
 """
 Modify daemon.rc paths to reflect cwd. Generate vhost file from vhost template. Generate 
