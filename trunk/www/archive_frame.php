@@ -238,12 +238,11 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 						}
 					}
 					var max_skip = 300 / delay_secs
-					for (var i = 0; i < Math.min((delay_ms / snap_limit_ms), max_skip); i++)
+					for (var i = 1; i < Math.min((delay_ms / snap_limit_ms), max_skip); i++)
 					{
 						nearest_next_image();
 						if (image.is_event)  // in case of overrun from snapshot to event
-						{
-							
+						{	
 							window.setTimeout("play_forward();", 1);
 							return;
 						}
@@ -352,7 +351,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 						}
 					}
 					var max_skip = 300 / delay_secs
-					for (var i = 0; i < Math.min((delay_ms / snap_limit_ms), max_skip); i++)
+					for (var i = 1; i < Math.min((delay_ms / snap_limit_ms), max_skip); i++)
 					{
 						nearest_prev_image();
 						if (image.is_event)  // in case of overrun from snapshot to event
@@ -1373,7 +1372,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	$dir = dir($path."/".$date_dir);
 	while (false !== ($entry = $dir->read())) 
 	{
-		if ($entry != "." and $entry != ".." and $entry != 'size')
+		if ($entry != "." and $entry != ".." and $entry != 'dir_size')
 		{
 			$feed_dirs[] = $entry;
 		}
