@@ -19,8 +19,8 @@
 import os, ConfigParser
 
 """
-Generate the kmotion_restart module which when executed always cd's to the correct directory 
-and calls kmotion_restart.py
+Generate the kmotion_reload module which when executed always cd's to the correct directory 
+and calls kmotion_reload.py
 """
 
 def gen_kmotion_reload():
