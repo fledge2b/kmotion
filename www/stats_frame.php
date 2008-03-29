@@ -102,7 +102,7 @@ elegant fashion :)
 	printf("Server Uptime ");
 	$top_array = preg_split("/[\s,]+/", $topinfo[0]);
 	$i = 4;
-	while ($top_array[$i + 1] != 'user') 
+	while ($top_array[$i + 1] != 'user' and $top_array[$i + 1] != 'users')
 		{
 			printf($top_array[$i].' ');
 			$i++;
