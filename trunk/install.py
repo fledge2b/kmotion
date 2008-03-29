@@ -23,18 +23,25 @@ def install():
     A very simple automated install script ... this code is not bombproof !
     """
 
-  #  if os.path.isfile('/etc/issue'):
-  #      f.open('/etc/issue', 'r')
-  #      issue = 
+    version_ok = False
+    if os.path.isfile('/etc/issue'):
+        f = open('/etc/issue', 'r')
+        issue = f.readline()
+        f.close
+        if issue[:11] == 'Ubuntu 7.10':
+            version_ok = True
+    
+    if not version_ok:
 
+        print """\033[1;31m
+*IMPORTANT* 
 
+The kmotion v1.12b installer has been developed and tested on Ubuntu 7.10. It appears 
+that you are not running this version and so the installer will now abort.
 
-
-
-
-
-
-
+Please check out the docs directory for details of how to manualy install kmotion.
+\033[1;37m"""
+        return
 
     
     print """\033[1;32m
@@ -49,14 +56,6 @@ the only changes that will be made to your system are:
 All of which are reversible manually or by executing uninstall.py. \033[1;32m
 
 Type \'install\' ENTER to start install :\033[1;37m""",
-
-##\033[1;31m*IMPORTANT*
-##
-##Ubuntu 8.04 Hardy Heron has a problematic .deb motion package. 
-##Motion is configured to automatically start on bootup via /etc/init.d/motion 
-##and even starts itself on install. Both features cause problems for kmotion.
-##The motion daemon has to be killed and the auto startup script disabled 
-##BEFORE executing 'sudo ./install.py'.
 
     if raw_input() != 'install':
         print
@@ -145,20 +144,6 @@ Type \'install\' ENTER to start install :\033[1;37m""",
     if ok: 
         print_ok()
     else: print_fail('Failed to add kmotion to \'/etc/rc.local\' please ensure \'/etc/rc.local\' has the line \'exit 0\' as the last line')
-    
-##    # add 127.0.0.1 kmotion to /etc/hosts
-##    print_checking('Adding \'127.0.0.1 kmotion\' to \'/etc/hosts\'')
-##    f = open('/etc/hosts', 'r')
-##    lines = f.readlines()
-##    f.close
-##
-##    f = open('/etc/hosts', 'w')
-##    if lines[0] != '127.0.0.1\tkmotion\n':
-##        f.write('127.0.0.1\tkmotion\n')
-##    for line in lines:
-##        f.write(line)
-##    f.close
-##    print_ok()
     
     # WARNING about motion
     print """\033[1;31m
