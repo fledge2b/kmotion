@@ -17,7 +17,7 @@
 # Place, Suite 330, Boston, MA  02111-1307  USA
 
 import os, sys, time, ConfigParser
-import logger, gen_int_rcs, gen_vhost, gen_kmotion, gen_kmotion_restart
+import logger, gen_int_rcs, gen_vhost, gen_kmotion, gen_kmotion_reload
 
 """
 Controls kmotion daemons allowing daemon starting, stopping, checking of status
