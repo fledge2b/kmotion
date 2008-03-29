@@ -22,6 +22,20 @@ def install():
     """
     A very simple automated install script ... this code is not bombproof !
     """
+
+  #  if os.path.isfile('/etc/issue'):
+  #      f.open('/etc/issue', 'r')
+  #      issue = 
+
+
+
+
+
+
+
+
+
+
     
     print """\033[1;32m
 Welcome to the kmotion v1.12b installer. Apart from internal configurations 

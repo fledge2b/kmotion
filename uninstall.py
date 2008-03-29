@@ -69,6 +69,7 @@ Type \'uninstall\' ENTER to start uninstall :\033[1;37m""",
     print_ok()
     print
     os.system('/etc/init.d/apache2 restart')
+    print
 
     # delete /usr/bin/kmotion
     print_checking('Deleteing /usr/bin/kmotion')
