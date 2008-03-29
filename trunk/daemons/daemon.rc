@@ -9,7 +9,7 @@ www_dir = /home/dave/kmotion/www
 size_gb = 5
 
 [misc]
-port = 2224
+port = 8085
 standalone = true
 
 [debug]
