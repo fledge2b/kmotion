@@ -11,5 +11,3 @@ untar it
 cd to the docs directory and read the odf or pfd.
 
 Dave
-
-PS if you run Ubuntu 7.10 there is an install script :)
