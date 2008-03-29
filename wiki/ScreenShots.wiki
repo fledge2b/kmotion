@@ -1,4 +1,5 @@
 #summary Screenshots of the Web front end of kmotion in action
+#labels Featured
 ----
 http://img114.imageshack.us/img114/2180/14go8.png
 ----
