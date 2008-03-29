@@ -1,0 +1,14 @@
+#summary One-sentence summary of this page.
+#labels Phase-Deploy
+
+
+download kmotion-v1.12b.tar.gz
+unzip it
+untar it
+cd to the docs directory and read the odf or pfd.
+
+Dave
+
+PS if you run Ubuntu 7.10 there is an install script :)
+
+
