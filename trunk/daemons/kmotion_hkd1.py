@@ -114,7 +114,7 @@ class Kmotion_Hkd1:
         """
         if os.path.isfile('%s/av_file_size' % feed_dir):  # if there is a update_av_file_size file, average has already been calculated
             f = open('%s/av_file_size' % feed_dir, 'r')
-            av_file_size = int(f.readline(av_file_size))
+            av_file_size = int(f.readline())
             f.close
         else:
             av_file_size = 0
@@ -155,7 +155,7 @@ class Kmotion_Hkd1:
         """
         if os.path.isfile('%s/av_dir_size' % feed_dir):  # if there is a update_av_dir_size file, average has already been calculated
             f = open('%s/av_dir_size' % feed_dir, 'r')
-            av_dir_size = int(f.readline(av_file_size))
+            av_dir_size = int(f.readline())
             f.close
         else:
             av_dir_size = 0
