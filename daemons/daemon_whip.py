@@ -68,7 +68,8 @@ def daemons_running():
     """ 
     Returns false if any daemons are nor running
     """
-    return not os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null') or os.system('ps ax | grep \'kmotion_hkd2.py$\' > /dev/null') or os.system('/bin/ps ax | /bin/grep [m]otion\ -c')
+    return not os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null') | os.system('ps ax | grep \'kmotion_hkd2.py$\' > /dev/null') | os.system('/bin/ps ax | /bin/grep [m]otion\ -c') 
+    #return not os.system('ps ax | grep \'kmotion_hkd1.py$\' > /dev/null')
     
     
 def daemon_status():
