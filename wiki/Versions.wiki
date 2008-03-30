@@ -10,11 +10,18 @@ The key changes in kmotion versions and future roadmap.
 A near complete re-write of the back end to make install easier and to sqish multiple bugs. The key changes are :
 
 * kmotion including the website now exists within 1 relocatable directory, much easier install
+
 * install / uninstall script for ubuntu 7.10
 * the images directory is relocatable
+
 * the max size of the images directory is now specified without ref to its partition
+
 * kmotion is programmed through motion.conf
+
 * kmotion can load motion.conf from multiple locations inc default motion locations
+
 * example code for motion.conf
+
 * server stats now shows uptime
+
 * server stats auto updates every 15 seconds
