@@ -7,7 +7,9 @@ The key changes in kmotion versions and future roadmap.
 
 = v1.12b =
 
-A near complete re-write of the back end to make install easier and to sqish multiple bugs. The key changes are :
+A near complete re-write of the back end to make install easier and to correct multiple bugs. 
+
+The key changes are :
 
  * kmotion including the website now exists within 1 relocatable directory, much easier install
 
@@ -17,7 +19,7 @@ A near complete re-write of the back end to make install easier and to sqish mul
 
  * the max size of the images directory is now specified without ref to its partition
 
- * kmotion is programmed through motion.conf
+ * kmotion is programmed through an standard motion.conf with the addition of one directive
 
  * kmotion can load motion.conf from multiple locations inc default motion locations
 
@@ -26,3 +28,7 @@ A near complete re-write of the back end to make install easier and to sqish mul
  * server stats now shows uptime
 
  * server stats auto updates every 15 seconds
+
+= v1.00b =
+
+The original codebase.
