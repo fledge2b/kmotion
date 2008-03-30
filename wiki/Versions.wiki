@@ -1,5 +1,5 @@
 #summary kmotion versions
-#labels Phase-Design
+#labels Phase-Design,Featured
 
 = v1.12b =
 
