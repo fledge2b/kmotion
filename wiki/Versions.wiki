@@ -1,10 +1,5 @@
 #summary kmotion versions
 
-= Introduction =
-
-The key changes in kmotion versions and future roadmap.
-
-
 = v1.12b =
 
 A near complete re-write of the back end to make install easier and to correct multiple bugs. 
