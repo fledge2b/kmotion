@@ -6,6 +6,7 @@
 A near complete re-write of the back end to make install easier and to correct multiple bugs. 
 
 The key changes are :
+ * full documentation including developer documentation
 
  * kmotion including the website now exists within 1 relocatable directory, much easier install
 
