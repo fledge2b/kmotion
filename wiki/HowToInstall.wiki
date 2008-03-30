@@ -9,5 +9,3 @@ unzip it
 untar it
 
 cd to the docs directory and read the odf or pfd.
-
-Dave
