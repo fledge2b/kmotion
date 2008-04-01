@@ -1,6 +1,14 @@
 #summary kmotion versions
 #labels Phase-Design,Featured
 
+= v1.13b =
+
+ * Corrections to documentation, specifically port numbers ... thank you Patrick
+
+ * ./install.py now checks for ubuntu 7.10
+
+ * Fixed minor bug in statistics view
+
 = v1.12b =
 
 A near complete re-write of the back end to make install easier and to correct multiple bugs. 
