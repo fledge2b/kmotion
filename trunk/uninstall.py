@@ -23,7 +23,7 @@ def uninstall():
     A very simple automated uninstall script ... this code is not bombproof !
     """
     print """\033[1;31m
-Welcome to the kmotion v1.12b uninstaller. Apart from the kmotion directory
+Welcome to the kmotion v1.1xb uninstaller. Apart from the kmotion directory
 all traces of kmotion will be uninstalled. This includes
 
 (1) A link from /etc/apache2/sites-enabled/ to this directory
