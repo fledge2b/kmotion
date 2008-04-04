@@ -1,6 +1,13 @@
 #summary kmotion versions
 #labels Phase-Design,Featured
 
+= 1.14b =
+
+ * Corrections to documentation ... thank you keith
+
+ * Fixed div/0 bug in statistics view if no swap
+
+
 = v1.13b =
 
  * Corrections to documentation, specifically port numbers ... thank you Patrick
