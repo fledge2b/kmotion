@@ -163,8 +163,8 @@ elegant fashion :)
 	echo '<div class="section_heading text">';	
 	printf('Swap %s', $item);
 	echo '</div>';
-
 	$total_mem = substr($item, 0, -1);
+	$total_mem = max(1, $total_mem);  // prevents div by zero if no swap
 	$item = $top_array[3];
 	$swap = substr($item, 0, -1);
 	display_bar('Used', round(($swap / $total_mem) * 100, 1).'%', 90, $swap, 1, $total_mem);
