@@ -36,7 +36,7 @@ def install():
         print """\033[1;31m
 *IMPORTANT* 
 
-The kmotion v1.12b installer has been developed and tested on Ubuntu 7.10. It appears 
+The kmotion v1.1xb installer has been developed and tested on Ubuntu 7.10. It appears 
 that you are not running this version and so the installer will now abort.
 
 Please check out the docs directory for details of how to manualy install kmotion.
@@ -45,7 +45,7 @@ Please check out the docs directory for details of how to manualy install kmotio
 
     
     print """\033[1;32m
-Welcome to the kmotion v1.12b installer. Apart from internal configurations 
+Welcome to the kmotion v1.1xb installer. Apart from internal configurations 
 the only changes that will be made to your system are:
 
 (1) If '/etc/init.d/motion' is detected it is disabled
