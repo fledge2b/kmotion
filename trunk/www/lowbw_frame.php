@@ -61,10 +61,10 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		cache_try_count: 0			// a caching try counter
 		};
 
-	stream.cache_jpeg[0] = new Image();
-	stream.cache_jpeg[1] = new Image();
-	stream.cache_jpeg[2] = new Image();
-	stream.cache_jpeg[3] = new Image();
+	for (var i=0; i < 16; i++)
+	{
+		stream.cache_jpeg[i] = new Image();
+	}
 
 
 	//*******************************************************************************************************************************************************************************
@@ -151,7 +151,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	function cache()
 	{
 		stream.cache_num++;  // caching as a browser workaround
-		stream.cache_num = (stream.cache_num > 3)?0:stream.cache_num;
+		stream.cache_num = (stream.cache_num > 15)?0:stream.cache_num;
 
 		var feed_reply1 = stream.server_reply1[stream.feed];
 		var jpeg_file = (feed_reply1 == undefined)?"misc/caching.jpeg":feed_reply1;

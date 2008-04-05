@@ -67,10 +67,11 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		cache_try_count: 0			// a caching try counter
 		};
 
-	stream.cache_jpeg[0] = new Image();
-	stream.cache_jpeg[1] = new Image();
-	stream.cache_jpeg[2] = new Image();
-	stream.cache_jpeg[3] = new Image();
+	for (var i=0; i < 16; i++)
+	{
+		stream.cache_jpeg[i] = new Image();
+	}
+
 
 	// start_view() calculates the initial view setting to ensure that view 1 is updated first in all cases
 	function start_view()
@@ -202,7 +203,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	function cache()
 	{
 		stream.cache_num++;  // caching as a browser workaround
-		stream.cache_num = (stream.cache_num > 3)?0:stream.cache_num;
+		stream.cache_num = (stream.cache_num > 15)?0:stream.cache_num;
 
 		stream.feed = parent_cache.view_seqs[parent_cache.view_format][stream.view];	
 		// Avoid flashes of white on views
