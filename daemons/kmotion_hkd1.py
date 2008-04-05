@@ -59,6 +59,7 @@ class Kmotion_Hkd1:
             if  self.total_images_size() > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
                 dir = os.listdir(self.images_dir)
                 dir.sort()
+                if dir[0] == '.svn': dir.pop(0)  # skip '.svn' control file if present
                 logger.log('Image storeage limit reached - deleteing %s/%s' %  (self.images_dir, dir[0]), 'CRIT')
                 shutil.rmtree('%s/%s' % (self.images_dir, dir[0]))  # delete oldest dir first
         
