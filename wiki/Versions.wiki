@@ -1,13 +1,13 @@
 #summary kmotion versions
 #labels Featured
 
-= 1.15b =
+= v1.15b =
 
  * Fixed major bug preventing culling of image files when limit reached
 
  * Increased jpeg cache from 4 to 16 to avoid image 'reflashing'
 
-= 1.14b =
+= v1.14b =
 
  * Corrections to documentation ... thank you keith
 
