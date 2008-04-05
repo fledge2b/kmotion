@@ -1,6 +1,12 @@
 #summary kmotion versions
 #labels Phase-Design,Featured
 
+= 1.15b =
+
+ * Fixed major bug preventing culling of image files when limit reached
+
+
+
 = 1.14b =
 
  * Corrections to documentation ... thank you keith
