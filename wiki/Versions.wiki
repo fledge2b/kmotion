@@ -1,11 +1,11 @@
 #summary kmotion versions
-#labels Phase-Design,Featured
+#labels Featured
 
 = 1.15b =
 
  * Fixed major bug preventing culling of image files when limit reached
 
-
+ * Increased jpeg cache from 4 to 16 to avoid image 'reflashing'
 
 = 1.14b =
 
@@ -20,7 +20,7 @@
 
  * ./install.py now checks for ubuntu 7.10
 
- * Fixed minor bug in statistics view
+ * Fixed statistics view bug causing display corruption if users != 1
 
 = v1.12b =
 
