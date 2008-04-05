@@ -78,7 +78,7 @@ class Kmotion_Hkd1:
             date_dir = '%s/%s' % (self.images_dir, date)
             if os.path.isfile('%s/dir_size' % date_dir):
                 f = open('%s/dir_size' % date_dir)
-                #total_images_size = total_images_size + int(f.readline())
+                total_images_size = total_images_size + int(f.readline())
                 f.close()
         return total_images_size
         
