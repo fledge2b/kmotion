@@ -35,7 +35,7 @@ class Gen_Int_Rcs:
         Generate rc's by parsing motion.conf files, generate modified motion.conf files for kmotion,
         generate www.rc and modify daemon.rc 
         """
-        self.read_daemon_rc()
+        self.read_kmotion_rc()
         self.logger = logger.Logger('daemon_start', self.log_level)
         if os.path.isfile('%s/motion.conf' % self.misc_config_dir): os.remove('%s/motion.conf' % self.misc_config_dir)  # remove old config in case of sys.exit() here
         motion_config = self.find_motion_conf()
@@ -197,7 +197,7 @@ class Gen_Int_Rcs:
         parser.write(open('./daemon.rc', 'w'))  # when parser writes the file WHAT A HORRIBLE MESS - YUK !
         
         
-    def read_daemon_rc(self):
+    def read_kmotion_rc(self):
         """ 
         Read configuration from daemon.rc 
         """
