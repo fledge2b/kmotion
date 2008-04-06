@@ -1,0 +1,16 @@
+[dirs]
+images_dir = /home/dave/kmotion/images
+misc_config_dir = /home/dave/kmotion/misc_config
+daemons_dir = /home/dave/kmotion/daemons
+apache2_config_dir = /home/dave/kmotion/apache2_config
+www_dir = /home/dave/kmotion/www_classic
+
+[storage]
+max_size_gb = 5
+
+[misc]
+port = 8085
+
+[debug]
+log_level = WARNING
+

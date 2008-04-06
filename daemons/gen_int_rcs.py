@@ -202,7 +202,7 @@ class Gen_Int_Rcs:
         Read configuration from daemon.rc 
         """
         parser = ConfigParser.SafeConfigParser()
-        parser.read('./daemon.rc')
+        parser.read('./kmotion.rc')
         self.images_dir = parser.get('dirs', 'images_dir')
         self.misc_config_dir = parser.get('dirs', 'misc_config_dir')
         self.www_dir = parser.get('dirs', 'www_dir')

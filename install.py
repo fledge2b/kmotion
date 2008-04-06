@@ -90,7 +90,7 @@ Type \'install\' ENTER to start install :\033[1;37m""",
     os.system('sudo -u %s ./install_int.py' % login)
     
     parser = ConfigParser.SafeConfigParser()
-    parsed = parser.read('./daemon.rc')
+    parsed = parser.read('./kmotion.rc')
     
     images_dir = parser.get('dirs', 'images_dir')
     misc_config_dir = parser.get('dirs', 'misc_config_dir')
@@ -188,31 +188,31 @@ def sys_v_exists(service):
     """
     return os.path.isfile('/etc/init.d/%s' % service)
 
-
-def sys_v_remove(service):
-    """
-    Given the name of a service in '/etc/init.d/' changes all links in all '/etc/rc?.d' directories
-    to 'K??service' effectively disableing the service.
-    """
-    if not os.path.isfile('/etc/init.d/%s' % service): 
-        return False
-
-    os.system('update-rc.d -f %s remove' % service)
-    os.system('update-rc.d %s stop 0 1 2 3 4 5 6 .' % service)
-    return True
-    
-
-def sys_v_add(service):
-    """
-    Given the name of a service in '/etc/init.d/' changes all links in all '/etc/rc?.d' directories
-    to 'defaults' effectively enableing the service.
-    """
-    if not os.path.isfile('/etc/init.d/%s' % service): 
-        return False
-
-    os.system('update-rc.d -f %s remove' % service)
-    os.system('update-rc.d %s multiuser' % service)
-    return True
-    
+##
+##def sys_v_remove(service):
+##    """
+##    Given the name of a service in '/etc/init.d/' changes all links in all '/etc/rc?.d' directories
+##    to 'K??service' effectively disableing the service.
+##    """
+##    if not os.path.isfile('/etc/init.d/%s' % service): 
+##        return False
+##
+##    os.system('update-rc.d -f %s remove' % service)
+##    os.system('update-rc.d %s stop 0 1 2 3 4 5 6 .' % service)
+##    return True
+##    
+##
+##def sys_v_add(service):
+##    """
+##    Given the name of a service in '/etc/init.d/' changes all links in all '/etc/rc?.d' directories
+##    to 'defaults' effectively enableing the service.
+##    """
+##    if not os.path.isfile('/etc/init.d/%s' % service): 
+##        return False
+##
+##    os.system('update-rc.d -f %s remove' % service)
+##    os.system('update-rc.d %s multiuser' % service)
+##    return True
+##    
     
 install()

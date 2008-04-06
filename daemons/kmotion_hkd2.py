@@ -26,7 +26,7 @@ journal_snap with #HHMMSS$0 signifying no more snapshots.
 """
 
 parser = ConfigParser.SafeConfigParser()
-parsed = parser.read('./daemon.rc')
+parsed = parser.read('./kmotion.rc')
 log_level = parser.get('debug', 'log_level')
 logger = logger.Logger('kmotion_hkd2', log_level)
 
@@ -137,12 +137,14 @@ class Kmotion_Hkd2:
         """
         Read the config from daemon.rc and generates a list of Hk2_feed_instances
         """
-        parser = ConfigParser.SafeConfigParser()
-        parsed = parser.read('./daemon.rc')
+        parser_kmotion = ConfigParser.SafeConfigParser()
+        parsed_kmotion = parser_kmotion.read('./kmotion.rc')
+        parser_daemon = ConfigParser.SafeConfigParser()
+        parsed_daemon = parser_daemon.read('./daemon.rc')
         
         self.Hk2_feed_instances = []
-        images_dir = parser.get('dirs', 'images_dir')
-        feed_count = int(parser.get('feed_count', 'count'))
+        images_dir = parser_kmotion.get('dirs', 'images_dir')
+        feed_count = int(parser_daemon.get('feed_count', 'count'))
         for i in range(feed_count):
             self.Hk2_feed_instances.append(Hkd2_Feed(i, images_dir, int(parser.get('feed_intervals', 'snapshot_interval%d' % (i + 1)))))
             

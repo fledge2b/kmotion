@@ -26,7 +26,7 @@ strings to their full paths as defined in daemon.rc
 def gen_vhost():
     
     parser = ConfigParser.SafeConfigParser()  
-    parsed = parser.read('./daemon.rc')
+    parsed = parser.read('./kmotion.rc')
     images_dir = parser.get('dirs', 'images_dir')
     apache2_config_dir = parser.get('dirs', 'apache2_config_dir')
     www_dir = parser.get('dirs', 'www_dir')

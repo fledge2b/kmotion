@@ -20,13 +20,13 @@ import os, sys, time, signal, shutil,  ConfigParser, daemon_whip
 import logger
 
 """
-Checks the size of the images_dir deleteing the oldest directorys first when 90% of size_gb is reached.   
+Checks the size of the images_dir deleteing the oldest directorys first when 90% of max_size_gb is reached.   
 Checks that 'motion' & 'kmotion_hkd2.py' are running, restarting them if neccessary. Responds to a 
 SIGHUP by re-reading its configuration.
 """
 
 parser = ConfigParser.SafeConfigParser()
-parsed = parser.read('./daemon.rc')
+parsed = parser.read('./kmotion.rc')
 log_level = parser.get('debug', 'log_level')
 logger = logger.Logger('kmotion_hkd1', log_level)
 
@@ -56,10 +56,10 @@ class Kmotion_Hkd1:
             self.chk_kmotion_hkd2()
             time.sleep(15 * 60)  # sleep here to allow system to settle after boot
             
-            if  self.total_images_size() > self.size_gb * 0.9:   # if > 90% of size_gb, delete oldest images
+            if  self.total_images_size() > self.max_size_gb * 0.9:   # if > 90% of max_size_gb, delete oldest images
                 dir = os.listdir(self.images_dir)
                 dir.sort()
-                if dir[0] == '.svn': dir.pop(0)  # skip '.svn' control file if present
+                if dir[0] == '.svn': dir.pop(0)  # skip '.svn' control directory if present
                 logger.log('Image storeage limit reached - deleteing %s/%s' %  (self.images_dir, dir[0]), 'CRIT')
                 shutil.rmtree('%s/%s' % (self.images_dir, dir[0]))  # delete oldest dir first
         
@@ -212,12 +212,12 @@ class Kmotion_Hkd1:
         Read config from daemon.rc 
         """
         parser = ConfigParser.SafeConfigParser()  
-        parsed = parser.read('./daemon.rc')
+        parsed = parser.read('./kmotion.rc')
         
         self.images_dir = parser.get('dirs', 'images_dir')
         self.daemons_dir = parser.get('dirs', 'daemons_dir')
         self.misc_config_dir = parser.get('dirs', 'misc_config_dir')
-        self.size_gb = int(parser.get('storage', 'size_gb')) * 2**30  # 2**30 = 1GB
+        self.max_size_gb = int(parser.get('storage', 'max_size_gb')) * 2**30  # 2**30 = 1GB
         
         
     def signal_hup(self, signum, frame):
