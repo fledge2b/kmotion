@@ -146,7 +146,7 @@ class Kmotion_Hkd2:
         images_dir = parser_kmotion.get('dirs', 'images_dir')
         feed_count = int(parser_daemon.get('feed_count', 'count'))
         for i in range(feed_count):
-            self.Hk2_feed_instances.append(Hkd2_Feed(i, images_dir, int(parser.get('feed_intervals', 'snapshot_interval%d' % (i + 1)))))
+            self.Hk2_feed_instances.append(Hkd2_Feed(i, images_dir, int(parser_daemon.get('feed_intervals', 'snapshot_interval%d' % (i + 1)))))
             
     
     def start_daemon(self):
