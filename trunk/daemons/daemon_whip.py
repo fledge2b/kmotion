@@ -25,7 +25,7 @@ and configuration reloading
 """
 
 parser = ConfigParser.SafeConfigParser()
-parsed = parser.read('./daemon.rc')
+parsed = parser.read('./kmotion.rc')
 log_level = parser.get('debug', 'log_level')
 logger = logger.Logger('daemon_whip', log_level)
 
@@ -35,7 +35,7 @@ def start_daemons():
     Start kmotion_hkd1, kmotion_hkd2 & motion daemons 
     """ 
     parser = ConfigParser.SafeConfigParser()
-    parser.read('./daemon.rc')
+    parser.read('./kmotion.rc')
     daemons_dir =  parser.get('dirs', 'daemons_dir')
         
     rcs = gen_int_rcs.Gen_Int_Rcs()  

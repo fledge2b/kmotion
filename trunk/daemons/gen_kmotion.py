@@ -26,7 +26,7 @@ and calls kmotion.py
 def gen_kmotion():
     
     parser = ConfigParser.SafeConfigParser()  
-    parsed = parser.read('./daemon.rc')
+    parsed = parser.read('./kmotion.rc')
     daemons_dir = parser.get('dirs', 'daemons_dir')
     
     blog = """#!/usr/bin/env python

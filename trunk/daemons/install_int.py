@@ -25,14 +25,14 @@ bin files kmotion and kmotion_restart
 """
 
 parser = ConfigParser.SafeConfigParser()
-parsed = parser.read('./daemon.rc')
+parsed = parser.read('./kmotion.rc')
 cwd = os.getcwd()[:-7]  # strips off 'daemons' to get root directory
 parser.set('dirs', 'images_dir', cwd + 'images')
 parser.set('dirs', 'misc_config_dir', cwd + 'misc_config')
 parser.set('dirs', 'daemons_dir', cwd + 'daemons')
 parser.set('dirs', 'apache2_config_dir', cwd + 'apache2_config')
-parser.set('dirs', 'www_dir', cwd + 'www')
-parser.write(open('./daemon.rc', 'w'))  # when parser writes the file WHAT A HORRIBLE MESS - YUK !
+parser.set('dirs', 'www_dir', cwd + 'www_classic')
+parser.write(open('./kmotion.rc', 'w'))  # when parser writes the file WHAT A HORRIBLE MESS - YUK !
 
 gen_vhost.gen_vhost()
 gen_kmotion.gen_kmotion()
