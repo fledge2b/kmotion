@@ -260,7 +260,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		for ($col = 0; $col < COLS; $col++)
 		{
 			$pos = ($col + 1) + ($row * COLS);
-			$camera_src = "misc/cashing.png";
+			$camera_src = "misc/caching.png";
 
 			printf("\n<img id=\"image_%d\" style=\"position:absolute;top:%dpx;left:%dpx;\"  src=\"%s\" width=%dpx height=%dpx onClick=\"view_clicked(%s);\" alt=\"Camera image\">", $pos, (($row + 1) * ROW_PADDING) + ($row * $scale_height), $lhs_margin + ($col * COL_PADDING) + ($col * $scale_width) , $camera_src,  $scale_width, $scale_height, $pos);
 
