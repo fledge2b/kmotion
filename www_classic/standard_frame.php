@@ -55,6 +55,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		view_change: 0,				// Contains number of last manual view change, used to avoid caching issues
 		last_camera_button: 0,			// Contains last camera button pressed, ... set by parent_cache.view_format() 2 - 4
 
+		ajax_reply: true,			// the state of the AJAX call - to avoid AJAX call clashing
 		server_reply1: [],			// The jpeg filename returned from the AJAX call
 		server_reply2: [],			// An array of events ie feeds with motion detected from the AJAX call
 
@@ -106,12 +107,13 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
 		}
 		xmlHttpReq.onreadystatechange = function() 
-		{	
+		{
 			if (xmlHttpReq.readyState == 4)
 			{						// Array of latest jpeg filenames for feeds: index 1 - 16
         			stream.server_reply1 = xmlHttpReq.responseText.split("#");
 									// Array of events: index 0 - length
 				stream.server_reply2 = stream.server_reply1[17].split("$");
+				stream.ajax_reply = true;
 			}
 		}
 		xmlHttpReq.open("POST", "feed_status.php", true);
@@ -191,7 +193,11 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		{
 			stream.feed = parent_cache.view_seqs[parent_cache.view_format][stream.view];
 			var jpeg = stream.server_reply1[stream.feed];
-			server_poll();
+			if (stream.ajax_reply)
+			{
+				stream.ajax_reply = false;
+				server_poll();
+			}
 			cache(jpeg);
 		}
 		else
