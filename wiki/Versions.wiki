@@ -1,6 +1,20 @@
 #summary kmotion versions
 #labels Featured
 
+= v1.17b =
+
+ * A new clearer 'kmotion.rc' removing internal system configurations
+
+ * 'kmotion.rc' option [www] for future web 2.0 interface
+
+ * Finally fixed the 'reflash' image bug
+
+ * New 'no archive files available' warning
+
+ * Improved archive playback to skip missing frames
+
+ * Changed all instances of 'cashing' to 'caching'
+
 = v1.15b =
 
  * Fixed major bug preventing culling of image files when limit reached
