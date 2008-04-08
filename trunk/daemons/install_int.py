@@ -31,7 +31,8 @@ parser.set('dirs', 'images_dir', cwd + 'images')
 parser.set('dirs', 'misc_config_dir', cwd + 'misc_config')
 parser.set('dirs', 'daemons_dir', cwd + 'daemons')
 parser.set('dirs', 'apache2_config_dir', cwd + 'apache2_config')
-parser.set('dirs', 'www_dir', cwd + 'www_classic')
+parser.set('dirs', 'www_classic_dir', cwd + 'www_classic')
+parser.set('dirs', 'www_2.0_dir', cwd + 'www_2.0')
 parser.write(open('./kmotion.rc', 'w'))  # when parser writes the file WHAT A HORRIBLE MESS - YUK !
 
 gen_vhost.gen_vhost()
