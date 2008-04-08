@@ -1,10 +1,10 @@
 [dirs]
 images_dir = /home/dave/kmotion/images
+www_2.0_dir = /home/dave/kmotion/www_2.0
 misc_config_dir = /home/dave/kmotion/misc_config
 daemons_dir = /home/dave/kmotion/daemons
 apache2_config_dir = /home/dave/kmotion/apache2_config
 www_classic_dir = /home/dave/kmotion/www_classic
-www_2.0_dir = /home/dave/kmotion/www_2.0
 
 [storage]
 max_size_gb = 5
