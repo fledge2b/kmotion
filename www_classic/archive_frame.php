@@ -377,7 +377,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 				//display_frame(fq_filename());
 				//nexus.image_try_count = 0;
 				//window.setTimeout("reverse_image_wait();", 1);
-				window.setTimeout("play_reverse();", 1);
+				window.setTimeout("play_reverse();", 1); 
 			}
 		}
 	}
