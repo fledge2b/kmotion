@@ -96,7 +96,6 @@ Type \'install\' ENTER to start install :\033[1;37m""",
     misc_config_dir = parser.get('dirs', 'misc_config_dir')
     daemons_dir = parser.get('dirs', 'daemons_dir')
     apache2_config_dir = parser.get('dirs', 'apache2_config_dir')
-    www_dir = parser.get('dirs', 'www_dir')
     
     # apt-get critical packages
     print_checking('Requesting critical packages')
