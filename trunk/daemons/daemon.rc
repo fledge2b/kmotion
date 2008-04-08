@@ -6,15 +6,15 @@ snapshot_interval10 = 300
 snapshot_interval11 = 300
 snapshot_interval12 = 300
 snapshot_interval13 = 300
-snapshot_interval9 = 300
-snapshot_interval8 = 300
 snapshot_interval7 = 300
+snapshot_interval8 = 300
+snapshot_interval9 = 300
 snapshot_interval6 = 300
 snapshot_interval4 = 300
 snapshot_interval5 = 300
 snapshot_interval2 = 300
 snapshot_interval3 = 300
-snapshot_interval1 = 0
+snapshot_interval1 = 300
 
 [feed_count]
 count = 1
