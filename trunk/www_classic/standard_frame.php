@@ -57,7 +57,6 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		view_change: 0,				// Contains number of last manual view change, used to avoid caching issues
 		last_camera_button: 0,			// Contains last camera button pressed, ... set by parent_cache.view_format() 2 - 4
 
-		ajax_reply: true,			// the state of the AJAX call - to avoid AJAX call clashing
 		server_reply1: [],			// The jpeg filename returned from the AJAX call
 		server_reply2: [],			// An array of events ie feeds with motion detected from the AJAX call
 
@@ -67,7 +66,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 							// Prep value to ensure server_snap2 starts correctly
 		interleave_view: start_view(),		// Pointer into view sequence ...  1 ... parent_cache.view_format squared
 
-		cache_try_count: 0			// a caching try counter
+		preload_try_count: 0			// a caching try counter
 		};
 
 	for (var i=0; i < 16; i++)
@@ -115,7 +114,6 @@ Place, Suite 330, Boston, MA  02111-1307  USA
         			stream.server_reply1 = xmlHttpReq.responseText.split("#");
 									// Array of events: index 0 - length
 				stream.server_reply2 = stream.server_reply1[17].split("$");
-				stream.ajax_reply = true;
 			}
 		}
 		xmlHttpReq.open("POST", "feed_status.php", true);
@@ -191,15 +189,12 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 				stream.interleave_lock = true;
 			}
 		}
+
 		if (parent_cache.view_seqs[parent_cache.view_format][stream.view]<= parent_cache.video_feeds)  // Don't bother with 'no video' views 
 		{
 			stream.feed = parent_cache.view_seqs[parent_cache.view_format][stream.view];
 			var jpeg = stream.server_reply1[stream.feed];
-			//if (stream.ajax_reply)
-			//{
-			//	stream.ajax_reply = false;
-				server_poll();
-			//}
+			server_poll();
 			cache(jpeg);
 		}
 		else
@@ -225,7 +220,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			stream.preload_jpeg[stream.preload_count].onload = function ()
 			{
 				set_view_status();
-				stream.cache_try_count = 0;		
+				stream.preload_try_count = 0;		
 				for (var i=1; i <= (Math.pow(parent_cache.view_format, 2)); i++) // Scan for views with duplicate feeds
 				{
 					if (parent_cache.view_seqs[parent_cache.view_format][i] == stream.feed)  // Set .src of all views found
@@ -238,7 +233,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	
 			stream.preload_jpeg[stream.preload_count].onerror = function ()
 			{
-				stream.cache_try_count = 0;
+				stream.preload_try_count = 0;
 				stream.loaded = "error";
 			}
 
@@ -246,16 +241,18 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			{
 				stream.preload_jpeg[stream.preload_count].src = "misc/caching.jpeg";
 				stream.view_change = 0;
+				cache_wait;
+				return;
 			}
 			stream.preload_jpeg[stream.preload_count].src = stream.preload_filename[stream.preload_count];
-			cache_wait(stream.preload_filename[stream.preload_count]);
+			cache_wait();
 		}
 	}	
 
 
 	function cache_wait()
 	{
-		stream.cache_try_count++;
+		stream.preload_try_count++;
 		if (stream.loaded == "true")
 		{
 			if (parent_cache.pref_interleave && ((stream.server_reply2.length) > 1))
@@ -274,20 +271,20 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 
 		else if (stream.loaded == "error")
 		{
-			stream.cache_try_count = 0;
+			stream.preload_try_count = 0;
 			stream.loaded = "false";
 			window.setTimeout("stream_video();", 1);
 		}
 
 		else if (stream.loaded == "false")
 		{
-			if (stream.cache_try_count < 99)
+			if (stream.preload_try_count < 99)
 			{
 				window.setTimeout("cache_wait();", 30);
 			}
 			else
 			{
-				stream.cache_try_count = 0;
+				stream.preload_try_count = 0;
 				stream.loaded = "false";
 				window.setTimeout("stream_video();", 1);
 			}
