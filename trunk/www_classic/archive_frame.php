@@ -149,7 +149,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		else
 		{
 			// If no images ... exit ...
-			document.getElementById("image_1").src = "misc/no_video.jpeg";
+			document.getElementById("image_1").src = "misc/no_archive.jpeg";
 		}
 	}
 
@@ -767,7 +767,17 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	function first_image()  // used to pick the first event as a starting point, if no events, picks the first snapshot 
 	{
 		var event_secs = dbase.event_start[0];
-		var snap_secs = dbase.snap[0];
+		var snap_secs  // create but leave undefined
+
+		for (var i = 0; i < dbase.snap_delay.length; i++)  // cannot simply 'snap_secs = dbase.snap[0]' to to kmotion_hkd2.py writing
+		{						   // a 0 entry on every new day.
+			if (dbase.snap_delay[i] != 0)
+			{
+				snap_secs = dbase.snap[i];
+				break;
+			}
+		}
+
 
 		if (event_secs != undefined)
 		{
