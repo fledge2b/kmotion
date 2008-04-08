@@ -70,8 +70,6 @@
 		{
 			xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
 		}
-		xmlHttpReq.open("POST", "feed_status.php", true);
-		xmlHttpReq.send(null);
 		xmlHttpReq.onreadystatechange = function() 
 		{	
 			if (xmlHttpReq.readyState == 4)
@@ -81,6 +79,8 @@
 				stream.server_reply2 = stream.server_reply1[17].split("$");	
 			}
 		}
+		xmlHttpReq.open("POST", "feed_status.php", true);
+		xmlHttpReq.send(null);
 	}
 
 
@@ -105,9 +105,9 @@
 			window.setTimeout("parent.frame_full_callback2()", 1);
 			return
 		}
-		document.getElementById("image_1").src = "misc/caching.jpeg";
 		server_poll()
-		window.setTimeout("scan_motion()", 250);
+		document.getElementById("image_1").src = "misc/caching.jpeg";
+		window.setTimeout("scan_motion()", 1000);
 	}
 
 
@@ -118,7 +118,6 @@
 			stream.interleave_ptr = 1;				// End of an interleave cycle
 			document.getElementById("text_1").innerHTML = ""; 	// Clear the text field 
 			window.setTimeout("scan_motion()", 1); 			// restart scan_motion()
-			return;
 		}
 		else
 		{	
@@ -128,20 +127,29 @@
 			{
 				stream.start_time = now.getTime();
 				stream.interleave_ptr++;
+				window.setTimeout("stream_video()", 1);
 			}
-			server_poll();
-			cache();
+			else
+			{				
+				var jpeg = stream.server_reply1[stream.feed];
+				server_poll();
+				cache(jpeg);
+			}
 		}
 	}
 
-	function cache()
+	function cache(jpeg)
 	{
 		stream.cache_num++;  // caching as a browser workaround
 		stream.cache_num = (stream.cache_num > 15)?0:stream.cache_num;
 
-		var feed_reply1 = stream.server_reply1[stream.feed];
-		var jpeg_file = (feed_reply1 == undefined)?"misc/caching.jpeg":feed_reply1;
-		if (feed_reply1 != "" && feed_reply1 != undefined)
+		var jpeg_file = (jpeg == undefined)?"misc/caching.jpeg":jpeg;
+
+		if (jpeg == "" || jpeg == undefined)
+		{
+			window.setTimeout("stream_video()", 100);
+		}
+		else
 		{
 			stream.cache_jpeg[stream.cache_num].onload = function ()
 			{
@@ -158,10 +166,6 @@
 			}
 			stream.cache_jpeg[stream.cache_num].src = jpeg_file;
 			cache_wait();
-		}
-		else
-		{
-			window.setTimeout("stream_video()", 1);
 		}
 	}	
 
