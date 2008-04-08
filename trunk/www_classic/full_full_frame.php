@@ -27,7 +27,10 @@
 		};
 
 	stream = {
-		cache_jpeg: [],				// Caching jpeg array to avoid flicker
+		preload_jpeg: [],			// Preloaded jpeg array
+		preload_filename: [],			// Preloaded jpeg filenames
+		preload_try_count: 0,			// Preload try counter
+
 		cache_num: 0,				// Count into above array
 		loaded: "false",			// Three way status flag string, false, error or true if image has been loaded
 
@@ -42,13 +45,11 @@
 
 		server_snap2: [],			// A snapshot of the interleave feed array ... ie server_reply2
 		interleave_ptr:	1,			// Pointer into the snapshot server_snap2
-
-		cache_try_count: 0			// a caching try counter
 		};
 
 	for (var i=0; i < 16; i++)
 	{
-		stream.cache_jpeg[i] = new Image();
+		stream.preload_jpeg[i] = new Image();
 	}
 
 
@@ -143,7 +144,7 @@
 		stream.cache_num++;  // caching as a browser workaround
 		stream.cache_num = (stream.cache_num > 15)?0:stream.cache_num;
 
-		var jpeg_file = (jpeg == undefined)?"misc/caching.jpeg":jpeg;
+		stream.preload_filename[stream.preload_count] = (jpeg == undefined)?"misc/caching.jpeg":jpeg;
 
 		if (jpeg == "" || jpeg == undefined)
 		{
@@ -151,20 +152,20 @@
 		}
 		else
 		{
-			stream.cache_jpeg[stream.cache_num].onload = function ()
+			stream.preload_jpeg[stream.cache_num].onload = function ()
 			{
 				set_view_text();
-				stream.cache_try_count = 0;
-				document.getElementById("image_1").src = jpeg_file;
+				stream.preload_try_count = 0;
+				document.getElementById("image_1").src = stream.preload_filename[stream.preload_count];
 				stream.loaded = "true";
 			}
 	
-			stream.cache_jpeg[stream.cache_num].onerror = function ()
+			stream.preload_jpeg[stream.cache_num].onerror = function ()
 			{
-				stream.cache_try_count = 0;
+				stream.preload_try_count = 0;
 				stream.loaded = "error";
 			}
-			stream.cache_jpeg[stream.cache_num].src = jpeg_file;
+			stream.preload_jpeg[stream.cache_num].src = stream.preload_filename[stream.preload_count];
 			cache_wait();
 		}
 	}	
@@ -172,7 +173,7 @@
 
 	function cache_wait()
 	{
-		stream.cache_try_count++;
+		stream.preload_try_count++;
 		if (stream.loaded == "true")
 		{
 			stream.loaded = "false";
@@ -181,19 +182,19 @@
 		}
 		else if (stream.loaded == "error")
 		{
-			stream.cache_try_count = 0;
+			stream.preload_try_count = 0;
 			stream.loaded = "false";
 			window.setTimeout("stream_video();", 1);
 		}
 		else if (stream.loaded == "false")
 		{
-			if (stream.cache_try_count < 99)
+			if (stream.preload_try_count < 99)
 			{
 				window.setTimeout("cache_wait();", 30);
 			}
 			else
 			{
-				stream.cache_try_count = 0;
+				stream.preload_try_count = 0;
 				stream.loaded = "false";
 				window.setTimeout("stream_video();", 1);
 			}
@@ -232,9 +233,9 @@
 
 	function update()
 	{
-		if (stream.cache_jpeg[stream.cache_num].complete)
+		if (preload_jpeg[stream.cache_num].complete)
 		{
-			document.getElementById("image_1").src = stream.cache_jpeg[stream.cache_num].src;
+			document.getElementById("image_1").src = preload_jpeg[stream.cache_num].src;
 			document.getElementById("text_1").innerHTML = stream.feed + " : " + parent.state.feed_text[stream.feed];
 			document.getElementById("text_1").style.color = "#ff0000";	// Set text to red
 			stream.try_count = 0;

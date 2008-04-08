@@ -47,6 +47,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	stream = {
 		preload_jpeg: [],			// Preloaded jpeg array
 		preload_filename: [],			// Preloaded jpeg filenames
+		preload_try_count: 0,			// Preload try counter
 		
 		preload_count: 0,			// Count into above jpeg array
 		loaded: "false",			// Three way status flag string, false, error or true if image has been loaded
@@ -64,9 +65,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		interleave_lock: false,			// Display an interleave feed or a sequence feed
 		interleave_ptr:	0,			// Pointer into interleave feed array ... ie server_reply2
 							// Prep value to ensure server_snap2 starts correctly
-		interleave_view: start_view(),		// Pointer into view sequence ...  1 ... parent_cache.view_format squared
-
-		preload_try_count: 0			// a caching try counter
+		interleave_view: start_view()		// Pointer into view sequence ...  1 ... parent_cache.view_format squared
 		};
 
 	for (var i=0; i < 16; i++)

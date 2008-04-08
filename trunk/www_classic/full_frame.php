@@ -45,8 +45,11 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		};
 
 	stream = {
-		cache_jpeg: [],				// Caching jpeg array to avoid flicker
-		cache_num: 0,				// Count into above array
+		preload_jpeg: [],			// Preload jpeg array 
+		preload_filename: [],			// Preloaded jpeg filenames
+		preload_try_count: 0,			// Preload try counter
+
+		preload_count: 0,				// Count into above array
 		loaded: "false",			// Three way status flag string, false, error or true if image has been loaded
 
 		view: 0,				// Holds the current view number ... 1 ... parent.state.view_format squared
@@ -59,13 +62,11 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		server_reply2: [],			// An array of events ie feeds with motion detected returned by the AJAX call
 
 		interleave_view: start_view(),		// Pointer into view sequence ...  1 ... parent.state.view_format squared
-
-		cache_try_count: 0			// a caching try counter
 		};
 
 	for (var i=0; i < 16; i++)
 	{
-		stream.cache_jpeg[i] = new Image();
+		stream.preload_jpeg[i] = new Image();
 	}
 
 
@@ -148,10 +149,10 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 
 	function cache(jpeg)
 	{
-		stream.cache_num++;  // caching as a browser workaround
-		stream.cache_num = (stream.cache_num > 15)?0:stream.cache_num;
+		stream.preload_count++;  // caching as a browser workaround
+		stream.preload_count = (stream.preload_count > 15)?0:stream.preload_count;
 
-		var jpeg_file = (jpeg == undefined)?"misc/caching.jpeg":jpeg;
+		stream.preload_filename[stream.preload_count] = (jpeg == undefined)?"misc/caching.jpeg":jpeg;
 
 		if (jpeg == "" || jpeg == undefined)
 		{
@@ -159,31 +160,31 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		}
 		else
 		{
-			stream.cache_jpeg[stream.cache_num].onload = function ()
+			stream.preload_jpeg[stream.preload_count].onload = function ()
 			{
 				set_view_status();
-				stream.cache_try_count = 0;
+				stream.preload_try_count = 0;
 				if (stream.view_change == stream.view)  // If stream view is the last view changed, cache it for a cycle
 				{
-					stream.cache_jpeg[stream.cache_num].src = "misc/caching.jpeg";
+					stream.preload_jpeg[stream.preload_count].src = "misc/caching.jpeg";
 					stream.view_change = 0;
 				}
 				for (var i=1; i <= (Math.pow(parent_cache.view_format, 2)); i++) // Scan for views with duplicate feeds
 				{
 					if (parent_cache.view_seqs[parent_cache.view_format][i] == stream.feed)  // Set .src of all views found
 					{
-						document.getElementById("image_" + i).src = jpeg_file;
+						document.getElementById("image_" + i).src = stream.preload_filename[stream.preload_count];
 					}
 				}
 				stream.loaded = "true";
 			}
 
-			stream.cache_jpeg[stream.cache_num].onerror = function ()
+			stream.preload_jpeg[stream.preload_count].onerror = function ()
 			{
-				stream.cache_try_count = 0;
+				stream.preload_try_count = 0;
 				stream.loaded = "error";
 			}
-			stream.cache_jpeg[stream.cache_num].src = jpeg_file;
+			stream.preload_jpeg[stream.preload_count].src = stream.preload_filename[stream.preload_count];
 			cache_wait();
 		}
 	}	
@@ -191,7 +192,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 
 	function cache_wait()
 	{
-		stream.cache_try_count++;
+		stream.preload_try_count++;
 		if (stream.loaded == "true")
 		{
 			if (parent_cache.pref_interleave && ((stream.server_reply2.length) > 1))
@@ -210,20 +211,20 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 
 		else if (stream.loaded == "error")
 		{
-			stream.cache_try_count = 0;
+			stream.preload_try_count = 0;
 			stream.loaded = "false";
 			window.setTimeout("stream_video();", 1);
 		}
 
 		else if (stream.loaded == "false")
 		{
-			if (stream.cache_try_count < 99)
+			if (stream.preload_try_count < 99)
 			{
 				window.setTimeout("cache_wait();", 30);
 			}
 			else
 			{
-				stream.cache_try_count = 0;
+				stream.preload_try_count = 0;
 				stream.loaded = "false";
 				window.setTimeout("stream_video();", 1);
 			}
