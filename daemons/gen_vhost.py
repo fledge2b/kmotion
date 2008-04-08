@@ -29,7 +29,14 @@ def gen_vhost():
     parsed = parser.read('./kmotion.rc')
     images_dir = parser.get('dirs', 'images_dir')
     apache2_config_dir = parser.get('dirs', 'apache2_config_dir')
-    www_dir = parser.get('dirs', 'www_dir')
+    
+    www =  parser.get('www', 'www')
+    if www == '2.0':
+        dir = 'www_2.0_dir'
+    else:
+        dir = 'www_classic_dir'
+
+    www_dir = parser.get('dirs', dir)
     port = parser.get('misc', 'port')
 
     f = open('%s/%s' % (apache2_config_dir, 'kmotion_vhost_template'))
