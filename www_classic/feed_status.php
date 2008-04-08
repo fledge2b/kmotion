@@ -91,5 +91,4 @@ The returned data is in a form that facilitates rapid Javascript string splittin
 	{
 		echo "$".$event;
 	}
-	echo "&";
 ?>
