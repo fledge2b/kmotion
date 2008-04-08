@@ -41,7 +41,7 @@ class Gen_Int_Rcs:
         motion_config = self.find_motion_conf()
         threads, snapshot_interval = self.gen_motion_conf(motion_config)
         names_list, snapshot_list = self.gen_threadx_conf(threads, snapshot_interval)
-        self.gen_www_rc(names_list)
+        self.gen_www_rcs(names_list)
         self.modify_daemon_rc(snapshot_list)
         
     
@@ -172,12 +172,18 @@ class Gen_Int_Rcs:
         return names_list, snapshot_list
             
             
-    def gen_www_rc(self, names_list):
+    def gen_www_rcs(self, names_list):
         """
-        Given a list of camera / feed names generate www.rc consisting of the images_dir path followed by a list of the names
+        Given a list of camera / feed names generate www.rcs consisting of the images_dir path followed by a list of the names
         for apache2 PHP code
         """
-        f = open('%s/www.rc' % (self.www_dir), 'w')
+        f = open('%s/www.rc' % (self.www_classic_dir), 'w')
+        f.write('%s\n' % (self.images_dir))
+        for name in names_list:
+            f.write('%s\n' % (name))
+        f.close        
+        
+        f = open('%s/www.rc' % (self.www_20_dir), 'w')
         f.write('%s\n' % (self.images_dir))
         for name in names_list:
             f.write('%s\n' % (name))
@@ -205,7 +211,8 @@ class Gen_Int_Rcs:
         parser.read('./kmotion.rc')
         self.images_dir = parser.get('dirs', 'images_dir')
         self.misc_config_dir = parser.get('dirs', 'misc_config_dir')
-        self.www_dir = parser.get('dirs', 'www_dir')
+        self.www_classic_dir = parser.get('dirs', 'www_classic_dir')
+        self.www_20_dir = parser.get('dirs', 'www_2.0_dir')
         self.log_level = parser.get('debug', 'log_level')
         
             
