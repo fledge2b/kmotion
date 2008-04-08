@@ -195,11 +195,11 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		{
 			stream.feed = parent_cache.view_seqs[parent_cache.view_format][stream.view];
 			var jpeg = stream.server_reply1[stream.feed];
-			if (stream.ajax_reply)
-			{
-				stream.ajax_reply = false;
+			//if (stream.ajax_reply)
+			//{
+			//	stream.ajax_reply = false;
 				server_poll();
-			}
+			//}
 			cache(jpeg);
 		}
 		else
