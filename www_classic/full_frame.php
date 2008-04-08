@@ -101,9 +101,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		else if (window.ActiveXObject)
 		{
 			xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		xmlHttpReq.open("POST", "feed_status.php", true);
-		xmlHttpReq.send(null);
+		};
 		xmlHttpReq.onreadystatechange = function() 
 		{	
 			if (xmlHttpReq.readyState == 4)
@@ -113,6 +111,8 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 				stream.server_reply2 = stream.server_reply1[17].split("$");	
 			}
 		}
+		xmlHttpReq.open("POST", "feed_status.php", true);
+		xmlHttpReq.send(null)
 	}
 
 
@@ -127,16 +127,17 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			window.setTimeout("parent.frame_full_callback()", 1);
 			return;
 		}
-		{	
-			stream.interleave_view++;
-			stream.interleave_view = (stream.interleave_view > (Math.pow(parent.state.view_format, 2)))?1:stream.interleave_view;
-			stream.view = stream.interleave_view;
-		}
 
-		server_poll();  // Don't bother with 'no video' views 
-		if (parent.state.view_seqs[parent.state.view_format][stream.view] <= parent.state.video_feeds)
+		stream.interleave_view++;
+		stream.interleave_view = (stream.interleave_view > (Math.pow(parent.state.view_format, 2)))?1:stream.interleave_view;
+		stream.view = stream.interleave_view;
+
+		if (parent.state.view_seqs[parent.state.view_format][stream.view] <= parent.state.video_feeds) // Don't bother with 'no video' views 
 		{
-			cache();
+			stream.feed = parent_cache.view_seqs[parent_cache.view_format][stream.view];
+			var jpeg = stream.server_reply1[stream.feed];
+			server_poll();
+			cache(jpeg);
 		}
 		else 
 		{
@@ -145,14 +146,18 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	}
 
 
-	function cache()
+	function cache(jpeg)
 	{
 		stream.cache_num++;  // caching as a browser workaround
 		stream.cache_num = (stream.cache_num > 15)?0:stream.cache_num;
-		stream.feed = parent_cache.view_seqs[parent_cache.view_format][stream.view];	
-		var feed_reply1 = stream.server_reply1[stream.feed];
-		var jpeg_file = (feed_reply1 == undefined)?"misc/caching.jpeg":feed_reply1;
-		if (feed_reply1 != "" && feed_reply1 != undefined)
+
+		var jpeg_file = (jpeg == undefined)?"misc/caching.jpeg":jpeg;
+
+		if (jpeg == "" || jpeg == undefined)
+		{
+			window.setTimeout("stream_video()", 100);
+		}
+		else
 		{
 			stream.cache_jpeg[stream.cache_num].onload = function ()
 			{
@@ -180,10 +185,6 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			}
 			stream.cache_jpeg[stream.cache_num].src = jpeg_file;
 			cache_wait();
-		}
-		else
-		{
-			window.setTimeout("stream_video()", 1);
 		}
 	}	
 
