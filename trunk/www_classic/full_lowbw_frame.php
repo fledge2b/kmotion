@@ -105,7 +105,7 @@
 		}
 		else if (stream.motion_detected || stream.scan_count > 4)
 		{
-			window.setTimeout("parent.frame_full_callback2()", 1);
+			window.setTimeout("parent.frame_lowbw_callback2()", 1);
 		}
 		else
 		{

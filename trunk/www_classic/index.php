@@ -367,7 +367,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	}
 
 
-	// If motion is detected in full_frame.php, display full_inter_frame.php, do it with a callback to avoid possible recursion & 
+	// If motion is detected in full_frame.php, display full_full_frame.php, do it with a callback to avoid possible recursion & 
 	// to disable view format & camera select buttons 
 	function frame_full_callback()
 	{
@@ -376,12 +376,30 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	}
 
 
-	// If motion has ceased in full_inter_frame.php, display full_frame.php, do it with a callback to avoid possible recursion &
+	// If motion has ceased in full_full_frame.php, display full_frame.php, do it with a callback to avoid possible recursion &
 	// to enable view format & camera select buttons 
 	function frame_full_callback2()
 	{
 		enable_buttons();
 		document.getElementById('view_iframe').src="full_frame.php?width="+state.iframe_width+"&height="+state.iframe_height+"&grid="+state.view_format;
+	}
+
+
+	// If motion is detected in lowbw_frame.php, display full_lowbw_frame.php, do it with a callback to avoid possible recursion & 
+	// to disable view format & camera select buttons 
+	function frame_lowbw_callback()
+	{
+		disable_buttons();
+		document.getElementById('view_iframe').src="full_lowbw_frame.php?width="+state.iframe_width+"&height="+state.iframe_height;
+	}
+
+
+	// If motion has ceased in full_lowbw_frame.php, display lowbw_frame.php, do it with a callback to avoid possible recursion &
+	// to enable view format & camera select buttons 
+	function frame_lowbw_callback2()
+	{
+		enable_buttons();
+		document.getElementById('view_iframe').src="lowbw_frame.php?width="+state.iframe_width+"&height="+state.iframe_height+"&grid="+state.view_format;
 	}
 
 
