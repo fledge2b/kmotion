@@ -191,10 +191,8 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 
 		if (parent_cache.view_seqs[parent_cache.view_format][stream.view]<= parent_cache.video_feeds)  // Don't bother with 'no video' views 
 		{
-			stream.feed = parent_cache.view_seqs[parent_cache.view_format][stream.view];
-			var jpeg = stream.server_reply1[stream.feed];
 			server_poll();
-			cache(jpeg);
+			window.setTimeout("cache()", 1);
 		}
 		else
 		{
@@ -203,11 +201,13 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	}
 
 
-	function cache(jpeg)
+	function cache()
 	{
 		stream.preload_count++;  // caching as a browser workaround
 		stream.preload_count = (stream.preload_count > 15)?0:stream.preload_count;
 
+		stream.feed = parent_cache.view_seqs[parent_cache.view_format][stream.view];
+		var jpeg = stream.server_reply1[stream.feed];
 		stream.preload_filename[stream.preload_count] = (jpeg == undefined)?"misc/caching.jpeg":jpeg;
 
 		if (jpeg == "" || jpeg == undefined)

@@ -107,11 +107,8 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	{	
 		if ((stream.server_reply2.length) > 1)			// If there are events ...
 		{
-			// Snapshot the server_reply2 array in case it changes mid display
-			stream.snap_reply2 = stream.server_reply2;
-			var now = new Date();
-			stream.start_time = now.getTime();
-			window.setTimeout("stream_video()", 1);
+			window.setTimeout("parent.frame_lowbw_callback()", 1);
+			return;
 		}
 		else
 		{
@@ -120,108 +117,6 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			document.getElementById("image_1").src = "misc/scanning.png";
 			window.setTimeout("scan_motion()", 1000);
 		}
-	}
-
-
-	//*******************************************************************************************************************************************************************************
-	// Feed caching & display
-	//******************************************************************************************************************************************************************************
-
-	function stream_video()
-	{
-		if (stream.interleave_ptr >= stream.snap_reply2.length)
-		{
-			stream.interleave_ptr = 1;				// End of an interleave cycle
-			window.setTimeout("scan_motion()", 1); 			// restart scan_motion()
-		}
-		else
-		{	
-			stream.feed = stream.snap_reply2[stream.interleave_ptr];
-			var now = new Date();					// Keep refreshing jpegs of current feed
-			if (now.getTime() > stream.start_time + 5000)		// for 5 seconds, then move to next feed
-			{
-				stream.start_time = now.getTime();
-				stream.interleave_ptr++;
-				window.setTimeout("stream_video()", 1);
-			}
-			else
-			{
-				var jpeg = stream.server_reply1[stream.feed];
-				server_poll();
-				cache(jpeg);
-			}
-		}
-	}
-
-
-	function cache(jpeg)
-	{
-		stream.preload_count++;  // caching as a browser workaround
-		stream.preload_count = (stream.preload_count > 15)?0:stream.preload_count;
-
-		stream.preload_filename[stream.preload_count] = (jpeg == undefined)?"misc/caching.jpeg":jpeg;
-
-		if (jpeg == "" || jpeg == undefined)
-		{
-			window.setTimeout("stream_video()", 100);
-		}
-		else
-		{
-			stream.preload_jpeg[stream.preload_count].onload = function ()
-			{
-				set_view_text();
-				stream.preload_try_count = 0;
-				document.getElementById("image_1").src = stream.preload_filename[stream.preload_count];
-				stream.loaded = "true";
-			}
-	
-			stream.preload_jpeg[stream.preload_count].onerror = function ()
-			{
-				stream.preload_try_count = 0;
-				stream.loaded = "error";
-			}
-			stream.preload_jpeg[stream.preload_count].src = stream.preload_filename[stream.preload_count];
-			cache_wait();
-		}
-	}	
-
-
-	function cache_wait()
-	{
-		stream.preload_try_count++;
-		if (stream.loaded == "true")
-		{
-//alert("loaded");
-			stream.loaded = "false";
-			var pause = Math.max(parent_cache.pref_motion_pause, 100);  // pause needed if browser accessing server on localhost, code in lowbw runs too fast 
-			window.setTimeout("stream_video();", pause);  		    // causing image freezing issues
-		}
-		else if (stream.loaded = "error")
-		{
-			stream.preload_try_count = 0;
-			stream.loaded = "false";
-			window.setTimeout("stream_video();", 1);
-		}
-		else if (stream.loaded == "false")
-		{
-			if (stream.preload_try_count < 99)
-			{
-				window.setTimeout("cache_wait();", 30);
-			}
-			else
-			{
-				stream.preload_try_count = 0;
-				stream.loaded = "false";
-				window.setTimeout("stream_video();", 1);
-			}
-		}
-	}
-
-
-	function set_view_text()
-	{
-		document.getElementById("text_1").innerHTML = stream.feed + " : " + parent.state.feed_text[stream.feed];
-		document.getElementById("text_1").style.color = "#ff0000";
 	}
 
 
