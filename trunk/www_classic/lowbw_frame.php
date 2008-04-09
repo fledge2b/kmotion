@@ -169,9 +169,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			{
 				set_view_text();
 				stream.preload_try_count = 0;
-				alert(stream.preload_filename[stream.preload_count]);
 				document.getElementById("image_1").src = stream.preload_filename[stream.preload_count];
-				return;
 				stream.loaded = "true";
 			}
 	
@@ -191,6 +189,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		stream.preload_try_count++;
 		if (stream.loaded == "true")
 		{
+			alert("loaded");
 			stream.loaded = "false";
 			var pause = Math.max(parent_cache.pref_motion_pause, 100);  // pause needed if browser accessing server on localhost, code in lowbw runs too fast 
 			window.setTimeout("stream_video();", pause);  		    // causing image freezing issues
