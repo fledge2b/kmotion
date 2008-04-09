@@ -148,7 +148,7 @@
 
 		if (jpeg == "" || jpeg == undefined)
 		{
-			window.setTimeout("stream_video()", 500);
+			window.setTimeout("stream_video()", 100);
 		}
 		else
 		{
