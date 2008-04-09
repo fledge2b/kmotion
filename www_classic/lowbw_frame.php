@@ -191,7 +191,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		{
 			stream.loaded = "false";
 			var pause = Math.max(parent_cache.pref_motion_pause, 100);  // pause needed if browser accessing server on localhost, code in lowbw runs too fast 
-			window.setTimeout("stream_video();", pause);  // causing image freezing issues
+			window.setTimeout("stream_video();", pause);  		    // causing image freezing issues
 		}
 		else if (stream.loaded = "error")
 		{

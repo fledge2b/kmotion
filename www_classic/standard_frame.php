@@ -240,7 +240,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			{
 				stream.preload_jpeg[stream.preload_count].src = "misc/caching.jpeg";
 				stream.view_change = 0;
-				cache_wait;
+				cache_wait();
 				return;
 			}
 			stream.preload_jpeg[stream.preload_count].src = stream.preload_filename[stream.preload_count];
