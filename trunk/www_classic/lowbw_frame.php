@@ -111,13 +111,15 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			stream.snap_reply2 = stream.server_reply2;
 			var now = new Date();
 			stream.start_time = now.getTime();
-			stream_video();
-			return;
+			window.setTimeout("stream_video()", 1);
 		}
-		server_poll()
-		document.getElementById("text_1").innerHTML = ""; 	// Clear the text field 
-		document.getElementById("image_1").src = "misc/scanning.png";
-		window.setTimeout("scan_motion()", 1000);
+		else
+		{
+			server_poll()
+			document.getElementById("text_1").innerHTML = ""; 	// Clear the text field 
+			document.getElementById("image_1").src = "misc/scanning.png";
+			window.setTimeout("scan_motion()", 1000);
+		}
 	}
 
 
@@ -189,7 +191,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 		stream.preload_try_count++;
 		if (stream.loaded == "true")
 		{
-			alert("loaded");
+//alert("loaded");
 			stream.loaded = "false";
 			var pause = Math.max(parent_cache.pref_motion_pause, 100);  // pause needed if browser accessing server on localhost, code in lowbw runs too fast 
 			window.setTimeout("stream_video();", pause);  		    // causing image freezing issues
