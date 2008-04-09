@@ -161,7 +161,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 
 		if (jpeg == "" || jpeg == undefined)
 		{
-			window.setTimeout("stream_video()", 500);
+			window.setTimeout("stream_video()", 100);
 		}
 		else
 		{
@@ -169,6 +169,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			{
 				set_view_text();
 				stream.preload_try_count = 0;
+				alert(stream.preload_filename[stream.preload_count]);
 				document.getElementById("image_1").src = stream.preload_filename[stream.preload_count];
 				stream.loaded = "true";
 			}
