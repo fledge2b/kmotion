@@ -1,7 +1,6 @@
 #summary Screenshots of the Web front end of kmotion in action
 #labels Featured
 ----
-http://img114.imageshack.us/img261/8091/snapshot9bq7.png
 http://img261.imageshack.us/img261/8091/snapshot9bq7.png
 ----
 http://img114.imageshack.us/img114/6734/15dk0.png
