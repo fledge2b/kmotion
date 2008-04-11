@@ -3,7 +3,7 @@
 
 = v1.18b =
 
- * Bugfix, corrected display issues with square rather than widescreen TFTs
+ * Bugfix, corrected square screen display bug
 
 = v1.17b =
 
