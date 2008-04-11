@@ -1,6 +1,10 @@
 #summary kmotion versions
 #labels Featured
 
+= v1.18b =
+
+ * Bugfix, corrected display issues with square rather than widescreen TFTs
+
 = v1.17b =
 
  * A new cleaner 'kmotion.rc' removing internal system configurations
