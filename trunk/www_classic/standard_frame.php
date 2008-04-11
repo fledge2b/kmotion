@@ -417,22 +417,22 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 	define("VIEW_WIDTH", $_GET['width']);
 	define("VIEW_HEIGHT", $_GET['height']);
 
-	// This is a black art, px never quite add up so may need to tweak +7	
+	// This is a black art indeed.	
 	$scale_width = VIEW_WIDTH;
-	$scale_height = VIEW_HEIGHT - ((ROW_PADDING * 2) + 7);
+	$scale_height = VIEW_HEIGHT - (ROW_PADDING * (ROWS + 1));
 
-	// Scale the jpeg keeping aspect ratio 384 / 288 = 1.33 
+	// Calculate the jpeg size keeping aspect ratio 384 / 288 = 1.33 
 	if (($scale_width / $scale_height) < 1.33)
 	{
-		$scale = $scale_width / (384 * (COLS - 1));
-		$scale_width = $scale * 384;
-		$scale_height =  $scale * 288;
+		$scale = $scale_width / COLS;
+		$scale_width = $scale;
+		$scale_height =  $scale * 0.75;
 	}
 	else
 	{
-		$scale = $scale_height / (288 * ROWS);
-		$scale_width = $scale * 384;
-		$scale_height =  $scale * 288;		
+		$scale = $scale_height / ROWS;
+		$scale_width = $scale * 1.33;
+		$scale_height =  $scale;		
 	}
 	
 	$col_width = $scale_width + COL_PADDING;
