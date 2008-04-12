@@ -203,7 +203,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 				if (event_limit_ms > delay_ms || nexus.accelerator_index[nexus.play_accelerator] == 1)  // never skip if playing x1
 				{
 					//nexus.skip_frames = false;
-					window.setTimeout("play_forward();", event_limit_ms - delay_ms);
+					window.setTimeout("play_forward();", Math.max(event_limit_ms - delay_ms, 1));  // in case of long delay_ms
 				}
 				else  // if images can not be downloaded fast enough - skip images ...
 				{
@@ -226,7 +226,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 				if (snap_limit_ms > delay_ms || nexus.accelerator_index[nexus.play_accelerator] == 1)  // never skip if playing x1
 				{
 					//nexus.skip_frames = false;
-					window.setTimeout("play_forward();", snap_limit_ms - delay_ms);
+					window.setTimeout("play_forward();", Math.max(snap_limit_ms - delay_ms, 1));  // in case of a long delay_ms
 				}
 				else  // if images can not be downloaded fast enough - skip images ...
 				{			
@@ -317,7 +317,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 				if (event_limit_ms > delay_ms || nexus.accelerator_index[nexus.play_accelerator] == 1)  // never skip if playing x1
 				{
 					//nexus.skip_frames = false;
-					window.setTimeout("play_reverse();", event_limit_ms - delay_ms);
+					window.setTimeout("play_reverse();", Math.max(event_limit_ms - delay_ms, 1));  // in case of long delay_ms
 				}
 				else  // if images can not be downloaded fast enough - skip images ...
 				{
@@ -340,7 +340,7 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 				if (snap_limit_ms > delay_ms || nexus.accelerator_index[nexus.play_accelerator] == 1)  // never skip if playing x1
 				{
 					//nexus.skip_frames = false;
-					window.setTimeout("play_reverse();", snap_limit_ms - delay_ms);
+					window.setTimeout("play_reverse();", Math.max(snap_limit_ms - delay_ms, 1));  // in case of a long delay_ms
 				}
 				else  // if images can not be downloaded fast enough - skip images ...
 				{
