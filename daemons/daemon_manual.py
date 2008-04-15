@@ -52,7 +52,7 @@ while (True):
     print
     
     opt = raw_input('Option letter then ENTER to select : ')
-    
+
     if (opt == 's'):
         if(daemon_whip.daemons_running()):
             print '\n\033[1;32mDaemons already running ...\033[1;37m'
@@ -65,13 +65,10 @@ while (True):
               print '\n\033[1;31m*WARNING* Unable to start daemons ...\033[1;37m'
               
     elif (opt == 'k'):
-        if(daemon_whip.daemons_running()):
-            print '\n\033[1;31mStarting to kill daemons ...\033[1;37m'
-            daemon_whip.kill_daemons()
-            time.sleep(2)
-            print '\033[1;31mDaemons have been killed ...\033[1;37m'
-        else:
-            print '\n\033[1;31m*INFORMATION* Daemons not running ...\033[1;37m'
+        print '\n\033[1;31mStarting to kill daemons ...\033[1;37m'
+        daemon_whip.kill_daemons()
+        time.sleep(2)
+        print '\033[1;31mDaemons have been killed ...\033[1;37m'
     
     elif (opt == 'r'):
         if(daemon_whip.daemons_running()):

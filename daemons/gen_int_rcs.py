@@ -27,7 +27,7 @@ generate www.rc and modify daemon.rc
 class Gen_Int_Rcs:
     
     def __init__(self):  
-        self.blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save', 'target_dir']
+        self.blacklist = ['jpeg_filename', 'snapshot_filename', 'on_event_start', 'on_event_end', 'on_picture_save', 'target_dir',  'minimum_frame_time']
         
         
     def gen_int_rcs(self):
@@ -87,6 +87,7 @@ class Gen_Int_Rcs:
         f.close()
         
         f = open('%s/motion.conf' % self.misc_config_dir, 'w')
+        f.write('\nsnapshot_interval 1\n')
         for line in lines:
             line_split = line.split()
             if not len(line_split):  # if [], blank line, skip it
@@ -104,7 +105,6 @@ class Gen_Int_Rcs:
                 f.write('thread %s/thread%s.conf\n' % (self.misc_config_dir,  len(threads)))
                 continue
             f.write(line)
-        f.write('\nsnapshot_interval 1\n')
         f.write('target_dir %s' % (self.images_dir))
         f.close()
         
@@ -140,7 +140,21 @@ class Gen_Int_Rcs:
                     continue
                 elif line_split[0] == '#ktext' and len(line_split) >= 2:  # keyword for kmotion text
                     ktext = line[7:-1]
+                    self.logger.log('#ktext \'%s\' defined in motion%d.conf' % (ktext, thread_count), 'CRIT')
                     continue
+                #########################################################################
+                #FIXME: This is an undocumented feature, it does not work with ubuntu 7.10 because motion version is too old
+                # 'minimum_frame_time' is blacklisted
+                elif line_split[0] == '#kminimum_frame_time' and len(line_split) >= 2:  # number for kmotion minimum_frame_time
+                    try:
+                        update =  int(line_split[1])
+                    except:
+                        pass
+                    f.write('snapshot_interval %i\n' % update)
+                    f.write('minimum_frame_time %i\n' % update)
+                    self.logger.log('#kminimum_frame_time %i defined in motion%d.conf' % (update, thread_count), 'CRIT')
+                    continue
+                #########################################################################
                 elif line_split[0][:1] == '#':  # if #, comment, skip it
                     continue
                 elif line_split[0] in self.blacklist:
