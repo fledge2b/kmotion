@@ -1,5 +1,10 @@
 #summary kmotion versions
 #labels Featured
+= v1.19b =
+
+ * Added LDAP support
+
+ * Fixed bug causing multiple instances of kmotion_hkd2.py
 
 = v1.18b =
 
