@@ -20,4 +20,4 @@ log_level = WARNING
 
 [LDAP]
 enabled = no
-AuthLDAPUrl = <fill in your autherisation LDAP URL here>
+AuthLDAPUrl = <fill in your authorisation LDAP URL here>
