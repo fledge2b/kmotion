@@ -15,9 +15,7 @@ NameVirtualHost *:%port%
         
         # secure login ... 
         AuthType Basic
-        AuthName "kmotion"
-        AuthUserFile %apache2_config_dir%/users_digest
-        #AuthAuthoritative on
+        %LDAP_block%
         Require valid-user
     </Directory>
 
