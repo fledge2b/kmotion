@@ -29,31 +29,40 @@ def gen_vhost():
     parsed = parser.read('./kmotion.rc')
     images_dir = parser.get('dirs', 'images_dir')
     apache2_config_dir = parser.get('dirs', 'apache2_config_dir')
+    port = parser.get('misc', 'port')
     
     www =  parser.get('www', 'www')
-    if www == '2.0':
-        dir = 'www_2.0_dir'
-    else:
-        dir = 'www_classic_dir'
-
+    dir = 'www_2.0_dir' if www == '2.0' else 'www_classic_dir'
     www_dir = parser.get('dirs', dir)
-    port = parser.get('misc', 'port')
 
-    f = open('%s/%s' % (apache2_config_dir, 'kmotion_vhost_template'))
-    config = f.readlines()
-    f.close
-
-    for i in range(len(config)):
-        config[i] = config[i].replace('%images_dir%', images_dir)
-        config[i] = config[i].replace('%apache2_config_dir%', apache2_config_dir)
-        config[i] = config[i].replace('%www_dir%', www_dir)
-        config[i] = config[i].replace('%port%', port)
+    LDAP_enabled = parser.get('LDAP', 'enabled') in ['true', 'True',  'yes',  'Yes']
+    LDAP_url = parser.get('LDAP', 'AuthLDAPUrl')
+    
+    if LDAP_enabled:
+        LDAP_block = '''
+        # ** INFORMATION ** LDAP mode enabled ... 
+        AuthName "LDAP"
+        AuthBasicProvider ldap
+        AuthzLDAPAuthoritative off
+        AuthLDAPUrl %s\n''' % LDAP_url
+    else:
+        LDAP_block = '''
+        # ** INFORMATION ** Users digest file enabled ...
+        AuthName "kmotion"
+        AuthUserFile %s/users_digest\n''' % apache2_config_dir
+    
+    template = open('%s/%s' % (apache2_config_dir, 'kmotion_vhost_template')).readlines()
+    for i in range(len(template)):
+        template[i] = template[i].replace('%images_dir%', images_dir)
+        template[i] = template[i].replace('%apache2_template_dir%', apache2_config_dir)
+        template[i] = template[i].replace('%www_dir%', www_dir)
+        template[i] = template[i].replace('%port%', port)
+        template[i] = template[i].replace('%LDAP_block%',  LDAP_block)
         
     f = open('%s/%s' % (apache2_config_dir, 'kmotion_vhost'), 'w')
-    for line in config:
+    for line in template:
         f.write(line)
     f.close
-    
 
 if __name__ == '__main__':
     gen_vhost()
