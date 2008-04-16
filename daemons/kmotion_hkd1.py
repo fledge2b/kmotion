@@ -193,16 +193,17 @@ class Kmotion_Hkd1:
         """
         Check motion is still running ... if not restart it ... 
         """
-        if os.system('/bin/ps ax | /bin/grep [m]otion\ -c'):
+        os.system('/bin/ps ax | /bin/grep [m]otion\ -c > /tmp/kmotion_bash')  # not using returned value of os.system(), it is unreliable over long periods of time
+        if not open('/tmp/kmotion_bash', 'r') .readline():
            logger.log('motion not running - starting motion', 'CRIT')
            os.system('motion -c %s/motion.conf 2> /dev/null &' % (self.misc_config_dir))
             
-                
     def chk_kmotion_hkd2(self):
         """
         Check kmotion_hkd2.py is still running ... if not restart it ... 
         """
-        if os.system('/bin/ps ax | /bin/grep [k]motion_hkd2.py$'):
+        os.system('/bin/ps ax | /bin/grep [k]motion_hkd2.py$ > /tmp/kmotion_bash')  # not using returned value of os.system(), it is unreliable over long periods of time
+        if not open('/tmp/kmotion_bash', 'r') .readline():
            logger.log('kmotion_hkd2.py not running - starting kmotion_hkd2.py', 'CRIT')
            os.system('%s/kmotion_hkd2.py &' % (self.daemons_dir))
 
