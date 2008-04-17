@@ -16,7 +16,7 @@
 
  * 'kmotion.rc' option [www] for future web 2.0 interface
 
- * Finally fixed the 'reflash' image bug
+ * Bugfix, finally fixed the 'reflash' image bug
 
  * New 'no archive files available' warning
 
