@@ -4,7 +4,7 @@
 
  * Added LDAP support
 
- * Fixed bug causing multiple instances of kmotion_hkd2.py
+ * Bugfix, fixed bug causing multiple instances of kmotion_hkd2.py after several days
 
 = v1.18b =
 
@@ -26,7 +26,7 @@
 
 = v1.15b =
 
- * Fixed major bug preventing culling of image files when limit reached
+ * Bugfix, fixed major bug preventing culling of image files when limit reached
 
  * Increased jpeg cache from 4 to 16 to avoid image 'reflashing'
 
@@ -34,7 +34,7 @@
 
  * Corrections to documentation ... thank you keith
 
- * Fixed div/0 bug in statistics view if no swap
+ * Bugfix, fixed div/0 bug in statistics view if no swap
 
 
 = v1.13b =
@@ -43,7 +43,7 @@
 
  * ./install.py now checks for ubuntu 7.10
 
- * Fixed statistics view bug causing display corruption if users != 1
+ * Bugfix, fixed statistics view bug causing display corruption if users != 1
 
 = v1.12b =
 
