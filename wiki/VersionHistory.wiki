@@ -1,0 +1,75 @@
+#summary kmotion versions
+#labels Featured
+= v1.19b =
+
+ * Added LDAP support
+
+ * Fixed bug causing multiple instances of kmotion_hkd2.py
+
+= v1.18b =
+
+ * Bugfix, corrected square screen display bug
+
+= v1.17b =
+
+ * A new cleaner 'kmotion.rc' removing internal system configurations
+
+ * 'kmotion.rc' option [www] for future web 2.0 interface
+
+ * Finally fixed the 'reflash' image bug
+
+ * New 'no archive files available' warning
+
+ * Improved archive playback to skip missing frames
+
+ * Changed all instances of 'cashing' to 'caching'
+
+= v1.15b =
+
+ * Fixed major bug preventing culling of image files when limit reached
+
+ * Increased jpeg cache from 4 to 16 to avoid image 'reflashing'
+
+= v1.14b =
+
+ * Corrections to documentation ... thank you keith
+
+ * Fixed div/0 bug in statistics view if no swap
+
+
+= v1.13b =
+
+ * Corrections to documentation, specifically port numbers ... thank you Patrick
+
+ * ./install.py now checks for ubuntu 7.10
+
+ * Fixed statistics view bug causing display corruption if users != 1
+
+= v1.12b =
+
+A near complete re-write of the back end to make install easier and to correct multiple bugs. 
+
+The key changes are :
+ * full documentation including developer documentation
+
+ * kmotion including the website now exists within 1 relocatable directory, much easier install
+
+ * install / uninstall script for ubuntu 7.10
+
+ * the images directory is relocatable
+
+ * the max size of the images directory is now specified without ref to its partition
+
+ * kmotion is programmed through an standard motion.conf with the addition of one directive
+
+ * kmotion can load motion.conf from multiple locations inc default motion locations
+
+ * example code for motion.conf
+
+ * server stats now shows uptime
+
+ * server stats auto updates every 15 seconds
+
+= v1.00b =
+
+The original codebase.
