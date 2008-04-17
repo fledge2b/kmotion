@@ -1,4 +1,4 @@
-#summary kmotion versions
+#summary kmotion version history
 #labels Featured
 = v1.19b =
 
