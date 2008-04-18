@@ -212,29 +212,7 @@
 		document.getElementById("text_1").style.color = "#ff0000";
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 	function update()
 	{
 		if (preload_jpeg[stream.cache_num].complete)
