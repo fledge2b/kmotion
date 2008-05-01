@@ -42,7 +42,7 @@ The Kmotion web interface
 </div>
 
 <div class="text">
-Kmotion v1.19b - Released under the GPL v2 - Copyright 2008 David Selby
+Kmotion v1.20b - Released under the GPL v2 - Copyright 2008 David Selby
 <br><br>Tested on stock Ubuntu 7.10
 </div>
 
