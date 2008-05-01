@@ -260,10 +260,10 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			}
 			else	// a fallback if the on event in display_frame() hangs ... 
 			{
-				//display_frame(fq_filename());
-				//nexus.image_try_count = 0;
-				//window.setTimeout("forward_image_wait();", 1);
-				window.setTimeout("play_forward();", 1);
+				display_frame(fq_filename());
+				nexus.image_try_count = 0;
+				window.setTimeout("forward_image_wait();", 1);
+				//window.setTimeout("play_forward();", 1);
 			}
 		}
 	}
@@ -374,10 +374,10 @@ Place, Suite 330, Boston, MA  02111-1307  USA
 			}
 			else	// a fallback if the on event in display_frame() hangs ... 
 			{
-				//display_frame(fq_filename());
-				//nexus.image_try_count = 0;
-				//window.setTimeout("reverse_image_wait();", 1);
-				window.setTimeout("play_reverse();", 1); 
+				display_frame(fq_filename());
+				nexus.image_try_count = 0;
+				window.setTimeout("reverse_image_wait();", 1);
+				//window.setTimeout("play_reverse();", 1); 
 			}
 		}
 	}
