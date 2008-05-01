@@ -1,5 +1,12 @@
 #summary kmotion version history
 #labels Featured
+
+= v1.20b =
+
+ * Improved low bandwith archive playback
+
+ * Corrected text error in install.py
+
 = v1.19b =
 
  * Added LDAP support
