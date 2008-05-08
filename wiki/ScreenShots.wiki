@@ -1,4 +1,4 @@
-#summary Screenshots of the Web front end of kmotion in action. For the code see http://code.google.com/p/kmotion/downloads/list
+#summary Screenshots of the Web front end of kmotion in action. For the code see === http://code.google.com/p/kmotion/downloads/list ===
 #labels Featured
 ----
 http://img365.imageshack.us/img365/6441/snapshot11cq7.png
