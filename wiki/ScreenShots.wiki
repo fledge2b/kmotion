@@ -1,7 +1,7 @@
 #summary Screenshots of the Web front end of kmotion in action.
 #labels Featured
 
-=== For the code click the 'Downloads' tab. ===
+For the code click the === 'Downloads' tab. ===
 
 ----
 http://img365.imageshack.us/img365/6441/snapshot11cq7.png
