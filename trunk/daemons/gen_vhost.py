@@ -32,7 +32,12 @@ def gen_vhost():
     port = parser.get('misc', 'port')
     
     www =  parser.get('www', 'www')
-    dir = 'www_2.0_dir' if www == '2.0' else 'www_classic_dir'
+
+    if www == '2.0': 
+        dir = 'www_2.0_dir' 
+    else: 
+        dir = 'www_classic_dir'
+
     www_dir = parser.get('dirs', dir)
 
     LDAP_enabled = parser.get('LDAP', 'enabled') in ['true', 'True',  'yes',  'Yes']
