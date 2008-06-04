@@ -8,7 +8,7 @@ Work on kmotion 1.xxb has halted, kmotion 2.xx is now well under way.
 
  * Recoded the manual install script to work with Python 2.4.x
 
- * Corrected manual documentation error
+ * Corrected manual install documentation error
 
 = v1.20b =
 
