@@ -1,6 +1,12 @@
 #summary kmotion version history
 #labels Featured
 
+= v1.21b =
+
+ * Recoded the manual install script to work with Python 2.4.x
+
+ * Corrected manual documentation error
+
 = v1.20b =
 
  * Improved low bandwith archive playback
