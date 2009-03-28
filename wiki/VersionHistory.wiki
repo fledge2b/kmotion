@@ -1,5 +1,4 @@
 #summary kmotion version history
-#labels Featured
 
 Work on kmotion 1.xxb has halted, kmotion 2.xx is now well under way.
 
